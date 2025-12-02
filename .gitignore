@@ -37,3 +37,7 @@ nsd/
 *.hdf5
 src/wds/
 nohup.out
+
+# 忽略本地运行输出目录（项目根下）
+/runs/
+/src/wds/
