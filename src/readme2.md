@@ -170,3 +170,13 @@ TextAlign latent eval (subj01 new_test 1000):
     --no-blurry_recon \
     --no-use_image_aug \
   > train_logs/s4_textalign_coco_train_long_v10.log 2>&1 &
+
+  ### Environment (recommended)
+
+```bash
+# Create conda env from exported YAML
+conda env create -f environment_mindeye21.yml
+conda activate mindeye21
+
+# (Optional) ensure pip deps are synced
+pip install -r requirements_mindeye21.txt
