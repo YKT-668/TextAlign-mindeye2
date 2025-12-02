@@ -1,3 +1,4 @@
+#改的第一版，主要是为了eval_textalign_latent.py能跑通，但也加入了自制的模块
 import os
 import numpy as np
 from torchvision import transforms
@@ -10,6 +11,32 @@ import random
 import json
 from tqdm import tqdm
 import utils
+class TextAlignHead(nn.Module):
+    """
+    输入：
+      - bigG image tokens: [B, T, C]，例如 [B, 256, 1664]，或者
+      - 已经 pooled 的 CLIP 向量: [B, C]，例如 [B, 1664]
+    输出：
+      - 文本向量 [B, d_text]，例如 d_text = 768 (CLIP-L text)
+    """
+    def __init__(self, token_dim=1664, hidden_dim=2048, text_dim=768):
+        super().__init__()
+        self.mlp = nn.Sequential(
+            nn.LayerNorm(token_dim),
+            nn.Linear(token_dim, hidden_dim),
+            nn.GELU(),
+            nn.Linear(hidden_dim, text_dim),
+        )
+
+    def forward(self, x):
+        # x 可以是 [B, T, C] 或 [B, C]
+        if x.dim() == 3:
+            # [B, T, C] → [B, C]
+            x = x.mean(dim=1)
+        # 现在 x 是 [B, C]
+        return self.mlp(x)   # [B, text_dim]
+
+
 
 class BrainNetwork(nn.Module):
     def __init__(self, h=4096, in_dim=15724, out_dim=768, seq_len=2, n_blocks=4, drop=.15, clip_size=768, blurry_recon=True, clip_scale=1):

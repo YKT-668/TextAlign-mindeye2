@@ -22,7 +22,7 @@ from ...modules.diffusionmodules.util import (extract_into_tensor,
 from ...modules.distributions.distributions import DiagonalGaussianDistribution
 from ...util import (append_dims, autocast, count_params, default,
                      disabled_train, expand_dims_like, instantiate_from_config)
-
+import os  # 如果文件开头无，添加在其他 import 后
 
 class AbstractEmbModel(nn.Module):
     def __init__(self):
@@ -514,8 +514,10 @@ class FrozenOpenCLIPEmbedder(AbstractEmbModel):
         super().__init__()
         assert layer in self.LAYERS
         model, _, _ = open_clip.create_model_and_transforms(
-            arch, device=torch.device("cpu"), pretrained=version
+            arch, device=torch.device("cpu"), pretrained=version,
+            cache_dir=os.path.expanduser(os.environ.get('HF_HOME', '~/.cache/huggingface'))
         )
+        
         del model.visual
         self.model = model
 

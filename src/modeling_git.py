@@ -18,7 +18,7 @@
 
 """PyTorch GIT model."""
 
-
+from transformers.generation import GenerationMixin
 import math
 from dataclasses import dataclass
 from typing import List, Optional, Tuple, Union
@@ -189,16 +189,31 @@ class GitSelfAttention(nn.Module):
         mixed_query_layer = self.query(hidden_states)
 
         cutoff = self.image_patch_tokens if pixel_values_present else 0
-        if past_key_value is not None:
-            key_layer = self.transpose_for_scores(self.key(hidden_states))
-            value_layer = self.transpose_for_scores(self.value(hidden_states))
-            key_layer = torch.cat([key_layer[:, :, :cutoff, :], past_key_value[0], key_layer[:, :, -1:, :]], dim=2)
-            value_layer = torch.cat(
-                [value_layer[:, :, :cutoff, :], past_key_value[1], value_layer[:, :, -1:, :]], dim=2
-            )
+        # Calculate key and value layers regardless
+        calculated_key = self.transpose_for_scores(self.key(hidden_states))
+        calculated_value = self.transpose_for_scores(self.value(hidden_states))
+
+        # More robust handling of past_key_value (KV cache)
+        use_cache = past_key_value is not None
+        if use_cache and past_key_value[0] is not None and past_key_value[1] is not None:
+            # If a valid cache is provided, concatenate it
+            key_layer = torch.cat([calculated_key[:, :, :cutoff, :], past_key_value[0], calculated_key[:, :, -1:, :]], dim=2)
+            value_layer = torch.cat([calculated_value[:, :, :cutoff, :], past_key_value[1], calculated_value[:, :, -1:, :]], dim=2)
         else:
-            key_layer = self.transpose_for_scores(self.key(hidden_states))
-            value_layer = self.transpose_for_scores(self.value(hidden_states))
+            # If no cache, just use the calculated key and value
+            key_layer = calculated_key
+            value_layer = calculated_value
+
+        query_layer = self.transpose_for_scores(mixed_query_layer)
+
+        # The original code had this logic after the if/else block, which was incorrect.
+        # We now correctly handle the cache update logic.
+        # NOTE: like in other caches, we store the text component. In GIT it means we discard the image component.
+        if use_cache:
+            past_key_value = (
+                key_layer[:, :, cutoff:, :],
+                value_layer[:, :, cutoff:, :],
+            )
 
         query_layer = self.transpose_for_scores(mixed_query_layer)
 
@@ -1567,7 +1582,7 @@ class GitForCausalLM(GitPreTrainedModel):
 ### MOD
 
 
-class GitForCausalLMClipEmb(GitPreTrainedModel):
+class GitForCausalLMClipEmb(GitPreTrainedModel, GenerationMixin):
     def __init__(self, config):
         super().__init__(config)
 
@@ -1960,7 +1975,11 @@ class GitModelClipEmb(GitPreTrainedModel):
         seq_length = input_shape[1]
 
         # past_key_values_length
-        past_key_values_length = past_key_values[0][0].shape[2] if past_key_values is not None else 0
+        # More robust check for past_key_values
+        past_key_values_length = 0
+        if past_key_values is not None and past_key_values[0] is not None and past_key_values[0][0] is not None:
+            past_key_values_length = past_key_values[0][0].shape[2]
+
 
         # Prepare head mask if needed
         # 1.0 in head_mask indicate we keep the head

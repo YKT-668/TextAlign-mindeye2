@@ -1,0 +1,10 @@
+0	a man is standing in front of a building.
+1	a man is sitting down.
+2	a man standing on a skateboard.
+3	a large group of people.
+4	a small table with a bunch of chairs on it.
+5	a large number of people are standing in front of a building.
+6	a large white and black sign.
+7	a man standing in front of a fence.
+8	a man standing next to a building.
+9	a man standing on a skateboard.

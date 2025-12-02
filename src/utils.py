@@ -1,5 +1,4 @@
 import numpy as np
-from torchvision import transforms
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -40,16 +39,28 @@ def np_to_Image(x):
     return PIL.Image.fromarray((x.transpose(1, 2, 0)*127.5+128).clip(0,255).astype('uint8'))
 
 def torch_to_Image(x):
-    if x.ndim==4:
-        x=x[0]
-    return transforms.ToPILImage()(x)
+    if x.ndim == 4:
+        x = x[0]
+    x = x.detach().cpu()
+    if x.dim() == 3 and x.size(0) in (1, 3):
+        x = x.permute(1, 2, 0)
+    x = x.numpy()
+    if x.max() <= 1.0:
+        x = x * 255.0
+    x = x.clip(0, 255).astype("uint8")
+    return PIL.Image.fromarray(x)
 
 def Image_to_torch(x):
     try:
-        x = (transforms.ToTensor()(x)[:3].unsqueeze(0)-.5)/.5
-    except:
-        x = (transforms.ToTensor()(x[0])[:3].unsqueeze(0)-.5)/.5
-    return x
+        arr = np.array(x).astype("float32") / 255.0
+    except Exception:
+        arr = np.array(x[0]).astype("float32") / 255.0
+    if arr.ndim == 2:
+        arr = np.expand_dims(arr, -1).repeat(3, -1)
+    arr = np.transpose(arr, (2, 0, 1))[:3]
+    t = torch.from_numpy(arr).unsqueeze(0)
+    t = (t - 0.5) / 0.5
+    return t
 
 def torch_to_matplotlib(x,device=device):
     if torch.mean(x)>10:
@@ -214,12 +225,11 @@ def resize(img, img_size=128):
     if img.ndim == 3: img = img[None]
     return nn.functional.interpolate(img, size=(img_size, img_size), mode='nearest')
 
-pixcorr_preprocess = transforms.Compose([
-    transforms.Resize(425, interpolation=transforms.InterpolationMode.BILINEAR),
-])
+pixcorr_preprocess = None  # torchvision-free stub
 def pixcorr(images,brains,nan=True):
-    all_images_flattened = pixcorr_preprocess(images).reshape(len(images), -1)
-    all_brain_recons_flattened = pixcorr_preprocess(brains).view(len(brains), -1)
+    # fallback: simple flatten without resize to avoid torchvision dependency
+    all_images_flattened = images.reshape(len(images), -1)
+    all_brain_recons_flattened = brains.view(len(brains), -1)
     if nan:
         corrmean = torch.nanmean(torch.diag(batchwise_pearson_correlation(all_images_flattened, all_brain_recons_flattened)))
     else:

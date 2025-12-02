@@ -1,0 +1,83 @@
+*** Begin Patch
+*** Update File: src/Train.py
+@@
+-            backbone, clip_voxels, blurry_image_enc_ = model.backbone(voxel_ridge)
+-
+-            if clip_scale>0:
+-                clip_voxels_norm = nn.functional.normalize(clip_voxels.flatten(1), dim=-1)
+-                clip_target_norm = nn.functional.normalize(clip_target.flatten(1), dim=-1)
++            backbone, clip_voxels, blurry_image_enc_ = model.backbone(voxel_ridge)
++
++            if clip_scale>0:
++                # 加 eps，避免范数接近 0
++                clip_voxels_norm = nn.functional.normalize(clip_voxels.flatten(1), dim=-1, eps=1e-6)
++                clip_target_norm = nn.functional.normalize(clip_target.flatten(1), dim=-1, eps=1e-6)
+@@
+-            if clip_scale>0:
+-                if epoch < int(mixup_pct * num_epochs):                
+-                    loss_clip = utils.mixco_nce(
+-                        clip_voxels_norm,
+-                        clip_target_norm,
+-                        temp=.006,
+-                        perm=perm, betas=betas, select=select)
+-                else:
+-                    epoch_temp = soft_loss_temps[epoch-int(mixup_pct*num_epochs)]
+-                    loss_clip = utils.soft_clip_loss(
+-                        clip_voxels_norm,
+-                        clip_target_norm,
+-                        temp=epoch_temp)
+-
+-                loss_clip_total += loss_clip.item()
+-                loss_clip *= clip_scale
+-                loss += loss_clip
++            if clip_scale>0:
++                # 对比损失用 FP32 计算，避免 V100+FP16 下的数值不稳定
++                with torch.cuda.amp.autocast(enabled=False):
++                    a = clip_voxels_norm.float()
++                    b = clip_target_norm.float()
++                    base_temp = 0.02  # 比 0.006 更稳当
++                    if epoch < int(mixup_pct * num_epochs):
++                        loss_clip = utils.mixco_nce(
++                            a, b, temp=base_temp,
++                            perm=perm, betas=betas.float(), select=select
++                        )
++                    else:
++                        epoch_temp = float(soft_loss_temps[epoch-int(mixup_pct*num_epochs)])
++                        epoch_temp = max(epoch_temp, 0.01)  # 设温度下限
++                        loss_clip = utils.soft_clip_loss(a, b, temp=epoch_temp)
++                # 非有限值保护：跳过坏 batch，避免整轮失败
++                if not torch.isfinite(loss_clip):
++                    print("[warn] non-finite clip loss; skipping this batch")
++                    optimizer.zero_grad(set_to_none=True)
++                    continue
++                loss_clip_total += loss_clip.item()
++                loss += loss_clip * clip_scale
+@@
+-                if clip_scale>0:
+-                    clip_voxels_norm = nn.functional.normalize(clip_voxels.flatten(1), dim=-1)
+-                    clip_target_norm = nn.functional.normalize(clip_target.flatten(1), dim=-1)
++                if clip_scale>0:
++                    clip_voxels_norm = nn.functional.normalize(clip_voxels.flatten(1), dim=-1, eps=1e-6)
++                    clip_target_norm = nn.functional.normalize(clip_target.flatten(1), dim=-1, eps=1e-6)
+@@
+-                if clip_scale>0:
+-                    loss_clip = utils.soft_clip_loss(
+-                        clip_voxels_norm,
+-                        clip_target_norm,
+-                        temp=.006)
+-
+-                    test_loss_clip_total += loss_clip.item()
+-                    loss_clip = loss_clip * clip_scale
+-                    loss += loss_clip
++                if clip_scale>0:
++                    # 评估期同样用 FP32 计算对比损失
++                    with torch.cuda.amp.autocast(enabled=False):
++                        a = clip_voxels_norm.float()
++                        b = clip_target_norm.float()
++                        loss_clip = utils.soft_clip_loss(a, b, temp=0.02)
++                    if not torch.isfinite(loss_clip):
++                        print("[warn] non-finite eval clip loss; setting to 0")
++                        loss_clip = torch.zeros([], dtype=torch.float32, device=a.device)
++                    test_loss_clip_total += float(loss_clip.item())
++                    loss += loss_clip * clip_scale
+*** End Patch
