@@ -180,3 +180,5 @@ conda activate mindeye21
 
 # (Optional) ensure pip deps are synced
 pip install -r requirements_mindeye21.txt
+
+使用的基线模型是 final_subj01_pretrained_40sess_24bs/last.pth
