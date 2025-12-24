@@ -182,3 +182,10 @@ conda activate mindeye21
 pip install -r requirements_mindeye21.txt
 
 使用的基线模型是 final_subj01_pretrained_40sess_24bs/last.pth
+
+
+# 1. 备份一下原文件（好习惯）
+cp requirements_mindeye21.txt requirements_mindeye21.txt.bak
+
+# 2. 注释掉含 'openai/CLIP' 的那一行
+sed -i '/openai\/CLIP/s/^/#/' requirements_mindeye21.txt
