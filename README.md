@@ -153,3 +153,33 @@ Scotti, Banerjee, Goode, Shabalin, Nguyen, Cohen, Dempster, Verlinde, Yundler, W
 *Natural Scenes Dataset: A massive 7T fMRI dataset to bridge cognitive neuroscience and artificial intelligence*
 
 Allen, St-Yves, Wu, Breedlove, Prince, Dowdle, Nau, Caron, Pestilli, Charest, Hutchinson, Naselaris, & Kay. A massive 7T fMRI dataset to bridge cognitive neuroscience and artificial intelligence. Nature Neuroscience (2021).
+
+---
+# 🚀 Release: TextAlign-mindeye2 (Counterfactual Hard Negatives)
+
+**TextAlign-mindeye2** significantly improves brain decoding (fMRI-to-image/text retrieval) by aligning brain representations with fine-grained text embeddings, utilizing counterfactual hard negatives.
+
+## Installation
+Recommended environment:
+```bash
+conda env create -f environment_mindeye21.yml
+conda activate mindeye21
+# Or
+pip install -r requirements_mindeye21.txt
+```
+
+## Data Preparation
+Due to licensing, we do not distribute NSD or COCO data.
+- **NSD Data:** Follow MindEye2 instructions.
+- **COCO Data:** Place `coco_images_224_float16.hdf5` in `data/coco_images_224_float16.hdf5`.
+
+## Model Weights
+Hosted on HuggingFace: [**ykt668/textalign-mindeye2-model**](https://huggingface.co/ykt668/textalign-mindeye2-model)
+- `checkpoints/s1_textalign_stage1_FINAL_BEST_32/last.pth` (Best Model)
+- `features/` (Derived embeddings)
+
+## Key Commands
+- **Training:** `python src/Train_textalign.py --model_name s1_textalign_stage1 --batch_size 32`
+- **Inference:** `python src/recon_inference_run.py --subject 1 --ckpt_path checkpoints/s1_textalign_stage1_FINAL_BEST_32/last.pth`
+- **Evaluation:** `python tools/quick_eval.py`
+

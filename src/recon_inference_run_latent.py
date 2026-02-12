@@ -90,7 +90,10 @@ from generative_models.sgm.util import append_dims
 from omegaconf import OmegaConf
 
 import safetensors.torch
-import deepspeed
+try:
+    import deepspeed  # optional; only needed for some checkpoint formats
+except Exception:
+    deepspeed = None
 
 
 # tf32 data type is faster than standard float32
@@ -158,8 +161,9 @@ parser.add_argument(
     "--n_blocks",type=int,default=4,
 )
 parser.add_argument(
-    "--hidden_dim",type=int,default=512,
+    "--hidden_dim",type=int,default=1024,
 )
+
 parser.add_argument(
     "--new_test",action=argparse.BooleanOptionalAction,default=True,
 )
@@ -204,6 +208,11 @@ if utils.is_interactive():
     args = parser.parse_args(jupyter_args)
 else:
     args = parser.parse_args()
+
+# latent_only 模式仅导出 brain->CLIP 表征，不需要 blurry recon；同时避免 diffusers 依赖
+if getattr(args, "latent_only", False) and getattr(args, "blurry_recon", False):
+    print("[INFO] --latent_only set: disabling --blurry_recon to avoid diffusers dependency.")
+    args.blurry_recon = False
 
 # create global variables without the args prefix
 for attribute_name in vars(args).keys():
@@ -371,10 +380,15 @@ class RidgeRegression(torch.nn.Module):
         
 model.ridge = RidgeRegression([num_voxels], out_features=hidden_dim)
 
-from diffusers.models.autoencoders.vae import Decoder
+try:
+    # Decoder is only needed for the full image reconstruction path.
+    from diffusers.models.autoencoders.vae import Decoder  # type: ignore
+except Exception:
+    Decoder = None
 from models import BrainNetwork
 model.backbone = BrainNetwork(h=hidden_dim, in_dim=hidden_dim, seq_len=1, 
-                          clip_size=clip_emb_dim, out_dim=clip_emb_dim*clip_seq_dim) 
+                          clip_size=clip_emb_dim, out_dim=clip_emb_dim*clip_seq_dim,
+                          blurry_recon=blurry_recon) 
 utils.count_params(model.ridge)
 utils.count_params(model.backbone)
 utils.count_params(model)
@@ -386,27 +400,30 @@ dim_head = 52
 heads = clip_emb_dim//52 # heads * dim_head = clip_emb_dim
 timesteps = 100
 
-prior_network = PriorNetwork(
-        dim=out_dim,
-        depth=depth,
-        dim_head=dim_head,
-        heads=heads,
-        causal=False,
-        num_tokens = clip_seq_dim,
-        learned_query_mode="pos_emb"
+if use_unclip:
+    prior_network = PriorNetwork(
+            dim=out_dim,
+            depth=depth,
+            dim_head=dim_head,
+            heads=heads,
+            causal=False,
+            num_tokens = clip_seq_dim,
+            learned_query_mode="pos_emb"
+        )
+
+    model.diffusion_prior = BrainDiffusionPrior(
+        net=prior_network,
+        image_embed_dim=out_dim,
+        condition_on_text_encodings=False,
+        timesteps=timesteps,
+        cond_drop_prob=0.2,
+        image_embed_scale=None,
     )
+    utils.count_params(model.diffusion_prior)
+else:
+    print("[INFO] --latent_only enabled: skip diffusion prior initialization.")
 
-model.diffusion_prior = BrainDiffusionPrior(
-    net=prior_network,
-    image_embed_dim=out_dim,
-    condition_on_text_encodings=False,
-    timesteps=timesteps,
-    cond_drop_prob=0.2,
-    image_embed_scale=None,
-)
 model.to(device)
-
-utils.count_params(model.diffusion_prior)
 utils.count_params(model)
 
 # Load pretrained model ckpt
@@ -765,6 +782,9 @@ with torch.no_grad(), torch.cuda.amp.autocast(dtype=torch.float16):
             print(f"[dump] Captured vec for img {uniq_img}: shape={tuple(vec.shape)}")
             if args.dump_ids:
                 saved_ids.append(int(uniq_img))
+            # If we are only dumping vectors (no image saving), let max_save cap runtime.
+            if not args.save_images:
+                saved_count += 1
         # ==================================================================================
 
         

@@ -10,6 +10,7 @@ import os
 import sys
 import json
 import argparse
+from pathlib import Path
 import numpy as np
 import math
 from einops import rearrange
@@ -37,8 +38,9 @@ _PROJ_ROOT = os.path.abspath(os.path.join(_THIS_DIR, os.pardir))
 _GEN_MODELS_DIR = os.path.join(_PROJ_ROOT, 'generative-models')
 if _GEN_MODELS_DIR not in sys.path:
     sys.path.append(_GEN_MODELS_DIR)
-import sgm
-from sgm.modules.encoders.modules import FrozenOpenCLIPImageEmbedder  # bigG embedder
+# NOTE: sgm / FrozenOpenCLIPImageEmbedder 依赖较重（如 pytorch_lightning）。
+# 为了支持 TextAlign-only 训练（无需图像分支）在精简环境下运行，
+# 这里不做强制 import；仅在 NEED_IMAGES=True 时再延迟导入。
 
 # tf32 data type is faster than standard float32
 torch.backends.cuda.matmul.allow_tf32 = True
@@ -123,7 +125,9 @@ distributed = accelerator.state.distributed_type != 'NO'
 num_devices = world_size if world_size and world_size > 0 else torch.cuda.device_count()
 if num_devices == 0:
     num_devices = 1
-num_workers = num_devices
+# DataLoader workers 默认不再跟 GPU 数绑定（单卡会导致 1 worker 仅用一个 CPU 核）
+# 具体值会在解析 args 后确定。
+num_workers = 0
 
 # 查看 Accelerate 的详细状态
 print(accelerator.state)
@@ -197,6 +201,13 @@ parser.add_argument(
     help="whether to output blurry reconstructions",
 )
 parser.add_argument(
+    "--clip_targets_pt", type=str, default=None,
+    help=(
+        "Optional path to precomputed CLIP image tokens (e.g. evals/all_images_bigG_tokens_256x1664.pt). "
+        "If provided (or if the default file exists), training will use it as CLIP targets and skip OpenCLIP downloading."
+    ),
+)
+parser.add_argument(
     "--blur_scale",type=float,default=.5,
     help="multiply loss from blurry recons by this number",
 )
@@ -236,6 +247,30 @@ parser.add_argument(
 parser.add_argument(
     "--hidden_dim",type=int,default=1024,
 )
+
+# DataLoader / CPU 并行参数：默认尽量利用多核（8 核机器默认 6 workers）
+_cpu_cnt = os.cpu_count() or 8
+_default_workers = max(2, min(6, _cpu_cnt - 2))
+parser.add_argument(
+    "--num_workers", type=int, default=_default_workers,
+    help="PyTorch DataLoader worker processes (default tuned for multi-core CPU).",
+)
+parser.add_argument(
+    "--prefetch_factor", type=int, default=2,
+    help="DataLoader prefetch_factor (only used when num_workers>0).",
+)
+parser.add_argument(
+    "--persistent_workers", action=argparse.BooleanOptionalAction, default=True,
+    help="Use persistent DataLoader workers to reduce startup overhead.",
+)
+parser.add_argument(
+    "--torch_num_threads", type=int, default=_cpu_cnt,
+    help="torch.set_num_threads() for the main process.",
+)
+parser.add_argument(
+    "--worker_num_threads", type=int, default=1,
+    help="torch.set_num_threads() inside each DataLoader worker process.",
+)
 parser.add_argument(
     "--lr_scheduler_type",type=str,default='cycle',choices=['cycle','linear'],
 )
@@ -257,6 +292,18 @@ parser.add_argument(
     help="仅单被试(subj01)时启用：按比例切分 subj01 的 train 分片为训练/保留(测试)；例如 0.9 表示 90% 训练、10% 留作测试(训练中不使用)。不影响原有 new_test 测试集加载。",
 )
 
+# 输出目录覆盖：默认写到项目根目录下 train_logs/<model_name>
+parser.add_argument(
+    "--output_dir", type=str, default=None,
+    help="Optional. Override checkpoint output directory. If set, ckpts are saved under this directory (e.g. /path/to/models/subj01/<model_name>).",
+)
+
+# TextAlign hard-negative 开关：默认保持旧行为（若文件存在则启用 CF）
+parser.add_argument(
+    "--use_hardneg", action=argparse.BooleanOptionalAction, default=True,
+    help="Whether to load and use TextAlign hard-negative features (counterfactual margin). Set --no-use_hardneg to force disable.",
+)
+
 if utils.is_interactive():
     args = parser.parse_args([])
 else:
@@ -271,8 +318,49 @@ for attribute_name in vars(args).keys():
 # seed all random functions
 utils.seed_everything(seed)
 
-# 始终将输出目录定位到项目根目录下的 train_logs，避免受工作目录影响
-outdir = os.path.join(_PROJ_ROOT, 'train_logs', model_name)
+# ---- CPU 并行设置 ----
+try:
+    if isinstance(torch_num_threads, int) and torch_num_threads > 0:
+        torch.set_num_threads(torch_num_threads)
+except Exception:
+    pass
+
+def _dl_worker_init_fn(worker_id: int):
+    try:
+        import torch as _torch
+        if isinstance(worker_num_threads, int) and worker_num_threads > 0:
+            _torch.set_num_threads(worker_num_threads)
+    except Exception:
+        pass
+
+num_workers = int(max(0, num_workers))
+_dl_persistent_workers = bool(persistent_workers) and num_workers > 0
+_dl_prefetch_factor = int(prefetch_factor) if num_workers > 0 else None
+
+def _make_dl_kwargs(_nw: int):
+    kw = {"pin_memory": True}
+    if _nw and _nw > 0:
+        kw["num_workers"] = int(_nw)
+        kw["persistent_workers"] = bool(persistent_workers)
+        kw["worker_init_fn"] = _dl_worker_init_fn
+        if _dl_prefetch_factor is not None:
+            kw["prefetch_factor"] = _dl_prefetch_factor
+    else:
+        kw["num_workers"] = 0
+    return kw
+
+_train_dl_kwargs = _make_dl_kwargs(num_workers)
+# 测试集通常只有 1 个 shard（例如 new_test/0.tar）；多 worker 会触发 WebDataset empty_check 报错
+_test_dl_kwargs = _make_dl_kwargs(0)
+print(f"[DATALOADER] num_workers={num_workers} prefetch_factor={_dl_prefetch_factor} persistent={_dl_persistent_workers} torch_num_threads={getattr(torch, 'get_num_threads', lambda: 'na')()}")
+
+# 输出目录：默认定位到项目根目录下的 train_logs，允许通过 --output_dir 或环境变量 MINDEYE_OUTPUT_DIR 覆盖
+_outdir_override = getattr(args, "output_dir", None) or os.environ.get("MINDEYE_OUTPUT_DIR")
+if _outdir_override and str(_outdir_override).strip():
+    outdir = os.path.abspath(os.path.join(str(_outdir_override), model_name))
+else:
+    outdir = os.path.join(_PROJ_ROOT, 'train_logs', model_name)
+
 if not os.path.exists(outdir) and ckpt_saving:
     os.makedirs(outdir,exist_ok=True)
     
@@ -301,6 +389,12 @@ subj_list = np.array(subj_list)
 subj_to_idx = {int(s): i for i, s in enumerate(subj_list)}
 
 print("subj_list", subj_list, "num_sessions", num_sessions)
+
+# 是否需要加载 COCO 图像并运行 CLIP image embedder：
+# - clip_scale>0: 需要图像特征做对比学习
+# - use_prior/blurry_recon/use_image_aug: 需要真实图像
+NEED_IMAGES = bool((clip_scale is not None and float(clip_scale) > 0) or use_prior or blurry_recon or use_image_aug)
+print(f"NEED_IMAGES = {NEED_IMAGES} (clip_scale={clip_scale}, use_prior={use_prior}, blurry_recon={blurry_recon}, use_image_aug={use_image_aug})")
 
 # ===================== TextAlign: 加载 teacher 文本特征 =====================
 # 这里假设你保存在 data/nsd_text/coco73k_text_clip.pt
@@ -355,7 +449,11 @@ hardneg_path = os.environ.get("MINDEYE_HARDNEG_PATH", hardneg_default_path)
 
 text_feats_hardneg = None
 
-if text_feats_teacher is not None and id2row is not None:
+# 允许通过环境变量强制禁用 hard-negative
+_disable_hardneg_env = os.environ.get("MINDEYE_DISABLE_HARDNEG", "0") == "1"
+_use_hardneg_flag = bool(getattr(args, "use_hardneg", True)) and (not _disable_hardneg_env)
+
+if _use_hardneg_flag and text_feats_teacher is not None and id2row is not None:
     if os.path.isfile(hardneg_path):
         print(f"[TextAlign] Loading HARD-NEG text features from: {hardneg_path}")
         state_hn = torch.load(hardneg_path, map_location="cpu")
@@ -387,6 +485,9 @@ if text_feats_teacher is not None and id2row is not None:
             f"[TextAlign] HARD-NEG file NOT found at {hardneg_path}, "
             "counterfactual margin 将退化成普通 TextAlign InfoNCE（无 t_neg）。"
         )
+
+if (not _use_hardneg_flag) and USE_TEXT_ALIGN and accelerator.is_main_process:
+    accelerator.print("[TextAlign] hard-negative disabled (no hardneg will be loaded/used).")
 
 # flag 调整：
 # - USE_TEXT_ALIGN: 有 teacher 即可（普通对齐）
@@ -509,7 +610,13 @@ for s in subj_list:
                         .decode("torch")\
                         .rename(behav="behav.npy", past_behav="past_behav.npy", future_behav="future_behav.npy", olds_behav="olds_behav.npy")\
                         .to_tuple(*["behav", "past_behav", "future_behav", "olds_behav"])
-    train_dl[f'subj0{s}'] = torch.utils.data.DataLoader(train_data[f'subj0{s}'], batch_size=batch_size, shuffle=False, drop_last=False, pin_memory=True)
+    train_dl[f'subj0{s}'] = torch.utils.data.DataLoader(
+        train_data[f'subj0{s}'],
+        batch_size=batch_size,
+        shuffle=False,
+        drop_last=False,
+        **_train_dl_kwargs,
+    )
 
     f = h5py.File(f'{data_path}/betas_all_subj0{s}_fp32_renorm.hdf5', 'r')
     _betas_files_keepalive.append(f)
@@ -568,7 +675,13 @@ for _s in test_subj_list:
                         .decode("torch")\
                         .rename(behav="behav.npy", past_behav="past_behav.npy", future_behav="future_behav.npy", olds_behav="olds_behav.npy")\
                         .to_tuple(*["behav", "past_behav", "future_behav", "olds_behav"])
-    test_dl_map[int(_s)] = torch.utils.data.DataLoader(_data, batch_size=_num_test, shuffle=False, drop_last=True, pin_memory=True)
+    test_dl_map[int(_s)] = torch.utils.data.DataLoader(
+        _data,
+        batch_size=_num_test,
+        shuffle=False,
+        drop_last=True,
+        **_test_dl_kwargs,
+    )
     test_num_map[int(_s)] = _num_test
     print(f"Loaded test dl for subj{_s}!\n")
 
@@ -579,7 +692,19 @@ for _s in test_subj_list:
 # Load NSD COCO images lazily to avoid preloading 73k into RAM
 class LazyH5Images:
     def __init__(self, h5_path: str):
-        self._f = h5py.File(h5_path, "r")
+        self._path = h5_path
+        self._f = None
+        self._ds = None
+        self._pid = None
+        self._open()
+
+    def _open(self):
+        if self._f is not None:
+            try:
+                self._f.close()
+            except Exception:
+                pass
+        self._f = h5py.File(self._path, "r")
         key = "images" if "images" in self._f else None
         if key is None:
             for k, ds in self._f.items():
@@ -590,15 +715,23 @@ class LazyH5Images:
                 except Exception:
                     pass
         if key is None:
-            raise RuntimeError(f"未在 {h5_path} 找到形如 (N,3,224,224) 的数据集")
+            raise RuntimeError(f"未在 {self._path} 找到形如 (N,3,224,224) 的数据集")
         self._ds = self._f[key]
+        self._pid = os.getpid()
+
+    def _ensure_open(self):
+        # DataLoader 多进程(fork)场景下，避免继承父进程的 h5py 句柄导致潜在卡死/性能问题
+        if self._pid != os.getpid() or self._f is None or self._ds is None:
+            self._open()
 
     def __len__(self):
+        self._ensure_open()
         return self._ds.shape[0]
 
     def get(self, idxs):
         import numpy as _np
         import torch as _torch
+        self._ensure_open()
         if isinstance(idxs, _torch.Tensor):
             idxs = idxs.detach().cpu().numpy()
         idxs = _np.asarray(idxs, dtype=_np.int64)
@@ -608,9 +741,18 @@ class LazyH5Images:
         data = data[rev]
         return _torch.from_numpy(_np.asarray(data))
 
-coco_h5_path = f'{data_path}/coco_images_224_float16.hdf5'
-lazy_coco = LazyH5Images(coco_h5_path)
-print(f"Using lazy COCO images: total {len(lazy_coco)} (no full preloading)")
+lazy_coco = None
+if NEED_IMAGES:
+    coco_h5_path = f'{data_path}/coco_images_224_float16.hdf5'
+    if not os.path.isfile(coco_h5_path):
+        raise FileNotFoundError(
+            f"Missing COCO image HDF5: {coco_h5_path}. "
+            "Either provide this file, or run with --clip_scale 0 --no-use_prior --no-blurry_recon --no-use_image_aug to skip image loading."
+        )
+    lazy_coco = LazyH5Images(coco_h5_path)
+    print(f"Using lazy COCO images: total {len(lazy_coco)} (no full preloading)")
+else:
+    print("Skipping COCO image loading (TextAlign-only mode)")
 
 
 # ## Load models
@@ -620,15 +762,38 @@ print(f"Using lazy COCO images: total {len(lazy_coco)} (no full preloading)")
 # In[9]:
 
 
-clip_img_embedder = FrozenOpenCLIPImageEmbedder(
-    arch="ViT-bigG-14",
-    version="laion2b_s39b_b160k",
-    output_tokens=True,
-)
-clip_img_embedder.to(device)
-clip_img_embedder.eval()                             # ← 新增
-for p in clip_img_embedder.parameters():             # ← 新增
-    p.requires_grad_(False)    
+clip_targets_path = args.clip_targets_pt
+
+clip_targets_tokens = None
+clip_img_embedder = None
+if clip_targets_path is not None:
+    print(f"Using precomputed CLIP targets (skip OpenCLIP download): {clip_targets_path}")
+    clip_targets_tokens = torch.load(clip_targets_path, map_location="cpu")
+    if isinstance(clip_targets_tokens, dict):
+        for k in ("tokens", "clip_tokens", "all_tokens", "x", "data"):
+            if k in clip_targets_tokens:
+                clip_targets_tokens = clip_targets_tokens[k]
+                break
+    if not torch.is_tensor(clip_targets_tokens):
+        raise TypeError(
+            f"Expected a Tensor in --clip_targets_pt, got {type(clip_targets_tokens)} from {clip_targets_path}"
+        )
+    if clip_targets_tokens.ndim >= 1 and clip_targets_tokens.shape[0] < 73000:
+        raise ValueError(
+            f"--clip_targets_pt seems incompatible for training: first dim is {clip_targets_tokens.shape[0]} (<73000). "
+            "Train_textalign.py indexes CLIP targets by global COCO image id. Provide a 73k-sized tensor or omit --clip_targets_pt."
+        )
+elif NEED_IMAGES:
+    from sgm.modules.encoders.modules import FrozenOpenCLIPImageEmbedder  # bigG embedder
+    clip_img_embedder = FrozenOpenCLIPImageEmbedder(
+        arch="ViT-bigG-14",
+        version="laion2b_s39b_b160k",
+        output_tokens=True,
+    )
+    clip_img_embedder.to(device)
+    clip_img_embedder.eval()
+    for p in clip_img_embedder.parameters():
+        p.requires_grad_(False)
 
 clip_seq_dim = 256
 clip_emb_dim = 1664
@@ -1050,7 +1215,7 @@ for epoch in progress_bar:
             loss = 0.
 
             voxel_list = []
-            image_chunks = []
+            image_chunks = [] if NEED_IMAGES else None
             global_id_chunks = []   # TextAlign：记录每个样本的全局 image id
             mix_perm_list, mix_betas_list, mix_select_list = [], [], []
 
@@ -1069,9 +1234,10 @@ for epoch in progress_bar:
                         # 出现重复索引，换下一个 batch
                         continue
 
-                    # 懒加载 HDF5 图像并在后续统一转设备/精度
-                    img_tensor = lazy_coco.get(image0)
-                    image_chunks.append(img_tensor)
+                    # 懒加载 HDF5 图像并在后续统一转设备/精度（仅在需要图像时）
+                    if NEED_IMAGES:
+                        img_tensor = lazy_coco.get(image0)
+                        image_chunks.append(img_tensor)
                     # 记录这一部分 batch 中每个样本的全局 COCO image id
                     global_id_chunks.append(torch.from_numpy(image0))
 
@@ -1090,27 +1256,36 @@ for epoch in progress_bar:
                     break
 
             # 组合跨被试 batch
-            # 组合跨被试 batch
-            image = torch.cat(image_chunks, dim=0)
+            image = None
+            if NEED_IMAGES:
+                image = torch.cat(image_chunks, dim=0)
             global_ids = torch.cat(global_id_chunks, dim=0).to(device)  # [B]，每条样本 global image id
 
-            if image.dtype != torch.float32 and data_type == torch.float32:
-                image = image.to(torch.float32)
-            image = image.to(device, non_blocking=True)
+            if NEED_IMAGES:
+                if image.dtype != torch.float32 and data_type == torch.float32:
+                    image = image.to(torch.float32)
+                image = image.to(device, non_blocking=True)
             voxel_list = [v.detach().to(device) for v in voxel_list]
             # behav_batch 不再需要，TextAlign 直接用 global_ids + id2row 即可
 
-            if use_image_aug: 
-                image = img_augment(image)
+            clip_target = None
+            if clip_targets_tokens is not None:
+                clip_target = clip_targets_tokens[global_ids.detach().cpu().long()].to(device, non_blocking=True)
+                clip_target = clip_target.float()
+                assert not torch.any(torch.isnan(clip_target))
+            elif NEED_IMAGES:
+                if use_image_aug:
+                    image = img_augment(image)
 
-            with torch.no_grad():
-                force_clip_fp32 = os.environ.get("CLIP_FP32", "1") == "1"
-                clip_amp_dtype = torch.float32 if force_clip_fp32 else data_type
-                with torch.cuda.amp.autocast(dtype=clip_amp_dtype):
-                    _img = image.float() if force_clip_fp32 else image
-                    _out = clip_img_embedder(_img)
-                    clip_target = _out[0] if isinstance(_out, tuple) else _out
-            assert not torch.any(torch.isnan(clip_target))
+                with torch.no_grad():
+                    force_clip_fp32 = os.environ.get("CLIP_FP32", "1") == "1"
+                    clip_amp_dtype = torch.float32 if force_clip_fp32 else data_type
+                    with torch.cuda.amp.autocast(dtype=clip_amp_dtype):
+                        _img = image.float() if force_clip_fp32 else image
+                        _out = clip_img_embedder(_img)
+                        clip_target = _out[0] if isinstance(_out, tuple) else _out
+                assert clip_target is not None
+                assert not torch.any(torch.isnan(clip_target))
 
             if epoch < int(mixup_pct * num_epochs):
                 perm = torch.cat([t.detach().to(device) for t in mix_perm_list], dim=0)
@@ -1291,16 +1466,28 @@ for epoch in progress_bar:
 
     model.eval()
     if local_rank==0:
-        with torch.no_grad(), torch.cuda.amp.autocast(dtype=data_type): 
-            # 多被试测试循环
-            for _eval_subj in list(test_dl_map.keys()):
-                test_dl = test_dl_map[_eval_subj]
-                num_test = test_num_map[_eval_subj]
-                test_image, test_voxel = None, None
-                test_i = -1
-                for test_i, (behav, past_behav, future_behav, old_behav) in enumerate(test_dl):  
-                    # 全量一次性载入
-                    assert len(behav) == num_test
+        # 若当前为 TextAlign-only 且不需要图像，则跳过昂贵的图像/检索评估
+        if not NEED_IMAGES:
+            logs = {
+                "train/loss": float(np.mean(losses[-(train_i+1):])),
+                "train/lr": float(lrs[-1]) if len(lrs) else 0.0,
+                "train/num_steps": int(len(losses)),
+                "train/loss_text": float(loss_text_total / max(1, (train_i + 1))),
+            }
+            progress_bar.set_postfix(**logs)
+            if wandb_log:
+                wandb.log(logs)
+        else:
+            with torch.no_grad(), torch.cuda.amp.autocast(dtype=data_type):
+                # 多被试测试循环
+                for _eval_subj in list(test_dl_map.keys()):
+                    test_dl = test_dl_map[_eval_subj]
+                    num_test = test_num_map[_eval_subj]
+                    test_image, test_voxel, test_image_ids = None, None, None
+                    test_i = -1
+                    for test_i, (behav, past_behav, future_behav, old_behav) in enumerate(test_dl):
+                        # 全量一次性载入
+                        assert len(behav) == num_test
 
                 ## Average same-image repeats ##
                 if test_image is None:
@@ -1321,22 +1508,29 @@ for epoch in progress_bar:
                         if test_image is None:
                             test_image = lazy_coco.get([im])
                             test_voxel = voxel[locs][None]
+                            test_image_ids = torch.tensor([int(im)], dtype=torch.long)
                         else:
                             test_image = torch.vstack((test_image, lazy_coco.get([im])))
                             test_voxel = torch.vstack((test_voxel, voxel[locs][None]))
+                            test_image_ids = torch.cat((test_image_ids, torch.tensor([int(im)], dtype=torch.long)))
 
                 loss=0.
                             
                 test_indices = torch.arange(len(test_voxel))[:300]
                 voxel = test_voxel[test_indices].to(device)
                 image = test_image[test_indices]
+                image_ids = test_image_ids[test_indices]
                 if image.dtype != torch.float32:
                     image = image.to(torch.float32)
                 image = image.to(device, non_blocking=True)
                 assert len(image) == 300
 
-                _out = clip_img_embedder(image.float())
-                clip_target = _out[0] if isinstance(_out, tuple) else _out
+                if clip_targets_tokens is not None:
+                    clip_target = clip_targets_tokens[image_ids.cpu().long()].to(device, non_blocking=True)
+                    clip_target = clip_target.float()
+                else:
+                    _out = clip_img_embedder(image.float())
+                    clip_target = _out[0] if isinstance(_out, tuple) else _out
 
                 # 使用正确的被试线性层索引，确保维度匹配
                 _subj_idx = subj_to_idx.get(int(_eval_subj), 0)

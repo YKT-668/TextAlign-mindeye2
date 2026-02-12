@@ -1,0 +1,31 @@
+{
+    "split": "shared982",
+    "N": 982,
+    "gt_clip": "evals/all_images_bigG_1664_mean.pt",
+    "retrieval": "982-way pooled cosine",
+    "retrieval_metrics": [
+        "FWD@1",
+        "FWD@5",
+        "BWD@1",
+        "BWD@5"
+    ],
+    "retrieval_300": "300-way x 30 repeats, fixed seed",
+    "twoafc": "image-level 2AFC, B2I and I2B",
+    "ccd": {
+        "modes": [
+            "hardest_k1",
+            "hardest_k2",
+            "random_k2"
+        ],
+        "valid_subset_check": "N=909 check if applicable"
+    },
+    "rsa": {
+        "metrics": [
+            "pearson",
+            "spearman"
+        ],
+        "bootstrap": 1000,
+        "ci": 0.95
+    },
+    "isrsa": "SKIP (Missing multi-subject assets)"
+}

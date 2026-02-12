@@ -1,0 +1,9 @@
+{
+  "ccd_acc1": 0.9490835030549898,
+  "subj": 1,
+  "tag": "s1_textalign_stage1_FINAL_BEST_32_audit",
+  "neg_mode": "hardneg",
+  "hardneg_k": 2,
+  "difficulty": "random",
+  "n_samples": 982
+}

@@ -1,0 +1,79 @@
+{
+    "date": "2025-12-30",
+    "repo_root": "/mnt/work/repos/TextAlign-mindeye2",
+    "scenario": "subj01 no-hard (v1/v3) training sanity: does it train + have gradients?",
+    "conclusion": {
+        "label": "B",
+        "text": "no-hard 分支在训练且梯度非 0，但信号较弱/易饱和，最终表现仍接近随机"
+    },
+    "step_2_1": {
+        "train_entry": "src/Train_textalign.py",
+        "logs": {
+            "v3_short": "train_logs/s1_textalign_coco_train_long_v3.log",
+            "v3_long": "train_logs/s1_textalign_coco_train_long_v3.train_textalign_py.log",
+            "v2_long": "train_logs/s1_textalign_coco_train_long_v2.train_textalign_py.log"
+        },
+        "hardneg_status_from_log": "[TextAlign] hard-negative disabled (no hardneg will be loaded/used).",
+        "note": "v3_long log lacks tqdm postfix scalar lines; scalar stats use v3_short log."
+    },
+    "step_2_2": {
+        "tool": "tools/ckpt_keydiff.py",
+        "artifacts": {
+            "txt": "debug_artifacts/ckpt_keydiff.txt",
+            "json": "debug_artifacts/ckpt_keydiff.json"
+        },
+        "ckpts": {
+            "v2": "/mnt/work/repos/textalign-mindeye2-model/models/subj01/s1_textalign_coco_train_long_v2_last.pth",
+            "v3": "/mnt/work/repos/textalign-mindeye2-model/models/subj01/s1_textalign_coco_train_long_v3/last.pth"
+        },
+        "result": {
+            "num_keys_v2": 70,
+            "num_keys_v3": 70,
+            "intersection": 70,
+            "only_in_v2": 0,
+            "only_in_v3": 0,
+            "has_keywords": [
+                "text_head.mlp.*",
+                "backbone.backbone_linear.*",
+                "backbone.clip_proj.*",
+                "ridge.linears.0.*"
+            ]
+        }
+    },
+    "step_2_3": {
+        "tool": "tools/one_batch_gradcheck.py",
+        "artifact": "debug_artifacts/one_batch_gradcheck.txt",
+        "signal": {
+            "loss_text_nonzero": true,
+            "text_head_grad_nonzero": true,
+            "backbone_linear_grad_expected_none": true
+        },
+        "note": "gradcheck runs on CPU; backbone/ridge frozen; checks text_head gradients only."
+    },
+    "step_2_4": {
+        "tool": "tools/weight_update_probe.py",
+        "artifact": "debug_artifacts/weight_update_probe.txt",
+        "baseline": "v2_last",
+        "comparison": "v3_last",
+        "note": "Strict v3 start/end needs a v3 start checkpoint; current probe confirms v2/v3 states differ substantially."
+    },
+    "step_2_5": {
+        "tool": "tools/parse_train_log.py",
+        "artifacts": [
+            "debug_artifacts/trainlog_stats.txt",
+            "debug_artifacts/trainlog_stats_v3short.txt"
+        ],
+        "availability": {
+            "v2_scalars_found": true,
+            "v3_short_scalars_found": true,
+            "v3_long_scalars_found": false
+        }
+    },
+    "repro_commands": [
+        "cd /mnt/work/repos/TextAlign-mindeye2",
+        "python tools/ckpt_keydiff.py --ckpt_a /mnt/work/repos/textalign-mindeye2-model/models/subj01/s1_textalign_coco_train_long_v2_last.pth --ckpt_b /mnt/work/repos/textalign-mindeye2-model/models/subj01/s1_textalign_coco_train_long_v3/last.pth --json_out debug_artifacts/ckpt_keydiff.json | tee debug_artifacts/ckpt_keydiff.txt",
+        "python tools/parse_train_log.py --log_v2 train_logs/s1_textalign_coco_train_long_v2.train_textalign_py.log --log_v3 train_logs/s1_textalign_coco_train_long_v3.log | tee debug_artifacts/trainlog_stats_v3short.txt",
+        "MINDEYE_TEXTALIGN=1 MINDEYE_TEXTALIGN_SCALE=0.05 python tools/one_batch_gradcheck.py --subj 1 --model_name s1_textalign_coco_train_long_v3 --data_path /mnt/work/repos/TextAlign-mindeye2/src --ckpt /mnt/work/repos/textalign-mindeye2-model/models/subj01/s1_textalign_coco_train_long_v3/last.pth | tee debug_artifacts/one_batch_gradcheck.txt",
+        "python tools/weight_update_probe.py --ckpt_end /mnt/work/repos/textalign-mindeye2-model/models/subj01/s1_textalign_coco_train_long_v3/last.pth --ckpt_ref /mnt/work/repos/textalign-mindeye2-model/models/subj01/s1_textalign_coco_train_long_v2_last.pth | tee debug_artifacts/weight_update_probe.txt"
+    ]
+}

@@ -1,86 +1,151 @@
-#改的第一版，主要是为了eval_textalign_latent.py能跑通，但也加入了自制的模块
+# models_textalign.py
+# 兼容：train_textalign / eval_textalign_latent / MindEye2-style pipeline
+# 目标：稳定、可复现、维度严格检查、optional 依赖友好报错
+
+
+from __future__ import annotations
+
 import os
+import random
+from functools import partial
+from typing import Any, Dict, Optional, Tuple, Union
+
 import numpy as np
-from torchvision import transforms
 import torch
 import torch.nn as nn
-import PIL
-import clip
-from functools import partial
-import random
-import json
-from tqdm import tqdm
-import utils
+import torch.nn.functional as F
+from torchvision import transforms
+
+# optional deps
+try:
+    import clip  # type: ignore
+except Exception as e:  # pragma: no cover
+    clip = None
+    print(f"[WARN] optional dependency 'clip' not available: {type(e).__name__}: {e}")
+
+try:
+    import utils  # type: ignore
+except Exception as e:  # pragma: no cover
+    utils = None
+    print(f"[WARN] optional dependency 'utils' not available: {type(e).__name__}: {e}")
+
+# for prior（可选依赖）
+try:
+    from dalle2_pytorch import DiffusionPrior  # type: ignore
+    from dalle2_pytorch.dalle2_pytorch import (  # type: ignore
+        l2norm,
+        default,
+        exists,
+        RotaryEmbedding,
+        CausalTransformer,
+        SinusoidalPosEmb,
+        MLP,
+        Rearrange,
+        repeat,
+        rearrange,
+        prob_mask_like,
+        LayerNorm,
+        RelPosBias,
+        Attention,
+        FeedForward,
+    )
+    _DALLE2_AVAILABLE = True
+except Exception:
+    DiffusionPrior = None
+    _DALLE2_AVAILABLE = False
+
+
+# ============================================================
+# TextAlign Head
+# ============================================================
 class TextAlignHead(nn.Module):
     """
     输入：
-      - bigG image tokens: [B, T, C]，例如 [B, 256, 1664]，或者
-      - 已经 pooled 的 CLIP 向量: [B, C]，例如 [B, 1664]
+      - bigG image/brain tokens: [B, T, C] 例如 [B, 256, 1664]
+      - 或 pooled 向量: [B, C]
     输出：
-      - 文本向量 [B, d_text]，例如 d_text = 768 (CLIP-L text)
+      - 文本向量 [B, d_text] 例如 d_text=768
     """
-    def __init__(self, token_dim=1664, hidden_dim=2048, text_dim=768):
+
+    def __init__(self, token_dim: int = 1664, hidden_dim: int = 2048, text_dim: int = 768):
         super().__init__()
+        self.token_dim = int(token_dim)
+        self.hidden_dim = int(hidden_dim)
+        self.text_dim = int(text_dim)
+
         self.mlp = nn.Sequential(
-            nn.LayerNorm(token_dim),
-            nn.Linear(token_dim, hidden_dim),
+            nn.LayerNorm(self.token_dim),
+            nn.Linear(self.token_dim, self.hidden_dim),
             nn.GELU(),
-            nn.Linear(hidden_dim, text_dim),
+            nn.Linear(self.hidden_dim, self.text_dim),
         )
 
-    def forward(self, x):
-        # x 可以是 [B, T, C] 或 [B, C]
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        if not isinstance(x, torch.Tensor):
+            raise TypeError(f"TextAlignHead expects torch.Tensor, got {type(x)}")
         if x.dim() == 3:
-            # [B, T, C] → [B, C]
+            # [B, T, C] -> mean pool -> [B, C]
             x = x.mean(dim=1)
-        # 现在 x 是 [B, C]
-        return self.mlp(x)   # [B, text_dim]
+        elif x.dim() != 2:
+            raise ValueError(f"TextAlignHead expects [B,T,C] or [B,C], got shape={tuple(x.shape)}")
+
+        if x.shape[-1] != self.token_dim:
+            raise ValueError(f"TextAlignHead token_dim mismatch: expected {self.token_dim}, got {x.shape[-1]}")
+        return self.mlp(x)
 
 
-
+# ============================================================
+# BrainNetwork (MindEye2-style): ridge out -> tokens -> clip tokens + blurry latent
+# ============================================================
 class BrainNetwork(nn.Module):
-    def __init__(self, h=4096, in_dim=15724, out_dim=768, seq_len=2, n_blocks=4, drop=.15, clip_size=768, blurry_recon=True, clip_scale=1):
+    """
+    约定输出：
+      backbone_tokens: [B, n_tokens, clip_size]  (用于 prior / TextAlign)
+      clip_tokens    : [B, n_tokens, clip_size]  (用于 clip contrastive)
+      blurry_tuple   : (latent_pred [B,4,28,28], aux_tokens [B,49,512])
+    """
+
+    def __init__(
+        self,
+        h: int = 4096,
+        in_dim: int = 15724,          # 为兼容旧接口保留，但不一定用到
+        out_dim: int = 768,
+        seq_len: int = 2,
+        n_blocks: int = 4,
+        drop: float = 0.15,
+        clip_size: int = 768,
+        blurry_recon: bool = True,
+        clip_scale: float = 1.0,
+    ):
         super().__init__()
-        self.seq_len = seq_len
-        self.h = h
-        self.clip_size = clip_size
-        self.blurry_recon = blurry_recon
-        self.clip_scale = clip_scale
-        self.mixer_blocks1 = nn.ModuleList([
-            self.mixer_block1(h, drop) for _ in range(n_blocks)
-        ])
-        self.mixer_blocks2 = nn.ModuleList([
-            self.mixer_block2(seq_len, drop) for _ in range(n_blocks)
-        ])
-        
-        # Output linear layer
-        self.backbone_linear = nn.Linear(h * seq_len, out_dim, bias=True) 
-        self.clip_proj = self.projector(clip_size, clip_size, h=clip_size)
-        
-        if self.blurry_recon:
-            # 延迟导入以避免在未开启 blurry_recon 时要求 diffusers 依赖
-            from diffusers.models.autoencoders.vae import Decoder
-            self.blin1 = nn.Linear(h*seq_len,4*28*28,bias=True)
-            self.bdropout = nn.Dropout(.3)
-            self.bnorm = nn.GroupNorm(1, 64)
-            self.bupsampler = Decoder(
-                in_channels=64,
-                out_channels=4,
-                up_block_types=["UpDecoderBlock2D","UpDecoderBlock2D","UpDecoderBlock2D"],
-                block_out_channels=[32, 64, 128],
-                layers_per_block=1,
+        self.seq_len = int(seq_len)
+        self.h = int(h)
+        self.clip_size = int(clip_size)
+        self.blurry_recon = bool(blurry_recon)
+        self.clip_scale = float(clip_scale)
+
+        if out_dim % self.clip_size != 0:
+            raise ValueError(
+                f"[BrainNetwork] out_dim ({out_dim}) must be divisible by clip_size ({self.clip_size}). "
+                f"Otherwise reshape to tokens will silently break."
             )
-            self.b_maps_projector = nn.Sequential(
-                nn.Conv2d(64, 512, 1, bias=False),
-                nn.GroupNorm(1,512),
-                nn.ReLU(True),
-                nn.Conv2d(512, 512, 1, bias=False),
-                nn.GroupNorm(1,512),
-                nn.ReLU(True),
-                nn.Conv2d(512, 512, 1, bias=True),
-            )
-            
-    def projector(self, in_dim, out_dim, h=2048):
+        self.out_dim = int(out_dim)
+        self.n_tokens = int(out_dim // self.clip_size)
+
+        # Mixer blocks
+        self.mixer_blocks1 = nn.ModuleList([self._mixer_block1(self.h, drop) for _ in range(n_blocks)])
+        self.mixer_blocks2 = nn.ModuleList([self._mixer_block2(self.seq_len, drop) for _ in range(n_blocks)])
+
+        # backbone -> tokens
+        self.backbone_linear = nn.Linear(self.h * self.seq_len, self.out_dim, bias=True)
+
+        # token->token projector (predict CLIP tokens)
+        self.clip_proj = self._projector(self.clip_size, self.clip_size, h=self.clip_size)
+
+        # Blurry recon head
+        self._init_blurry_modules()
+
+    def _projector(self, in_dim: int, out_dim: int, h: int = 2048) -> nn.Module:
         return nn.Sequential(
             nn.LayerNorm(in_dim),
             nn.GELU(),
@@ -90,207 +155,323 @@ class BrainNetwork(nn.Module):
             nn.Linear(h, h),
             nn.LayerNorm(h),
             nn.GELU(),
-            nn.Linear(h, out_dim)
+            nn.Linear(h, out_dim),
         )
-    
-    def mlp(self, in_dim, out_dim, drop):
+
+    def _mlp(self, in_dim: int, out_dim: int, drop: float) -> nn.Module:
         return nn.Sequential(
             nn.Linear(in_dim, out_dim),
             nn.GELU(),
             nn.Dropout(drop),
             nn.Linear(out_dim, out_dim),
         )
-    
-    def mixer_block1(self, h, drop):
+
+    def _mixer_block1(self, h: int, drop: float) -> nn.Module:
         return nn.Sequential(
             nn.LayerNorm(h),
-            self.mlp(h, h, drop),  # Token mixing
+            self._mlp(h, h, drop),  # token-mixing (最后维度是 h)
         )
 
-    def mixer_block2(self, seq_len, drop):
+    def _mixer_block2(self, seq_len: int, drop: float) -> nn.Module:
         return nn.Sequential(
             nn.LayerNorm(seq_len),
-            self.mlp(seq_len, seq_len, drop)  # Channel mixing
+            self._mlp(seq_len, seq_len, drop),  # channel-mixing (最后维度是 seq_len)
         )
-        
-    def forward(self, x):
-        # make empty tensors
-        c,b = torch.Tensor([0.]), torch.Tensor([[0.],[0.]])
-        
+
+    def _init_blurry_modules(self) -> None:
+        if not self.blurry_recon:
+            self.blin1 = None
+            self.bdropout = None
+            self.bnorm = None
+            self.bupsampler = None
+            self.b_maps_projector = None
+            return
+
+        # 延迟导入：避免 blurry_recon=False 时强依赖 diffusers
+        try:
+            from diffusers.models.autoencoders.vae import Decoder  # type: ignore
+        except Exception as e:
+            raise ImportError(
+                f"[BrainNetwork] blurry_recon=True requires diffusers. Import failed: {type(e).__name__}: {e}"
+            )
+
+        # 7x7x64 -> Decoder -> 4 x H x W -> 强制 resize 到 28x28
+        self.blin1 = nn.Linear(self.h * self.seq_len, 4 * 28 * 28, bias=True)
+        self.bdropout = nn.Dropout(0.3)
+        self.bnorm = nn.GroupNorm(1, 64)
+
+        self.bupsampler = Decoder(
+            in_channels=64,
+            out_channels=4,
+            up_block_types=["UpDecoderBlock2D", "UpDecoderBlock2D", "UpDecoderBlock2D"],
+            block_out_channels=[32, 64, 128],
+            layers_per_block=1,
+        )
+
+        # aux token features (for cont_loss)
+        self.b_maps_projector = nn.Sequential(
+            nn.Conv2d(64, 512, 1, bias=False),
+            nn.GroupNorm(1, 512),
+            nn.ReLU(True),
+            nn.Conv2d(512, 512, 1, bias=False),
+            nn.GroupNorm(1, 512),
+            nn.ReLU(True),
+            nn.Conv2d(512, 512, 1, bias=True),
+        )
+
+    def forward(self, x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor, Tuple[torch.Tensor, torch.Tensor]]:
+        """
+        x: [B, seq_len, h]
+        return:
+          backbone_tokens: [B, n_tokens, clip_size]
+          clip_tokens    : [B, n_tokens, clip_size]
+          (latent_pred [B,4,28,28], aux_tokens [B,49,512])
+        """
+        if not isinstance(x, torch.Tensor):
+            raise TypeError(f"BrainNetwork expects torch.Tensor, got {type(x)}")
+        if x.dim() != 3:
+            raise ValueError(f"BrainNetwork expects [B,seq_len,h], got shape={tuple(x.shape)}")
+        if x.shape[1] != self.seq_len:
+            raise ValueError(f"BrainNetwork seq_len mismatch: expected {self.seq_len}, got {x.shape[1]}")
+        if x.shape[2] != self.h:
+            raise ValueError(f"BrainNetwork h mismatch: expected {self.h}, got {x.shape[2]}")
+
         # Mixer blocks
         residual1 = x
-        residual2 = x.permute(0,2,1)
-        for block1, block2 in zip(self.mixer_blocks1,self.mixer_blocks2):
+        residual2 = x.permute(0, 2, 1)  # [B, h, seq_len]
+
+        for block1, block2 in zip(self.mixer_blocks1, self.mixer_blocks2):
             x = block1(x) + residual1
             residual1 = x
-            x = x.permute(0,2,1)
-            
+
+            x = x.permute(0, 2, 1)  # [B, h, seq_len]
             x = block2(x) + residual2
             residual2 = x
-            x = x.permute(0,2,1)
-            
-        x = x.reshape(x.size(0), -1)
-        backbone = self.backbone_linear(x).reshape(len(x), -1, self.clip_size)
-        if self.clip_scale>0:
-            c = self.clip_proj(backbone)
+            x = x.permute(0, 2, 1)  # back to [B, seq_len, h]
 
+        # flatten -> tokens
+        flat = x.reshape(x.size(0), -1)  # [B, h*seq_len]
+        tokens_flat = self.backbone_linear(flat)  # [B, out_dim]
+        # 显式 reshape：避免 out_dim/clip_size 不一致时 silent 错
+        backbone_tokens = tokens_flat.view(x.size(0), self.n_tokens, self.clip_size).contiguous()
+
+        # predict clip tokens
+        # 即便 clip_scale==0，也返回一个形状正确的 tensor，避免外部加法/平均炸掉
+        if self.clip_scale > 0:
+            clip_tokens = self.clip_proj(backbone_tokens)
+        else:
+            clip_tokens = backbone_tokens
+
+        # blurry tuple：保持 (latent_pred, aux_tokens) 结构恒定
         if self.blurry_recon:
-            b = self.blin1(x)
+            assert self.blin1 is not None
+            assert self.bdropout is not None
+            assert self.bnorm is not None
+            assert self.bupsampler is not None
+            assert self.b_maps_projector is not None
+
+            b = self.blin1(flat)          # [B, 3136]
             b = self.bdropout(b)
-            b = b.reshape(b.shape[0], -1, 7, 7).contiguous()
+            b = b.view(b.shape[0], 64, 7, 7).contiguous()
             b = self.bnorm(b)
-            b_aux = self.b_maps_projector(b).flatten(2).permute(0,2,1)
-            b_aux = b_aux.view(len(b_aux), 49, 512)
-            b = (self.bupsampler(b), b_aux)
-        
-        return backbone, c, b
-    
-class Clipper(torch.nn.Module):
-    def __init__(self, clip_variant, clamp_embs=False, norm_embs=False,
-                 hidden_state=False, device=torch.device('cpu')):
+
+            # aux tokens: [B,49,512]
+            b_aux = self.b_maps_projector(b).flatten(2).permute(0, 2, 1).contiguous()  # [B,49,512]
+            if b_aux.shape[1] != 49 or b_aux.shape[2] != 512:
+                # 极端情况下做一次强制修正（一般不会触发）
+                b_aux = b_aux.view(b_aux.shape[0], 49, 512)
+
+            # decoder output -> latent_pred: [B,4,H,W]
+            b_dec = self.bupsampler(b)
+            if hasattr(b_dec, "sample"):  # diffusers DecoderOutput(sample=...)
+                b_dec = b_dec.sample
+            if not isinstance(b_dec, torch.Tensor):
+                raise RuntimeError(f"[BrainNetwork] bupsampler returned non-tensor: {type(b_dec)}")
+
+            # 对齐到 28x28 latent
+            if b_dec.dim() != 4 or b_dec.shape[1] != 4:
+                raise RuntimeError(f"[BrainNetwork] decoder output must be [B,4,H,W], got {tuple(b_dec.shape)}")
+            if b_dec.shape[-2:] != (28, 28):
+                b_dec = F.interpolate(b_dec, size=(28, 28), mode="bilinear", align_corners=False)
+
+            blurry_tuple = (b_dec, b_aux)
+
+        else:
+            # 占位输出：保持 tuple 结构不变（避免某些调试/导出代码直接崩）
+            b_dec = torch.zeros((x.size(0), 4, 28, 28), device=x.device, dtype=x.dtype)
+            b_aux = torch.zeros((x.size(0), 49, 512), device=x.device, dtype=x.dtype)
+            blurry_tuple = (b_dec, b_aux)
+
+        return backbone_tokens, clip_tokens, blurry_tuple
+
+
+# ============================================================
+# CLIP helper (optional)
+# ============================================================
+class Clipper(nn.Module):
+    def __init__(
+        self,
+        clip_variant: str,
+        clamp_embs: bool = False,
+        norm_embs: bool = False,
+        hidden_state: bool = False,
+        device: Union[str, torch.device] = torch.device("cpu"),
+    ):
         super().__init__()
+        if clip is None:
+            raise ImportError(
+                "Clipper requires the 'clip' package (openai/CLIP). "
+                "Install it or avoid using Clipper in your pipeline."
+            )
+
         assert clip_variant in ("RN50", "ViT-L/14", "ViT-B/32", "RN50x64"), \
             "clip_variant must be one of RN50, ViT-L/14, ViT-B/32, RN50x64"
-        print(clip_variant, device)
-        
-        if clip_variant=="ViT-L/14" and hidden_state:
-            # from transformers import CLIPVisionModelWithProjection
-            # image_encoder = CLIPVisionModelWithProjection.from_pretrained("openai/clip-vit-large-patch14",cache_dir="/fsx/proj-medarc/fmri/cache")
-            from transformers import CLIPVisionModelWithProjection
+
+        self.device = torch.device(device)
+        self.clip_variant = clip_variant
+        self.hidden_state = bool(hidden_state)
+
+        # hidden_state embeddings only works with ViT-L/14 right now
+        self.image_encoder = None
+        if clip_variant == "ViT-L/14" and hidden_state:
+            from transformers import CLIPVisionModelWithProjection  # type: ignore
+
             sd_cache_dir = '/fsx/proj-fmri/shared/cache/models--shi-labs--versatile-diffusion/snapshots/2926f8e11ea526b562cd592b099fcf9c2985d0b7'
             image_encoder = CLIPVisionModelWithProjection.from_pretrained(sd_cache_dir, subfolder='image_encoder').eval()
-            image_encoder = image_encoder.to(device)
-            for param in image_encoder.parameters():
-                param.requires_grad = False # dont need to calculate gradients
+            image_encoder = image_encoder.to(self.device)
+            for p in image_encoder.parameters():
+                p.requires_grad_(False)
             self.image_encoder = image_encoder
         elif hidden_state:
-            raise Exception("hidden_state embeddings only works with ViT-L/14 right now")
-        
-        clip_model, preprocess = clip.load(clip_variant, device=device)
-        clip_model.eval() # dont want to train model
-        for param in clip_model.parameters():
-            param.requires_grad = False # dont need to calculate gradients
-            
+            raise ValueError("hidden_state embeddings only works with ViT-L/14 right now")
+
+        clip_model, _ = clip.load(clip_variant, device=self.device)
+        clip_model.eval()
+        for p in clip_model.parameters():
+            p.requires_grad_(False)
         self.clip = clip_model
-        self.clip_variant = clip_variant
+
         if clip_variant == "RN50x64":
-            self.clip_size = (448,448)
+            self.clip_size = (448, 448)
         else:
-            self.clip_size = (224,224)
-            
-        preproc = transforms.Compose([
-            transforms.Resize(size=self.clip_size[0], interpolation=transforms.InterpolationMode.BICUBIC),
-            transforms.CenterCrop(size=self.clip_size),
-            transforms.Normalize(mean=(0.48145466, 0.4578275, 0.40821073), std=(0.26862954, 0.26130258, 0.27577711))
-        ])
-        self.preprocess = preproc
-        self.hidden_state = hidden_state
+            self.clip_size = (224, 224)
+
         self.mean = np.array([0.48145466, 0.4578275, 0.40821073])
         self.std = np.array([0.26862954, 0.26130258, 0.27577711])
+
+        self.preprocess = transforms.Compose([
+            transforms.Resize(size=self.clip_size[0], interpolation=transforms.InterpolationMode.BICUBIC),
+            transforms.CenterCrop(size=self.clip_size),
+            transforms.Normalize(mean=tuple(self.mean.tolist()), std=tuple(self.std.tolist())),
+        ])
         self.normalize = transforms.Normalize(self.mean, self.std)
         self.denormalize = transforms.Normalize((-self.mean / self.std).tolist(), (1.0 / self.std).tolist())
-        self.clamp_embs = clamp_embs
-        self.norm_embs = norm_embs
-        self.device= device
-        
-        def versatile_normalize_embeddings(encoder_output):
-            embeds = encoder_output.last_hidden_state
-            embeds = image_encoder.vision_model.post_layernorm(embeds)
-            embeds = image_encoder.visual_projection(embeds)
-            return embeds
-        self.versatile_normalize_embeddings = versatile_normalize_embeddings
+        self.clamp_embs = bool(clamp_embs)
+        self.norm_embs = bool(norm_embs)
 
-    def resize_image(self, image):
-        # note: antialias should be False if planning to use Pinkney's Image Variation SD model
+    def resize_image(self, image: torch.Tensor) -> torch.Tensor:
         return transforms.Resize(self.clip_size)(image.to(self.device))
 
-    def embed_image(self, image):
-        """Expects images in -1 to 1 range"""
+    def _versatile_normalize_embeddings(self, encoder_output) -> torch.Tensor:
+        # 使用 self.image_encoder，而不是闭包里不存在的 image_encoder 变量
+        assert self.image_encoder is not None
+        embeds = encoder_output.last_hidden_state
+        embeds = self.image_encoder.vision_model.post_layernorm(embeds)
+        embeds = self.image_encoder.visual_projection(embeds)
+        return embeds
+
+    def embed_image(self, image: torch.Tensor) -> torch.Tensor:
+        """Expects images in -1..1 range (沿用你原注释；具体取决于你喂给它的图像范围)"""
         if self.hidden_state:
-            # clip_emb = self.preprocess((image/1.5+.25).to(self.device)) # for some reason the /1.5+.25 prevents oversaturation
-            clip_emb = self.preprocess((image).to(self.device))
-            clip_emb = self.image_encoder(clip_emb)
-            clip_emb = self.versatile_normalize_embeddings(clip_emb)
+            if self.image_encoder is None:
+                raise RuntimeError("hidden_state=True but image_encoder is None")
+            clip_in = self.preprocess(image.to(self.device))
+            out = self.image_encoder(clip_in)
+            clip_emb = self._versatile_normalize_embeddings(out)
         else:
-            clip_emb = self.preprocess(image.to(self.device))
-            clip_emb = self.clip.encode_image(clip_emb)
-        # input is now in CLIP space, but mind-reader preprint further processes embeddings:
+            clip_in = self.preprocess(image.to(self.device))
+            clip_emb = self.clip.encode_image(clip_in)
+
         if self.clamp_embs:
             clip_emb = torch.clamp(clip_emb, -1.5, 1.5)
+
         if self.norm_embs:
-            if self.hidden_state:        
-                # normalize all tokens by cls token's norm
+            if self.hidden_state:
                 clip_emb = clip_emb / torch.norm(clip_emb[:, 0], dim=-1).reshape(-1, 1, 1)
             else:
-                clip_emb = nn.functional.normalize(clip_emb, dim=-1)
+                clip_emb = F.normalize(clip_emb, dim=-1)
         return clip_emb
 
-    def embed_text(self, text_samples):
+    def embed_text(self, text_samples) -> torch.Tensor:
+        if clip is None:
+            raise RuntimeError("clip is not available")
         clip_text = clip.tokenize(text_samples).to(self.device)
         clip_text = self.clip.encode_text(clip_text)
         if self.clamp_embs:
             clip_text = torch.clamp(clip_text, -1.5, 1.5)
         if self.norm_embs:
-            clip_text = nn.functional.normalize(clip_text, dim=-1)
+            clip_text = F.normalize(clip_text, dim=-1)
         return clip_text
 
-    def embed_curated_annotations(self, annots):
-        for i,b in enumerate(annots):
-            t = ''
-            while t == '':
-                rand = torch.randint(5,(1,1))[0][0]
-                t = b[0,rand]
-            if i==0:
-                txt = np.array(t)
-            else:
-                txt = np.vstack((txt,t))
-        txt = txt.flatten()
+    def embed_curated_annotations(self, annots) -> torch.Tensor:
+        if utils is None:
+            raise ImportError("utils is required for embed_curated_annotations")
+        txt = []
+        for b in annots:
+            t = ""
+            while t == "":
+                rand = torch.randint(5, (1, 1))[0][0]
+                t = b[0, rand]
+            txt.append(np.array(t))
+        txt = np.vstack(txt).flatten()
         return self.embed_text(txt)
 
-# for prior（可选依赖）
-try:
-    from dalle2_pytorch import DiffusionPrior
-    from dalle2_pytorch.dalle2_pytorch import l2norm, default, exists
-    from dalle2_pytorch.train_configs import DiffusionPriorNetworkConfig
-    # vd prior
-    from dalle2_pytorch.dalle2_pytorch import RotaryEmbedding, CausalTransformer, SinusoidalPosEmb, MLP, Rearrange, repeat, rearrange, prob_mask_like, LayerNorm, RelPosBias, Attention, FeedForward
-    _DALLE2_AVAILABLE = True
-except Exception:
-    DiffusionPrior = None
-    _DALLE2_AVAILABLE = False
 
+# ============================================================
+# Diffusion prior (optional) - robustness fixes
+# ============================================================
 class BrainDiffusionPrior(DiffusionPrior if _DALLE2_AVAILABLE else nn.Module):
-    """ 
-    Differences from original:
-    - Allow for passing of generators to torch random functions
-    - Option to include the voxel2clip model and pass voxels into forward method
-    - Return predictions when computing loss
-    - Load pretrained model from @nousr trained on LAION aesthetics
     """
+    修复点：
+    - forward 的 XOR 断言（a^b^c）会允许 3 个都 True：改为 sum==1
+    - generator 参数真正生效
+    """
+
     def __init__(self, *args, **kwargs):
         if not _DALLE2_AVAILABLE:
             raise ImportError("dalle2_pytorch is required for BrainDiffusionPrior; install it or disable use_prior.")
-        voxel2clip = kwargs.pop('voxel2clip', None)
+        voxel2clip = kwargs.pop("voxel2clip", None)
         super().__init__(*args, **kwargs)
         self.voxel2clip = voxel2clip
 
     @torch.no_grad()
-    def p_sample(self, x, t, text_cond = None, self_cond = None, clip_denoised = True, cond_scale = 1.,
-                generator=None):
+    def p_sample(
+        self,
+        x,
+        t,
+        text_cond=None,
+        self_cond=None,
+        clip_denoised=True,
+        cond_scale=1.0,
+        generator=None,
+    ):
         b, *_, device = *x.shape, x.device
-        model_mean, _, model_log_variance, x_start = self.p_mean_variance(x = x, t = t, text_cond = text_cond, self_cond = self_cond, clip_denoised = clip_denoised, cond_scale = cond_scale)
+        model_mean, _, model_log_variance, x_start = self.p_mean_variance(
+            x=x, t=t, text_cond=text_cond, self_cond=self_cond,
+            clip_denoised=clip_denoised, cond_scale=cond_scale
+        )
+
         if generator is None:
             noise = torch.randn_like(x)
         else:
-            noise = torch.randn_like(x)
-            # noise = torch.randn(x.size(), device=x.device, dtype=x.dtype, generator=generator)
-        # no noise when t == 0
+            noise = torch.randn(x.size(), device=x.device, dtype=x.dtype, generator=generator)
+
         nonzero_mask = (1 - (t == 0).float()).reshape(b, *((1,) * (len(x.shape) - 1)))
         pred = model_mean + nonzero_mask * (0.5 * model_log_variance).exp() * noise
         return pred, x_start
 
     @torch.no_grad()
-    def p_sample_loop(self, *args, timesteps = None, **kwargs):
+    def p_sample_loop(self, *args, timesteps=None, **kwargs):
         timesteps = default(timesteps, self.noise_scheduler.num_timesteps)
         assert timesteps <= self.noise_scheduler.num_timesteps
         is_ddim = timesteps < self.noise_scheduler.num_timesteps
@@ -298,41 +479,43 @@ class BrainDiffusionPrior(DiffusionPrior if _DALLE2_AVAILABLE else nn.Module):
         if not is_ddim:
             normalized_image_embed = self.p_sample_loop_ddpm(*args, **kwargs)
         else:
-            normalized_image_embed = self.p_sample_loop_ddim(*args, **kwargs, timesteps = timesteps)
+            normalized_image_embed = self.p_sample_loop_ddim(*args, **kwargs, timesteps=timesteps)
 
-        # print("PS removed all image_embed_scale instances!")
-        image_embed = normalized_image_embed #/ self.image_embed_scale
+        image_embed = normalized_image_embed
         return image_embed
 
     @torch.no_grad()
-    def p_sample_loop_ddpm(self, shape, text_cond, cond_scale = 1., generator=None):
+    def p_sample_loop_ddpm(self, shape, text_cond, cond_scale=1.0, generator=None):
         batch, device = shape[0], self.device
-
         if generator is None:
-            image_embed = torch.randn(shape, device = device)
+            image_embed = torch.randn(shape, device=device)
         else:
-            image_embed = torch.randn(shape, device = device, generator=generator)
-        x_start = None # for self-conditioning
+            image_embed = torch.randn(shape, device=device, generator=generator)
 
+        x_start = None
         if self.init_image_embed_l2norm:
             image_embed = l2norm(image_embed) * self.image_embed_scale
 
-        for i in tqdm(reversed(range(0, self.noise_scheduler.num_timesteps)), desc='sampling loop time step', total=self.noise_scheduler.num_timesteps, disable=True):
-            times = torch.full((batch,), i, device = device, dtype = torch.long)
-
+        for i in reversed(range(0, self.noise_scheduler.num_timesteps)):
+            times = torch.full((batch,), i, device=device, dtype=torch.long)
             self_cond = x_start if self.net.self_cond else None
-            image_embed, x_start = self.p_sample(image_embed, times, text_cond = text_cond, self_cond = self_cond, cond_scale = cond_scale, 
-                                                 generator=generator)
+            image_embed, x_start = self.p_sample(
+                image_embed, times, text_cond=text_cond, self_cond=self_cond,
+                cond_scale=cond_scale, generator=generator
+            )
 
         if self.sampling_final_clamp_l2norm and self.predict_x_start:
             image_embed = self.l2norm_clamp_embed(image_embed)
 
         return image_embed
 
-    def p_losses(self, image_embed, times, text_cond, noise = None):
-        noise = default(noise, lambda: torch.randn_like(image_embed))
+    def p_losses(self, image_embed, times, text_cond, noise=None, generator=None):
+        if noise is None:
+            noise = torch.randn_like(image_embed) if generator is None else torch.randn(
+                image_embed.size(), device=image_embed.device, dtype=image_embed.dtype, generator=generator
+            )
 
-        image_embed_noisy = self.noise_scheduler.q_sample(x_start = image_embed, t = times, noise = noise)
+        image_embed_noisy = self.noise_scheduler.q_sample(x_start=image_embed, t=times, noise=noise)
 
         self_cond = None
         if self.net.self_cond and random.random() < 0.5:
@@ -342,9 +525,9 @@ class BrainDiffusionPrior(DiffusionPrior if _DALLE2_AVAILABLE else nn.Module):
         pred = self.net(
             image_embed_noisy,
             times,
-            self_cond = self_cond,
-            text_cond_drop_prob = self.text_cond_drop_prob,
-            image_cond_drop_prob = self.image_cond_drop_prob,
+            self_cond=self_cond,
+            text_cond_drop_prob=self.text_cond_drop_prob,
+            image_cond_drop_prob=self.image_cond_drop_prob,
             **text_cond
         )
 
@@ -358,122 +541,160 @@ class BrainDiffusionPrior(DiffusionPrior if _DALLE2_AVAILABLE else nn.Module):
         else:
             target = noise
 
-        loss = nn.functional.mse_loss(pred, target) # mse
-        # print("1", loss)
-        # loss += (1 - nn.functional.cosine_similarity(pred, target).mean())
-        # print("2", (1 - nn.functional.cosine_similarity(pred, target).mean()))
+        loss = F.mse_loss(pred, target)
         return loss, pred
 
     def forward(
         self,
-        text = None,
-        image = None,
-        voxel = None,
-        text_embed = None,      # allow for training on preprocessed CLIP text and image embeddings
-        image_embed = None,
-        text_encodings = None,  # as well as CLIP text encodings
+        text=None,
+        image=None,
+        voxel=None,
+        text_embed=None,
+        image_embed=None,
+        text_encodings=None,
         *args,
         **kwargs
     ):
-        assert exists(text) ^ exists(text_embed) ^ exists(voxel), 'either text, text embedding, or voxel must be supplied'
-        assert exists(image) ^ exists(image_embed), 'either image or image embedding must be supplied'
-        assert not (self.condition_on_text_encodings and (not exists(text_encodings) and not exists(text))), 'text encodings must be present if you specified you wish to condition on it on initialization'
+        if not _DALLE2_AVAILABLE:
+            raise ImportError("dalle2_pytorch is required")
+
+        # exactly-one checks (修复原来的 XOR bug)
+        n_text_inputs = int(exists(text)) + int(exists(text_embed)) + int(exists(voxel))
+        if n_text_inputs != 1:
+            raise AssertionError("Exactly one of {text, text_embed, voxel} must be supplied.")
+        if int(exists(image)) + int(exists(image_embed)) != 1:
+            raise AssertionError("Exactly one of {image, image_embed} must be supplied.")
+        if self.condition_on_text_encodings and (not exists(text_encodings) and not exists(text)):
+            raise AssertionError("text encodings must be present if condition_on_text_encodings=True")
 
         if exists(voxel):
-            assert exists(self.voxel2clip), 'voxel2clip must be trained if you wish to pass in voxels'
-            assert not exists(text_embed), 'cannot pass in both text and voxels'
-            if self.voxel2clip.use_projector:
+            if self.voxel2clip is None:
+                raise AssertionError("voxel2clip must be trained if you wish to pass in voxels")
+            if exists(text_embed):
+                raise AssertionError("cannot pass in both text_embed and voxels")
+
+            if getattr(self.voxel2clip, "use_projector", False):
                 clip_voxels_mse, clip_voxels = self.voxel2clip(voxel)
                 text_embed = clip_voxels_mse
             else:
                 clip_voxels = self.voxel2clip(voxel)
-                text_embed = clip_voxels_mse = clip_voxels
-            # text_embed = self.voxel2clip(voxel)
+                text_embed = clip_voxels  # 统一为 text_embed
 
         if exists(image):
             image_embed, _ = self.clip.embed_image(image)
 
-        # calculate text conditionings, based on what is passed in
-
         if exists(text):
             text_embed, text_encodings = self.clip.embed_text(text)
 
-        text_cond = dict(text_embed = text_embed)
-
+        text_cond = dict(text_embed=text_embed)
         if self.condition_on_text_encodings:
-            assert exists(text_encodings), 'text encodings must be present for diffusion prior if specified'
-            text_cond = {**text_cond, 'text_encodings': text_encodings}
-
-        # timestep conditioning from ddpm
+            if not exists(text_encodings):
+                raise AssertionError("text_encodings must be present for diffusion prior if specified")
+            text_cond = {**text_cond, "text_encodings": text_encodings}
 
         batch, device = image_embed.shape[0], image_embed.device
         times = self.noise_scheduler.sample_random_times(batch)
 
-        # PS: I dont think we need this? also if uncommented this does in-place global variable change
-        # scale image embed (Katherine)
-        # image_embed *= self.image_embed_scale
-
-        # calculate forward loss
-
-        loss, pred = self.p_losses(image_embed, times, text_cond = text_cond, *args, **kwargs)
-        
-        # undo the scaling so we can directly use it for real mse loss and reconstruction
+        # forward loss
+        loss, pred = self.p_losses(image_embed, times, text_cond=text_cond, *args, **kwargs)
         return loss, pred
+
+
+class FlaggedCausalTransformer(nn.Module):
+    def __init__(
+        self,
+        *,
+        dim,
+        depth,
+        dim_head=64,
+        heads=8,
+        ff_mult=4,
+        norm_in=False,
+        norm_out=True,
+        attn_dropout=0.0,
+        ff_dropout=0.0,
+        final_proj=True,
+        normformer=False,
+        rotary_emb=True,
+        causal=True,
+    ):
+        super().__init__()
+        if not _DALLE2_AVAILABLE:
+            raise ImportError("dalle2_pytorch is required for FlaggedCausalTransformer")
+
+        self.init_norm = LayerNorm(dim) if norm_in else nn.Identity()
+        self.rel_pos_bias = RelPosBias(heads=heads)
+        rotary = RotaryEmbedding(dim=min(32, dim_head)) if rotary_emb else None
+
+        self.layers = nn.ModuleList([])
+        for _ in range(depth):
+            self.layers.append(nn.ModuleList([
+                Attention(dim=dim, causal=causal, dim_head=dim_head, heads=heads, dropout=attn_dropout, rotary_emb=rotary),
+                FeedForward(dim=dim, mult=ff_mult, dropout=ff_dropout, post_activation_norm=normformer),
+            ]))
+
+        self.norm = LayerNorm(dim, stable=True) if norm_out else nn.Identity()
+        self.project_out = nn.Linear(dim, dim, bias=False) if final_proj else nn.Identity()
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        n, device = x.shape[1], x.device
+        x = self.init_norm(x)
+        attn_bias = self.rel_pos_bias(n, n + 1, device=device)
+        for attn, ff in self.layers:
+            x = attn(x, attn_bias=attn_bias) + x
+            x = ff(x) + x
+        out = self.norm(x)
+        return self.project_out(out)
+
 
 class PriorNetwork(nn.Module):
     def __init__(
         self,
         dim,
-        num_timesteps = None,
-        num_time_embeds = 1,
-        # num_image_embeds = 1,
-        # num_brain_embeds = 1,
-        num_tokens = 257,
-        causal = True,
-        learned_query_mode = 'none',
+        num_timesteps=None,
+        num_time_embeds=1,
+        num_tokens=257,
+        causal=True,
+        learned_query_mode="none",
         **kwargs
     ):
         super().__init__()
+        if not _DALLE2_AVAILABLE:
+            raise ImportError("dalle2_pytorch is required for PriorNetwork; install it or disable use_prior.")
+
         self.dim = dim
         self.num_time_embeds = num_time_embeds
         self.continuous_embedded_time = not exists(num_timesteps)
         self.learned_query_mode = learned_query_mode
+        self.num_tokens = num_tokens
+        self.self_cond = False
 
-        if not _DALLE2_AVAILABLE:
-            raise ImportError("dalle2_pytorch is required for PriorNetwork; install it or disable use_prior.")
         self.to_time_embeds = nn.Sequential(
-            nn.Embedding(num_timesteps, dim * num_time_embeds) if exists(num_timesteps) else nn.Sequential(SinusoidalPosEmb(dim), MLP(dim, dim * num_time_embeds)), # also offer a continuous version of timestep embeddings, with a 2 layer MLP
-            Rearrange('b (n d) -> b n d', n = num_time_embeds)
+            nn.Embedding(num_timesteps, dim * num_time_embeds)
+            if exists(num_timesteps)
+            else nn.Sequential(SinusoidalPosEmb(dim), MLP(dim, dim * num_time_embeds)),
+            Rearrange("b (n d) -> b n d", n=num_time_embeds),
         )
 
-        if self.learned_query_mode == 'token':
-            self.learned_query = nn.Parameter(torch.randn(num_tokens, dim))
-        if self.learned_query_mode == 'pos_emb':
+        if learned_query_mode in ("token", "pos_emb", "all_pos_emb"):
             scale = dim ** -0.5
-            self.learned_query = nn.Parameter(torch.randn(num_tokens, dim) * scale)
-        if self.learned_query_mode == 'all_pos_emb':
-            scale = dim ** -0.5
-            self.learned_query = nn.Parameter(torch.randn(num_tokens*2+1, dim) * scale)
-        self.causal_transformer = FlaggedCausalTransformer(dim = dim, causal=causal, **kwargs)
+            if learned_query_mode == "all_pos_emb":
+                self.learned_query = nn.Parameter(torch.randn(num_tokens * 2 + 1, dim) * scale)
+            else:
+                self.learned_query = nn.Parameter(torch.randn(num_tokens, dim) * scale)
+        else:
+            self.learned_query = None
+
+        self.causal_transformer = FlaggedCausalTransformer(dim=dim, causal=causal, **kwargs)
 
         self.null_brain_embeds = nn.Parameter(torch.randn(num_tokens, dim))
         self.null_image_embed = nn.Parameter(torch.randn(num_tokens, dim))
 
-        self.num_tokens = num_tokens
-        self.self_cond = False
-
-    def forward_with_cond_scale(
-        self,
-        *args,
-        cond_scale = 1.,
-        **kwargs
-    ):
+    def forward_with_cond_scale(self, *args, cond_scale=1.0, **kwargs):
         logits = self.forward(*args, **kwargs)
-
         if cond_scale == 1:
             return logits
-
-        null_logits = self.forward(*args, brain_cond_drop_prob = 1., image_cond_drop_prob = 1, **kwargs)
+        null_logits = self.forward(*args, brain_cond_drop_prob=1.0, image_cond_drop_prob=1.0, **kwargs)
         return null_logits + (logits - null_logits) * cond_scale
 
     def forward(
@@ -484,191 +705,113 @@ class PriorNetwork(nn.Module):
         self_cond=None,
         brain_embed=None,
         text_embed=None,
-        brain_cond_drop_prob = 0.,
-        text_cond_drop_prob = None,
-        image_cond_drop_prob = 0.
+        brain_cond_drop_prob=0.0,
+        text_cond_drop_prob=None,
+        image_cond_drop_prob=0.0,
     ):
         if text_embed is not None:
             brain_embed = text_embed
         if text_cond_drop_prob is not None:
             brain_cond_drop_prob = text_cond_drop_prob
-        
-        # image_embed = image_embed.view(len(image_embed),-1,16*16)
-        # text_embed = text_embed.view(len(text_embed),-1,768)
-        # brain_embed = brain_embed.view(len(brain_embed),-1,16*16)
-        # print(*image_embed.shape)
-        # print(*image_embed.shape, image_embed.device, image_embed.dtype)
-        
-        batch, _, dim, device, dtype = *image_embed.shape, image_embed.device, image_embed.dtype
-        # num_time_embeds, num_image_embeds, num_brain_embeds = self.num_time_embeds, self.num_image_embeds, self.num_brain_embeds
-        
-        # classifier free guidance masks
-        brain_keep_mask = prob_mask_like((batch,), 1 - brain_cond_drop_prob, device = device)
-        brain_keep_mask = rearrange(brain_keep_mask, 'b -> b 1 1')
+        if brain_embed is None:
+            raise ValueError("brain_embed (or text_embed) must be provided")
 
-        image_keep_mask = prob_mask_like((batch,), 1 - image_cond_drop_prob, device = device)
-        image_keep_mask = rearrange(image_keep_mask, 'b -> b 1 1')
+        batch, _, dim = image_embed.shape[0], image_embed.shape[1], image_embed.shape[2]
+        device, dtype = image_embed.device, image_embed.dtype
 
-        # mask out brain embeddings with null brain embeddings
+        brain_keep_mask = prob_mask_like((batch,), 1 - brain_cond_drop_prob, device=device)
+        brain_keep_mask = rearrange(brain_keep_mask, "b -> b 1 1")
 
-        # import pdb; pdb.set_trace()
-        null_brain_embeds = self.null_brain_embeds.to(brain_embed.dtype)
-        brain_embed = torch.where(
-            brain_keep_mask,
-            brain_embed,
-            null_brain_embeds[None]
-        )
+        image_keep_mask = prob_mask_like((batch,), 1 - image_cond_drop_prob, device=device)
+        image_keep_mask = rearrange(image_keep_mask, "b -> b 1 1")
 
-        # mask out image embeddings with null image embeddings
-        null_image_embed = self.null_image_embed.to(image_embed.dtype)
-        image_embed = torch.where(
-            image_keep_mask,
-            image_embed,
-            null_image_embed[None]
-        )
+        null_brain = self.null_brain_embeds.to(brain_embed.dtype)
+        brain_embed = torch.where(brain_keep_mask, brain_embed, null_brain[None])
 
-        # whether brain embedding is used for conditioning depends on whether brain encodings are available for attention (for classifier free guidance, even though it seems from the paper it was not used in the prior ddpm, as the objective is different)
-        # but let's just do it right
+        null_image = self.null_image_embed.to(image_embed.dtype)
+        image_embed = torch.where(image_keep_mask, image_embed, null_image[None])
+
         if self.continuous_embedded_time:
-            # if continuous cast to flat, else keep int for indexing embeddings
             diffusion_timesteps = diffusion_timesteps.type(dtype)
         time_embed = self.to_time_embeds(diffusion_timesteps)
 
-        if self.learned_query_mode == 'token':
-            learned_queries = repeat(self.learned_query, 'n d -> b n d', b = batch)
-        elif self.learned_query_mode == 'pos_emb':
-            pos_embs = repeat(self.learned_query, 'n d -> b n d', b = batch)
+        learned_queries = torch.empty((batch, 0, dim), device=device, dtype=brain_embed.dtype)
+        if self.learned_query_mode == "token":
+            learned_queries = repeat(self.learned_query, "n d -> b n d", b=batch)
+        elif self.learned_query_mode == "pos_emb":
+            pos_embs = repeat(self.learned_query, "n d -> b n d", b=batch)
             image_embed = image_embed + pos_embs
-            learned_queries = torch.empty((batch, 0, dim), device=brain_embed.device)
-        elif self.learned_query_mode == 'all_pos_emb':
-            pos_embs = repeat(self.learned_query, 'n d -> b n d', b = batch)
-            learned_queries = torch.empty((batch, 0, dim), device=brain_embed.device)
-        else:
-            learned_queries = torch.empty((batch, 0, dim), device=brain_embed.device)
-        
-        tokens = torch.cat((
-            brain_embed,  # 257
-            time_embed,  # 1
-            image_embed,  # 257
-            learned_queries  # 257
-        ), dim = -2)
-        if self.learned_query_mode == 'all_pos_emb':
+        elif self.learned_query_mode == "all_pos_emb":
+            pos_embs = repeat(self.learned_query, "n d -> b n d", b=batch)
+
+        tokens = torch.cat((brain_embed, time_embed, image_embed, learned_queries), dim=-2)
+        if self.learned_query_mode == "all_pos_emb":
             tokens = tokens + pos_embs
 
-        # attend
         tokens = self.causal_transformer(tokens)
-
-        # get learned query, which should predict the image embedding (per DDPM timestep)
         pred_image_embed = tokens[..., -self.num_tokens:, :]
-
         return pred_image_embed
 
-class FlaggedCausalTransformer(nn.Module):
-    def __init__(
-        self,
-        *,
-        dim,
-        depth,
-        dim_head = 64,
-        heads = 8,
-        ff_mult = 4,
-        norm_in = False,
-        norm_out = True,
-        attn_dropout = 0.,
-        ff_dropout = 0.,
-        final_proj = True,
-        normformer = False,
-        rotary_emb = True,
-        causal=True
-    ):
-        super().__init__()
-        self.init_norm = LayerNorm(dim) if norm_in else nn.Identity() # from latest BLOOM model and Yandex's YaLM
 
-        self.rel_pos_bias = RelPosBias(heads = heads)
-
-        rotary_emb = RotaryEmbedding(dim = min(32, dim_head)) if rotary_emb else None
-
-        self.layers = nn.ModuleList([])
-        for _ in range(depth):
-            self.layers.append(nn.ModuleList([
-                Attention(dim = dim, causal = causal, dim_head = dim_head, heads = heads, dropout = attn_dropout, rotary_emb = rotary_emb),
-                FeedForward(dim = dim, mult = ff_mult, dropout = ff_dropout, post_activation_norm = normformer)
-            ]))
-
-        self.norm = LayerNorm(dim, stable = True) if norm_out else nn.Identity()  # unclear in paper whether they projected after the classic layer norm for the final denoised image embedding, or just had the transformer output it directly: plan on offering both options
-        self.project_out = nn.Linear(dim, dim, bias = False) if final_proj else nn.Identity()
-
-    def forward(self, x):
-        n, device = x.shape[1], x.device
-
-        x = self.init_norm(x)
-
-        attn_bias = self.rel_pos_bias(n, n + 1, device = device)
-
-        for attn, ff in self.layers:
-            x = attn(x, attn_bias = attn_bias) + x
-            x = ff(x) + x
-
-        out = self.norm(x)
-        return self.project_out(out)
-    
-#Subclass for GNET
+# ============================================================
+# GNet8 parts (保留但加固：utils 缺失时报错更清晰)
+# ============================================================
 class TrunkBlock(nn.Module):
     def __init__(self, feat_in, feat_out):
-        super(TrunkBlock, self).__init__()
-        self.conv1 = nn.Conv2d(feat_in, int(feat_out*1.), kernel_size=3, stride=1, padding=1, dilation=1)
+        super().__init__()
+        self.conv1 = nn.Conv2d(feat_in, int(feat_out * 1.0), kernel_size=3, stride=1, padding=1, dilation=1)
         self.drop1 = nn.Dropout2d(p=0.5, inplace=False)
-        self.bn1 = nn.BatchNorm2d(feat_in, eps=1e-05, momentum=0.25, affine=True, track_running_stats=True)
+        self.bn1 = nn.BatchNorm2d(feat_in, eps=1e-5, momentum=0.25, affine=True, track_running_stats=True)
 
-        torch.nn.init.xavier_normal_(self.conv1.weight, gain=torch.nn.init.calculate_gain('relu'))
-        torch.nn.init.constant_(self.conv1.bias, 0.0) # current
-        
+        torch.nn.init.xavier_normal_(self.conv1.weight, gain=torch.nn.init.calculate_gain("relu"))
+        torch.nn.init.constant_(self.conv1.bias, 0.0)
+
     def forward(self, x):
-        return torch.nn.functional.relu(self.conv1(self.drop1(self.bn1(x))))
+        return F.relu(self.conv1(self.drop1(self.bn1(x))))
 
-#Subclass for GNET
+
 class PreFilter(nn.Module):
     def __init__(self):
-        super(PreFilter, self).__init__()
+        super().__init__()
         self.conv1 = nn.Sequential(
             nn.Conv2d(3, 64, kernel_size=11, stride=4, padding=2),
             nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size=3, stride=2)
+            nn.MaxPool2d(kernel_size=3, stride=2),
         )
         self.conv2 = nn.Sequential(
             nn.Conv2d(64, 192, kernel_size=5, padding=2),
-            nn.ReLU(inplace=True)
-        )        
-        
+            nn.ReLU(inplace=True),
+        )
+
     def forward(self, x):
         c1 = self.conv1(x)
         y = self.conv2(c1)
-        return y 
+        return y
 
-#Subclass for GNET
+
 class EncStage(nn.Module):
     def __init__(self, trunk_width=64, pass_through=64):
-        super(EncStage, self).__init__()
-        self.conv3  = nn.Conv2d(192, 128, kernel_size=3, stride=1, padding=0)
-        self.drop1  = nn.Dropout2d(p=0.5, inplace=False) ##
-        self.bn1    = nn.BatchNorm2d(192, eps=1e-05, momentum=0.25, affine=True, track_running_stats=True) ##
-        self.pool1  = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
-        ##
+        super().__init__()
+        self.conv3 = nn.Conv2d(192, 128, kernel_size=3, stride=1, padding=0)
+        self.drop1 = nn.Dropout2d(p=0.5, inplace=False)
+        self.bn1 = nn.BatchNorm2d(192, eps=1e-5, momentum=0.25, affine=True, track_running_stats=True)
+        self.pool1 = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
+
         self.tw = int(trunk_width)
         self.pt = int(pass_through)
         ss = (self.tw + self.pt)
-        self.conv4a  = TrunkBlock(128, ss)
-        self.conv5a  = TrunkBlock(ss, ss)
-        self.conv6a  = TrunkBlock(ss, ss)
-        self.conv4b  = TrunkBlock(ss, ss)
-        self.conv5b  = TrunkBlock(ss, ss)
-        self.conv6b  = TrunkBlock(ss, self.tw)
-        ##
-        torch.nn.init.xavier_normal_(self.conv3.weight, gain=torch.nn.init.calculate_gain('relu'))        
+        self.conv4a = TrunkBlock(128, ss)
+        self.conv5a = TrunkBlock(ss, ss)
+        self.conv6a = TrunkBlock(ss, ss)
+        self.conv4b = TrunkBlock(ss, ss)
+        self.conv5b = TrunkBlock(ss, ss)
+        self.conv6b = TrunkBlock(ss, self.tw)
+
+        torch.nn.init.xavier_normal_(self.conv3.weight, gain=torch.nn.init.calculate_gain("relu"))
         torch.nn.init.constant_(self.conv3.bias, 0.0)
-        
+
     def forward(self, x):
-        c3 = (torch.nn.functional.relu(self.conv3(self.drop1(self.bn1(x))), inplace=False))
+        c3 = F.relu(self.conv3(self.drop1(self.bn1(x))), inplace=False)
         c4a = self.conv4a(c3)
         c4b = self.conv4b(c4a)
         c5a = self.conv5a(self.pool1(c4b))
@@ -676,181 +819,176 @@ class EncStage(nn.Module):
         c6a = self.conv6a(c5b)
         c6b = self.conv6b(c6a)
 
-        return [torch.cat([c3, c4a[:,:self.tw], c4b[:,:self.tw]], dim=1), 
-                torch.cat([c5a[:,:self.tw], c5b[:,:self.tw], c6a[:,:self.tw], c6b], dim=1)], c6b
-    
-#Subclass for GNET
+        return [
+            torch.cat([c3, c4a[:, : self.tw], c4b[:, : self.tw]], dim=1),
+            torch.cat([c5a[:, : self.tw], c5b[:, : self.tw], c6a[:, : self.tw], c6b], dim=1),
+        ], c6b
+
+
 class GEncoder(nn.Module):
-    def __init__(self, mu, trunk_width, pass_through=64 ):
-        super(GEncoder, self).__init__()
-        self.mu = nn.Parameter(torch.from_numpy(mu), requires_grad=False) #.to(device)
+    def __init__(self, mu, trunk_width, pass_through=64):
+        super().__init__()
+        self.mu = nn.Parameter(torch.from_numpy(mu), requires_grad=False)
         self.pre = PreFilter()
-        self.enc = EncStage(trunk_width, pass_through) 
+        self.enc = EncStage(trunk_width, pass_through)
 
     def forward(self, x):
         fmaps, h = self.enc(self.pre(x - self.mu))
         return x, fmaps, h
 
-#Main GNET model class
+
 class Torch_LayerwiseFWRF(nn.Module):
     def __init__(self, fmaps, nv=1, pre_nl=None, post_nl=None, dtype=np.float32):
-        super(Torch_LayerwiseFWRF, self).__init__()
+        super().__init__()
         self.fmaps_shapes = [list(f.size()) for f in fmaps]
-        self.nf = np.sum([s[1] for s in self.fmaps_shapes])
-        self.pre_nl  = pre_nl
+        self.nf = int(np.sum([s[1] for s in self.fmaps_shapes]))
+        self.pre_nl = pre_nl
         self.post_nl = post_nl
-        self.nv = nv
-        ##
+        self.nv = int(nv)
+
         self.rfs = []
         self.sm = nn.Softmax(dim=1)
-        for k,fm_rez in enumerate(self.fmaps_shapes):
+        for k, fm_rez in enumerate(self.fmaps_shapes):
             rf = nn.Parameter(torch.tensor(np.ones(shape=(self.nv, fm_rez[2], fm_rez[2]), dtype=dtype), requires_grad=True))
-            self.register_parameter('rf%d'%k, rf)
-            self.rfs += [rf,]
-        self.w  = nn.Parameter(torch.tensor(np.random.normal(0, 0.01, size=(self.nv, self.nf)).astype(dtype=dtype), requires_grad=True))
-        self.b  = nn.Parameter(torch.tensor(np.random.normal(0, 0.01, size=(self.nv,)).astype(dtype=dtype), requires_grad=True))
-        
+            self.register_parameter(f"rf{k}", rf)
+            self.rfs += [rf]
+
+        self.w = nn.Parameter(torch.tensor(np.random.normal(0, 0.01, size=(self.nv, self.nf)).astype(dtype), requires_grad=True))
+        self.b = nn.Parameter(torch.tensor(np.random.normal(0, 0.01, size=(self.nv,)).astype(dtype), requires_grad=True))
+
     def forward(self, fmaps):
         phi = []
-        for fm,rf in zip(fmaps, self.rfs): #, self.scales):
+        for fm, rf in zip(fmaps, self.rfs):
             g = self.sm(torch.flatten(rf, start_dim=1))
-            f = torch.flatten(fm, start_dim=2)  # *s
-            if self.pre_nl is not None:          
+            f = torch.flatten(fm, start_dim=2)
+            if self.pre_nl is not None:
                 f = self.pre_nl(f)
-            # fmaps : [batch, features, space]
-            # v     : [nv, space]
-            phi += [torch.tensordot(g, f, dims=[[1],[2]]),] # apply pooling field and add to list.
-            # phi : [nv, batch, features] 
+            phi.append(torch.tensordot(g, f, dims=[[1], [2]]))
         Phi = torch.cat(phi, dim=2)
         if self.post_nl is not None:
             Phi = self.post_nl(Phi)
-        vr = torch.squeeze(torch.bmm(Phi, torch.unsqueeze(self.w,2))).t() + torch.unsqueeze(self.b,0)
+        vr = torch.squeeze(torch.bmm(Phi, torch.unsqueeze(self.w, 2))).t() + torch.unsqueeze(self.b, 0)
         return vr
-    
-class GNet8_Encoder():
-    
-    def __init__(self, subject = 1, device = "cuda", model_path = "gnet_multisubject.pt"):
-        
-        # Setting up Cuda
+
+
+class GNet8_Encoder:
+    def __init__(self, subject=1, device="cuda", model_path="gnet_multisubject.pt"):
+        if utils is None:
+            raise ImportError("GNet8_Encoder requires 'utils' (iterate_range/get_value/process_image).")
         self.device = torch.device(device)
-        torch.backends.cudnn.enabled=True
-        # Subject number
-        self.subject = subject
-        
-        # Vector type
-        self.vector = "images"
-        
-        # x size
+        torch.backends.cudnn.enabled = True
+
+        self.subject = int(subject)
         subject_sizes = [0, 15724, 14278, 15226, 13153, 13039, 17907, 12682, 14386]
         self.x_size = subject_sizes[self.subject]
-        
-        # Reload joined GNet model files
+
+        if not os.path.isfile(model_path):
+            raise FileNotFoundError(f"GNet model_path not found: {model_path}")
+
         self.joined_checkpoint = torch.load(model_path, map_location=self.device)
-        
-        self.subjects = list(self.joined_checkpoint['voxel_mask'].keys())
-        self.gnet8j_voxel_mask = self.joined_checkpoint['voxel_mask']
-        self.gnet8j_voxel_roi  = self.joined_checkpoint['voxel_roi']
-        self.gnet8j_voxel_index= self.joined_checkpoint['voxel_index']
-        self.gnet8j_brain_nii_shape= self.joined_checkpoint['brain_nii_shape']
-        self.gnet8j_val_cc = self.joined_checkpoint['val_cc']
-        
-            
-    
-    def load_image(self, image_path):
-        
-        image = PIL.Image.open(image_path).convert('RGB')
-        
-        w, h = 227, 227  # resize to integer multiple of 64
-        imagePil = image.resize((w, h), resample=PIL.Image.Resampling.LANCZOS)
-        image = np.array(imagePil).astype(np.float32) / 255.0
-        
-        return image  
-    
-    # Rebuild Model
+
+        self.subjects = list(self.joined_checkpoint["voxel_mask"].keys())
+        self.gnet8j_voxel_mask = self.joined_checkpoint["voxel_mask"]
+        self.gnet8j_voxel_roi = self.joined_checkpoint["voxel_roi"]
+        self.gnet8j_voxel_index = self.joined_checkpoint["voxel_index"]
+        self.gnet8j_brain_nii_shape = self.joined_checkpoint["brain_nii_shape"]
+        self.gnet8j_val_cc = self.joined_checkpoint["val_cc"]
+
     def _model_fn(self, _ext, _con, _x):
-        '''model consists of an extractor (_ext) and a connection model (_con)'''
         _y, _fm, _h = _ext(_x)
         return _con(_fm)
 
     def _pred_fn(self, _ext, _con, xb):
-        return self._model_fn(_ext, _con, torch.from_numpy(xb).to(self.device))  
-                    
+        return self._model_fn(_ext, _con, torch.from_numpy(xb).to(self.device))
+
     def subject_pred_pass(self, _pred_fn, _ext, _con, x, batch_size):
-        pred = _pred_fn(_ext, _con, x[:batch_size]) # this is just to get the shape
-        pred = np.zeros(shape=(len(x), pred.shape[1]), dtype=np.float32) # allocate
-        for rb,_ in utils.iterate_range(0, len(x), batch_size):
+        pred0 = _pred_fn(_ext, _con, x[:batch_size])
+        pred = np.zeros(shape=(len(x), pred0.shape[1]), dtype=np.float32)
+        for rb, _ in utils.iterate_range(0, len(x), batch_size):
             pred[rb] = utils.get_value(_pred_fn(_ext, _con, x[rb]))
         return pred
 
-    def gnet8j_predictions(self, image_data, _pred_fn, trunk_width, pass_through, checkpoint, mask, batch_size, device=torch.device("cuda:0")):
-        
+    def _mask_state_dict(self, params: Dict[str, torch.Tensor], mask: torch.Tensor) -> Dict[str, torch.Tensor]:
+        masked = {}
+        for k, v in params.items():
+            if not isinstance(v, torch.Tensor):
+                masked[k] = v
+                continue
+            if v.dim() == 0:
+                masked[k] = v
+                continue
+            # 默认按第一维 mask（nv 维度）
+            if v.size(0) == mask.numel():
+                masked[k] = v[mask]
+            else:
+                masked[k] = v
+        return masked
+
+    def gnet8j_predictions(self, image_data, _pred_fn, trunk_width, pass_through, checkpoint, mask, batch_size, device):
         subjects = list(image_data.keys())
 
-        if(mask is None):
-            subject_nv = {s: len(v) for s,v in checkpoint['val_cc'].items()} 
+        if mask is None:
+            subject_nv = {s: len(v) for s, v in checkpoint["val_cc"].items()}
         else:
-            subject_nv = {s: len(v) for s,v in checkpoint['val_cc'].items()}    
-            subject_nv[subjects[0]] = int(torch.sum(mask == True)) 
+            subject_nv = {s: len(v) for s, v in checkpoint["val_cc"].items()}
+            subject_nv[subjects[0]] = int(torch.sum(mask == True))
 
-        # allocate
         subject_image_pred = {s: np.zeros(shape=(len(image_data[s]), subject_nv[s]), dtype=np.float32) for s in subjects}
-        # print(subject_image_pred)
-        _log_act_fn = lambda _x: torch.log(1 + torch.abs(_x))*torch.tanh(_x)
-        
-        best_params = checkpoint['best_params']
-        # print(best_params)
-        shared_model = GEncoder(np.array(checkpoint['input_mean']).astype(np.float32), trunk_width=trunk_width, pass_through=pass_through).to(device)
-        shared_model.load_state_dict(best_params['enc'])
-        shared_model.eval() 
+        _log_act_fn = lambda _x: torch.log(1 + torch.abs(_x)) * torch.tanh(_x)
 
-        # example fmaps
-        rec, fmaps, h = shared_model(torch.from_numpy(image_data[list(image_data.keys())[0]][:20]).to(device))                                     
+        best_params = checkpoint["best_params"]
+        shared_model = GEncoder(np.array(checkpoint["input_mean"]).astype(np.float32), trunk_width=trunk_width, pass_through=pass_through).to(device)
+        shared_model.load_state_dict(best_params["enc"])
+        shared_model.eval()
+
+        rec, fmaps, h = shared_model(torch.from_numpy(image_data[list(image_data.keys())[0]][:20]).to(device))
+
         for s in subjects:
-            sd = Torch_LayerwiseFWRF(fmaps, nv=subject_nv[s], pre_nl=_log_act_fn, post_nl=_log_act_fn, dtype=np.float32).to(device) 
-            params = best_params['fwrfs'][s]
-            
-            if(mask is None):
+            sd = Torch_LayerwiseFWRF(fmaps, nv=subject_nv[s], pre_nl=_log_act_fn, post_nl=_log_act_fn, dtype=np.float32).to(device)
+            params = best_params["fwrfs"][s]
+
+            if mask is None:
                 sd.load_state_dict(params)
-            
             else:
-                masked_params = {}
-                for key, value in params.items():
-                    masked_params[key] = value[mask]
-                    
+                masked_params = self._mask_state_dict(params, mask)
                 sd.load_state_dict(masked_params)
-                
-            # print(params['w'].shape)
-            # print(params['b'].shape)
-            # sd.load_state_dict(best_params['fwrfs'][s])
-            sd.eval() 
-            # print(sd)
-            
+
+            sd.eval()
             subject_image_pred[s] = self.subject_pred_pass(_pred_fn, shared_model, sd, image_data[s], batch_size)
 
         return subject_image_pred
 
-    def predict(self, images, mask = None):
+    def predict(self, images, mask=None):
         self.stim_data = {}
         data = []
-        w, h = 227, 227  # resize to integer multiple of 64
-        
-        if(isinstance(images, list)):
-            for i in range(len(images)):
-                
-                imagePil = images[i].convert("RGB").resize((w, h), resample=PIL.Image.Resampling.LANCZOS)
-                image = np.array(imagePil).astype(np.float32) / 255.0
-                data.append(image)
-            
-        elif(isinstance(images, torch.Tensor)):
+        w, h = 227, 227
+
+        if isinstance(images, list):
+            for im in images:
+                im_pil = im.convert("RGB").resize((w, h), resample=__import__("PIL").Image.Resampling.LANCZOS)
+                arr = np.array(im_pil).astype(np.float32) / 255.0
+                data.append(arr)
+        elif isinstance(images, torch.Tensor):
+            if utils is None:
+                raise ImportError("utils is required to process torch.Tensor images")
             for i in range(images.shape[0]):
-                
-                imagePil = utils.process_image(images[i], w, h)
-                image = np.array(imagePil).astype(np.float32) / 255.0
-                data.append(image)
-            
-        
+                im_pil = utils.process_image(images[i], w, h)
+                arr = np.array(im_pil).astype(np.float32) / 255.0
+                data.append(arr)
+        else:
+            raise TypeError(f"images must be list[PIL.Image] or torch.Tensor, got {type(images)}")
+
         self.stim_data[self.subject] = np.moveaxis(np.array(data), 3, 1)
 
-        gnet8j_image_pred = self.gnet8j_predictions(self.stim_data, self._pred_fn, 64, 192, self.joined_checkpoint, mask, batch_size=100, device=self.device)
+        gnet8j_image_pred = self.gnet8j_predictions(
+            self.stim_data,
+            self._pred_fn,
+            64,
+            192,
+            self.joined_checkpoint,
+            mask,
+            batch_size=100,
+            device=self.device,
+        )
 
         return torch.from_numpy(gnet8j_image_pred[self.subject])

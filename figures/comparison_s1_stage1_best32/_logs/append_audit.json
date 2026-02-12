@@ -1,0 +1,45 @@
+{
+  "figs": [
+    "Fig_audit_sim_text_v2.png",
+    "fig01_ccd_acc1_per_subj_dot_ci_2x2_v2.png",
+    "fig01_rsa_pearson_pooled_by_subj_v2_dumbbell.png",
+    "fig03_rsa_bar_pooled_main_v14.png",
+    "fig06_rsm_heatmaps_subj01_best_overall_pooled_v3.png"
+  ],
+  "inputs": {
+    "ccd": "/mnt/work/repos/TextAlign-mindeye2/figures/comparison_s1_stage1_best32/_inputs_augmented/ccd_summary.csv",
+    "rsa": "/mnt/work/repos/TextAlign-mindeye2/figures/comparison_s1_stage1_best32/_inputs_augmented/rsa_summary.csv",
+    "hardneg": "/mnt/work/repos/TextAlign-mindeye2/figures/comparison_s1_stage1_best32/_inputs_augmented/s1_textalign_stage1_FINAL_BEST_32_hardneg.jsonl",
+    "brain": "/mnt/work/tmp_infer_out_ours_s1_stage1_final_best32_lastpth_v1/brain_clip.pt",
+    "gt": "/mnt/work/repos/TextAlign-mindeye2/evals/all_images_bigG_1664_mean.pt"
+  },
+  "append": {
+    "ccd": {
+      "group": "ours",
+      "subj": "01",
+      "eval_repr": "pooled_mean",
+      "tag": "s1_textalign_stage1_FINAL_BEST_32",
+      "n_eval": 901,
+      "neg_mode": "hardneg",
+      "k_neg": 1,
+      "seed": 42,
+      "bootstrap": 1000,
+      "ccd_acc1": 0.583,
+      "ccd_acc1_ci95_lo": 0.551,
+      "ccd_acc1_ci95_hi": 0.617
+    },
+    "rsa": {
+      "group": "ours",
+      "subj": "01",
+      "eval_repr": "pooled",
+      "tag": "s1_textalign_stage1_FINAL_BEST_32",
+      "N": 982,
+      "rsa_pearson": 0.379,
+      "ci95_low_p": 0.357,
+      "ci95_high_p": 0.402,
+      "rsa_spearman": 0.263,
+      "ci95_low": 0.241,
+      "ci95_high": 0.287
+    }
+  }
+}

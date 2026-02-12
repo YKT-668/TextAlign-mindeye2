@@ -593,6 +593,13 @@ class FrozenOpenCLIPImageEmbedder(AbstractEmbModel):
         cache_dir: Optional[str] = None,
     ):
         super().__init__()
+        if version and version.startswith("laion"):
+            # HACK: If we have a local download, use it
+            potential_path = os.path.join(os.sep, "mnt", "work", "models", "open_clip_pytorch_model.bin")
+            if os.path.exists(potential_path) and arch == "ViT-bigG-14" and "laion2b" in version:
+                print(f"[OpenCLIP] Using local pretrained model: {potential_path}")
+                version = potential_path
+            
         model, _, _ = open_clip.create_model_and_transforms(
             arch,
             device=torch.device(init_device),

@@ -10,6 +10,7 @@ import os
 import sys
 import json
 import argparse
+from pathlib import Path
 import numpy as np
 import math
 from einops import rearrange
@@ -193,6 +194,13 @@ parser.add_argument(
 parser.add_argument(
     "--blurry_recon",action=argparse.BooleanOptionalAction,default=True,
     help="whether to output blurry reconstructions",
+)
+parser.add_argument(
+    "--clip_targets_pt", type=str, default=None,
+    help=(
+        "Optional path to precomputed CLIP image tokens (e.g. evals/all_images_bigG_tokens_256x1664.pt). "
+        "If provided (or if the default file exists), training will use it as CLIP targets and skip OpenCLIP downloading."
+    ),
 )
 parser.add_argument(
     "--blur_scale",type=float,default=.5,
@@ -518,15 +526,39 @@ print(f"Using lazy COCO images: total {len(lazy_coco)} (no full preloading)")
 # In[9]:
 
 
-clip_img_embedder = FrozenOpenCLIPImageEmbedder(
-    arch="ViT-bigG-14",
-    version="laion2b_s39b_b160k",
-    output_tokens=True,
-)
-clip_img_embedder.to(device)
-clip_img_embedder.eval()                             # ← 新增
-for p in clip_img_embedder.parameters():             # ← 新增
-    p.requires_grad_(False)    
+clip_targets_path = args.clip_targets_pt
+
+clip_targets_tokens = None
+clip_img_embedder = None
+if clip_targets_path is not None:
+    print(f"Using precomputed CLIP targets (skip OpenCLIP download): {clip_targets_path}")
+    clip_targets_tokens = torch.load(clip_targets_path, map_location="cpu")
+    if isinstance(clip_targets_tokens, dict):
+        for k in ("tokens", "clip_tokens", "all_tokens", "x", "data"):
+            if k in clip_targets_tokens:
+                clip_targets_tokens = clip_targets_tokens[k]
+                break
+    if not torch.is_tensor(clip_targets_tokens):
+        raise TypeError(
+            f"Expected a Tensor in --clip_targets_pt, got {type(clip_targets_tokens)} from {clip_targets_path}"
+        )
+    # 训练数据使用 COCO 全局 image id (0..72999) 直接索引；
+    # 若你提供的是仅 shared1000 的 tokens，会在这里被拒绝以避免后续 index error。
+    if clip_targets_tokens.ndim >= 1 and clip_targets_tokens.shape[0] < 73000:
+        raise ValueError(
+            f"--clip_targets_pt seems incompatible for training: first dim is {clip_targets_tokens.shape[0]} (<73000). "
+            "Train.py indexes CLIP targets by global COCO image id. Provide a 73k-sized tensor or omit --clip_targets_pt."
+        )
+else:
+    clip_img_embedder = FrozenOpenCLIPImageEmbedder(
+        arch="ViT-bigG-14",
+        version="laion2b_s39b_b160k",
+        output_tokens=True,
+    )
+    clip_img_embedder.to(device)
+    clip_img_embedder.eval()
+    for p in clip_img_embedder.parameters():
+        p.requires_grad_(False)
 
 clip_seq_dim = 256
 clip_emb_dim = 1664
@@ -868,6 +900,7 @@ for epoch in progress_bar:
 
             voxel_list = []
             image_chunks = []
+            image_id_chunks = []
             mix_perm_list, mix_betas_list, mix_select_list = [], [], []
 
             for si, s in enumerate(subj_list):
@@ -888,6 +921,7 @@ for epoch in progress_bar:
                     # 懒加载 HDF5 图像并在后续统一转设备/精度
                     img_tensor = lazy_coco.get(image0)
                     image_chunks.append(img_tensor)
+                    image_id_chunks.append(torch.from_numpy(image0).long())
 
                     voxel_idx = behav0[:, 0, 5].cpu().long().numpy()
                     voxel_sorted_idx = voxel_idx[image_sorted_idx]
@@ -905,6 +939,7 @@ for epoch in progress_bar:
 
             # 组合跨被试 batch
             image = torch.cat(image_chunks, dim=0)
+            image_ids = torch.cat(image_id_chunks, dim=0)
             if image.dtype != torch.float32 and data_type == torch.float32:
                 image = image.to(torch.float32)
             image = image.to(device, non_blocking=True)
@@ -913,13 +948,17 @@ for epoch in progress_bar:
             if use_image_aug: 
                 image = img_augment(image)
 
-            with torch.no_grad():
-                force_clip_fp32 = os.environ.get("CLIP_FP32", "1") == "1"
-                clip_amp_dtype = torch.float32 if force_clip_fp32 else data_type
-                with torch.cuda.amp.autocast(dtype=clip_amp_dtype):
-                    _img = image.float() if force_clip_fp32 else image
-                    _out = clip_img_embedder(_img)
-                    clip_target = _out[0] if isinstance(_out, tuple) else _out
+            if clip_targets_tokens is not None:
+                clip_target = clip_targets_tokens[image_ids.cpu().long()].to(device, non_blocking=True)
+                clip_target = clip_target.float()
+            else:
+                with torch.no_grad():
+                    force_clip_fp32 = os.environ.get("CLIP_FP32", "1") == "1"
+                    clip_amp_dtype = torch.float32 if force_clip_fp32 else data_type
+                    with torch.cuda.amp.autocast(dtype=clip_amp_dtype):
+                        _img = image.float() if force_clip_fp32 else image
+                        _out = clip_img_embedder(_img)
+                        clip_target = _out[0] if isinstance(_out, tuple) else _out
             assert not torch.any(torch.isnan(clip_target))
 
             if epoch < int(mixup_pct * num_epochs):
@@ -1040,7 +1079,7 @@ for epoch in progress_bar:
             for _eval_subj in list(test_dl_map.keys()):
                 test_dl = test_dl_map[_eval_subj]
                 num_test = test_num_map[_eval_subj]
-                test_image, test_voxel = None, None
+                test_image, test_voxel, test_image_ids = None, None, None
                 test_i = -1
                 for test_i, (behav, past_behav, future_behav, old_behav) in enumerate(test_dl):  
                     # 全量一次性载入
@@ -1065,22 +1104,29 @@ for epoch in progress_bar:
                         if test_image is None:
                             test_image = lazy_coco.get([im])
                             test_voxel = voxel[locs][None]
+                            test_image_ids = torch.tensor([int(im)], dtype=torch.long)
                         else:
                             test_image = torch.vstack((test_image, lazy_coco.get([im])))
                             test_voxel = torch.vstack((test_voxel, voxel[locs][None]))
+                            test_image_ids = torch.cat((test_image_ids, torch.tensor([int(im)], dtype=torch.long)))
 
                 loss=0.
                             
                 test_indices = torch.arange(len(test_voxel))[:300]
                 voxel = test_voxel[test_indices].to(device)
                 image = test_image[test_indices]
+                image_ids = test_image_ids[test_indices]
                 if image.dtype != torch.float32:
                     image = image.to(torch.float32)
                 image = image.to(device, non_blocking=True)
                 assert len(image) == 300
 
-                _out = clip_img_embedder(image.float())
-                clip_target = _out[0] if isinstance(_out, tuple) else _out
+                if clip_targets_tokens is not None:
+                    clip_target = clip_targets_tokens[image_ids.cpu().long()].to(device, non_blocking=True)
+                    clip_target = clip_target.float()
+                else:
+                    _out = clip_img_embedder(image.float())
+                    clip_target = _out[0] if isinstance(_out, tuple) else _out
 
                 # 使用正确的被试线性层索引，确保维度匹配
                 _subj_idx = subj_to_idx.get(int(_eval_subj), 0)

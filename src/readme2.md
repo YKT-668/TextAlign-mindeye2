@@ -189,3 +189,42 @@ cp requirements_mindeye21.txt requirements_mindeye21.txt.bak
 
 # 2. 注释掉含 'openai/CLIP' 的那一行
 sed -i '/openai\/CLIP/s/^/#/' requirements_mindeye21.txt
+
+
+#切换新环境时的命令：
+
+# 加载 conda 配置
+source /mnt/work/conda/etc/profile.d/conda.sh
+
+# 激活环境 (注意看提示符变成 mindeye21 才算成功)
+conda activate mindeye21
+
+#tools在外部的是第二次实验的工具脚本和第一次实验的大部分工具脚本集合
+
+#测试集生成硬负样本的代码
+# === 环境变量配置 ===
+export DEEPSEEK_API_KEY=sk-9d9b132df59e4cb09b308ab137d5352d
+export HF_HOME=/root/.cache/huggingface
+export HF_ENDPOINT=https://hf-mirror.com
+export CUDA_VISIBLE_DEVICES=0
+export PYTHONUNBUFFERED=1
+
+# === 清空日志 ===
+: > cache/hardneg/shared982_hardneg_run.log
+
+# === 启动命令 (参数已锁定) ===
+nohup python -u tools/gen_shared982_hardneg_from_evals.py \
+  --clip_device cuda \
+  --clip_batch 512 \
+  --neg_encode_batch_target 256 \
+  --workers 16 \
+  --heartbeat_interval_sec 15 \
+  --k_raw 12 \
+  --k_final 4 \
+  --max_len_ratio_delta 0.6 \
+  --low 0.15 \
+  --high 0.85 \
+  --max_high 0.90 \
+>> cache/hardneg/shared982_hardneg_run.log 2>&1 &
+
+echo "FINAL_PID=$!"

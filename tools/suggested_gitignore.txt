@@ -1,0 +1,47 @@
+# Data
+data/
+wds/
+*.hdf5
+*.h5
+*.npy
+*.npz
+
+# Weights & Checkpoints
+*.pth
+*.ckpt
+*.pt
+*.safetensors
+*.bin
+train_logs/
+checkpoints/
+models/
+
+# Logs & Results
+evals/
+results/
+runs/
+wandb/
+*.log
+nohup.out
+tmp_infer_out*/
+debug_artifacts/
+
+# System & Cache
+__pycache__/
+*.pyc
+.ipynb_checkpoints
+.DS_Store
+cache/
+hf_cache/
+
+# Large specific files identified
+convnext_xlarge_alpha0.75_fullckpt.pth
+unclip6_epoch0_step110000.ckpt
+gnet_multisubject.pt
+sd_image_var_autoenc.pth
+photos_for_download.zip
+
+# Environment-specific
+.vscode/
+.idea/
+*.slurm

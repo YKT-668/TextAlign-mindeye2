@@ -1,43 +1,110 @@
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
-.env
-.venv/
-*.log
-
-cache/
-train_logs/
-runs/
-logs/
-wandb/
-checkpoints/
-blurry_images/
-original_images/
-debug_vis/
-
-# 数据集与预处理输出
-data/
-evals/
-wds/
-datasets/
-nsd/
-
 *.pth
 *.pt
-*.ckpt
-*.safetensors
-*.npz
 *.npy
-*.tar
 *.h5
-.ipynb_checkpoints/
-
-# 额外忽略：HDF5 数据 & 局部 wds 和 nohup 输出
+data/
+train_logs/
+.vscode/
+__pycache__/
+*.pth
+*.pt
+*.npy
+*.h5
+data/
+train_logs/
+.vscode/
+# Data
+data/
+wds/
 *.hdf5
-src/wds/
-nohup.out
+*.h5
+*.npy
+*.npz
 
-# 忽略本地运行输出目录（项目根下）
-/runs/
-/src/wds/
+# Weights & Checkpoints
+*.pth
+*.ckpt
+*.pt
+*.safetensors
+*.bin
+train_logs/
+checkpoints/
+models/
+
+# Logs & Results
+evals/
+results/
+runs/
+wandb/
+*.log
+nohup.out
+tmp_infer_out*/
+debug_artifacts/
+
+# System & Cache
+__pycache__/
+*.pyc
+.ipynb_checkpoints
+.DS_Store
+cache/
+hf_cache/
+
+# Large specific files identified
+convnext_xlarge_alpha0.75_fullckpt.pth
+unclip6_epoch0_step110000.ckpt
+gnet_multisubject.pt
+sd_image_var_autoenc.pth
+photos_for_download.zip
+
+# Environment-specific
+.vscode/
+.idea/
+*.slurm
+# Data
+data/
+wds/
+*.hdf5
+*.h5
+*.npy
+*.npz
+
+# Weights & Checkpoints
+*.pth
+*.ckpt
+*.pt
+*.safetensors
+*.bin
+train_logs/
+checkpoints/
+models/
+
+# Logs & Results
+evals/
+results/
+runs/
+wandb/
+*.log
+nohup.out
+tmp_infer_out*/
+debug_artifacts/
+
+# System & Cache
+__pycache__/
+*.pyc
+.ipynb_checkpoints
+.DS_Store
+cache/
+hf_cache/
+
+# Large specific files identified
+convnext_xlarge_alpha0.75_fullckpt.pth
+unclip6_epoch0_step110000.ckpt
+gnet_multisubject.pt
+sd_image_var_autoenc.pth
+photos_for_download.zip
+
+# Environment-specific
+.vscode/
+.idea/
+*.slurm

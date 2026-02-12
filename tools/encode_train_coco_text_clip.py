@@ -2,11 +2,13 @@
 
 import os
 import json
+import time
 import torch
 from transformers import CLIPTokenizer, CLIPModel
 
 
 def main():
+    t0 = time.time()
     proj_root = os.path.dirname(os.path.abspath(__file__))
     proj_root = os.path.dirname(proj_root)  # 上一级，项目根目录
 
@@ -47,8 +49,10 @@ def main():
     model.eval().requires_grad_(False)
 
     all_feats = []
-    bs = 64
+    bs = int(os.environ.get("CLIP_TEXT_BS", "256"))
     n = len(captions)
+
+    print(f"[ENCODE] batch_size = {bs}")
 
     for i in range(0, n, bs):
         batch_caps = captions[i:i + bs]
@@ -63,8 +67,12 @@ def main():
             feats = model.get_text_features(**inputs)  # [B, d_text]
         all_feats.append(feats.cpu())
 
-        if (i // bs) % 10 == 0:
-            print(f"[ENCODE] {i}/{n}")
+        if (i // bs) % 10 == 0 or (i + bs) >= n:
+            done = min(i + bs, n)
+            elapsed = time.time() - t0
+            rate = done / max(elapsed, 1e-6)
+            eta = (n - done) / max(rate, 1e-6)
+            print(f"[ENCODE] {done}/{n} | elapsed={elapsed:.1f}s | eta={eta/60:.1f}m")
 
     all_feats = torch.cat(all_feats, dim=0)  # [N, d_text]
     print(f"[ENCODE] done, feats shape = {all_feats.shape}")
@@ -81,6 +89,7 @@ def main():
         out_path,
     )
     print(f"[SAVE] wrote {out_path}")
+    print(f"[DONE] total time: {time.time() - t0:.1f}s")
 
 
 if __name__ == "__main__":

@@ -260,7 +260,16 @@ def select_annotations(annots, random=True):
     txt = txt.flatten()
     return txt
 
-from generative_models.sgm.util import append_dims
+try:
+    # sgm 依赖较重（可能需要 pytorch_lightning）。
+    # 在只做检索/TextAlign 的训练配置下并不需要完整 sgm，这里做一个可用的降级。
+    from generative_models.sgm.util import append_dims  # type: ignore
+except Exception:
+    def append_dims(x, target_dims: int):
+        """Fallback: append singleton dims to match target rank."""
+        while x.ndim < target_dims:
+            x = x[..., None]
+        return x
 def unclip_recon(x, diffusion_engine, vector_suffix,
                  num_samples=1, offset_noise_level=0.04):
     assert x.ndim==3

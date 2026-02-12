@@ -37,8 +37,13 @@ _PROJ_ROOT = os.path.abspath(os.path.join(_THIS_DIR, os.pardir))
 _GEN_MODELS_DIR = os.path.join(_PROJ_ROOT, 'generative-models')
 if _GEN_MODELS_DIR not in sys.path:
     sys.path.append(_GEN_MODELS_DIR)
-import sgm
-from sgm.modules.encoders.modules import FrozenOpenCLIPImageEmbedder  # bigG embedder
+try:
+    import sgm  # noqa: F401
+    from sgm.modules.encoders.modules import FrozenOpenCLIPImageEmbedder  # bigG embedder
+except Exception as e:
+    sgm = None
+    FrozenOpenCLIPImageEmbedder = None
+    _SGM_IMPORT_ERROR = e
 
 # tf32 data type is faster than standard float32
 torch.backends.cuda.matmul.allow_tf32 = True

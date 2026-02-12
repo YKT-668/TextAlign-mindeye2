@@ -1,0 +1,7 @@
+{
+  "Fig_audit_sim_text_v2.png": "fig_audit_sim_text_v2.py",
+  "fig01_ccd_acc1_per_subj_dot_ci_2x2_v2.png": "run_fig01_forest_multirun_2x2_v6.py",
+  "fig01_rsa_pearson_pooled_by_subj_v2_dumbbell.png": "fig01_rsa_pearson_pooled_by_subj_v2_dumbbell.py",
+  "fig03_rsa_bar_pooled_main_v14.png": "fig03_rsa_bar_main_v1.py",
+  "fig06_rsm_heatmaps_subj01_best_overall_pooled_v3.png": "fig06_rsm_heatmaps_subj01_best_overall_pooled_v3.py"
+}

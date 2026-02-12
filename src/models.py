@@ -1,15 +1,26 @@
+def exists(val):
+    return val is not None
+
 import os
 import numpy as np
 from torchvision import transforms
 import torch
 import torch.nn as nn
 import PIL
-import clip
+try:
+    import clip  # type: ignore
+except Exception as e:  # pragma: no cover
+    clip = None
+    print(f"[WARN] optional dependency 'clip' not available: {type(e).__name__}: {e}")
 from functools import partial
 import random
 import json
 from tqdm import tqdm
-import utils
+try:
+    import utils  # type: ignore
+except Exception as e:  # pragma: no cover
+    utils = None
+    print(f"[WARN] optional dependency 'utils' not available: {type(e).__name__}: {e}")
 
 class BrainNetwork(nn.Module):
     def __init__(self, h=4096, in_dim=15724, out_dim=768, seq_len=2, n_blocks=4, drop=.15, clip_size=768, blurry_recon=True, clip_scale=1):

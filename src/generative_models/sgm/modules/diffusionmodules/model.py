@@ -1,4 +1,14 @@
 # pytorch_diffusion + derived encoder decoder
+# ---- xformers optional import (avoid NameError) ----
+try:
+    import xformers
+    import xformers.ops
+    _XFORMERS_AVAILABLE = True
+except Exception:
+    xformers = None
+    _XFORMERS_AVAILABLE = False
+# -----------------------------------------------
+
 import logging
 import math
 from typing import Any, Callable, Optional
@@ -246,9 +256,13 @@ class MemoryEfficientAttnBlock(nn.Module):
             .contiguous(),
             (q, k, v),
         )
-        out = xformers.ops.memory_efficient_attention(
-            q, k, v, attn_bias=None, op=self.attention_op
-        )
+        if _XFORMERS_AVAILABLE and (not bool(int(os.environ.get("XFORMERS_DISABLED", "0")))):
+            out = xformers.ops.memory_efficient_attention(q, k, v, attn_bias=attn_bias)
+        else:
+            # fallback: torch SDPA
+            # q,k,v: (b, heads, n, d) or similar; ensure shapes match your code's convention
+            out = torch.nn.functional.scaled_dot_product_attention(q, k, v, attn_mask=None, dropout_p=0.0, is_causal=False)
+
 
         out = (
             out.unsqueeze(0)

@@ -1,0 +1,3 @@
+Missing figures:
+- fig03_rsa_bar_pooled_main_v14.png
+- fig06_rsm_heatmaps_subj01_best_overall_pooled_v3.png
