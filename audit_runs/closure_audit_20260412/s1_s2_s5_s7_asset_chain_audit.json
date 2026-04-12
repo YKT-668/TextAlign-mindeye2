@@ -1,0 +1,204 @@
+{
+  "generated_at": "2026-04-12T16:29:01.195576",
+  "root": "/mnt/work/repos/TextAlign-mindeye2",
+  "subjects": {
+    "1": {
+      "train_dir_exists": false,
+      "train_dir": "/mnt/work/repos/TextAlign-mindeye2/train_logs/s1_textalign_stage1_FINAL_BEST_32",
+      "ckpt_files": [],
+      "has_last": false,
+      "has_best": false,
+      "mid_ckpts": [],
+      "last_meta": {
+        "path": "/mnt/work/repos/TextAlign-mindeye2/train_logs/s1_textalign_stage1_FINAL_BEST_32/last.pth",
+        "exists": false
+      },
+      "eval_dir_exists": false,
+      "eval_dir": "/mnt/work/repos/TextAlign-mindeye2/evals/s1_textalign_stage1_FINAL_BEST_32",
+      "eval_files": {
+        "s1_textalign_stage1_FINAL_BEST_32_all_enhancedrecons.pt": false,
+        "s1_textalign_stage1_FINAL_BEST_32_all_blurryrecons.pt": false,
+        "s1_textalign_stage1_FINAL_BEST_32_all_clipvoxels.pt": false,
+        "s1_textalign_stage1_FINAL_BEST_32_all_predcaptions.pt": false,
+        "s1_textalign_stage1_FINAL_BEST_32_all_ids.pt": false,
+        "s1_textalign_stage1_FINAL_BEST_32_all_prior_out.pt": false,
+        "s1_textalign_stage1_FINAL_BEST_32_all_backbones.pt": false
+      },
+      "table_main": true,
+      "table_caption": true,
+      "table_brain_aligned_json": false,
+      "table_brain_aligned_tsv": false,
+      "shared_eval_deps": {
+        "evals/all_images.pt": true,
+        "evals/all_captions.pt": true,
+        "evals/all_git_generated_captions.pt": true,
+        "gnet_multisubject.pt": true,
+        "brain_region_masks.hdf5": true,
+        "betas_all_subj01_fp32_renorm.hdf5": false,
+        "wds/subj01/new_test/0.tar": false
+      }
+    },
+    "2": {
+      "train_dir_exists": true,
+      "train_dir": "/mnt/work/repos/TextAlign-mindeye2/train_logs/s2_textalign_stage1_FINAL_BEST_32",
+      "ckpt_files": [
+        "/mnt/work/repos/TextAlign-mindeye2/train_logs/s2_textalign_stage1_FINAL_BEST_32/last.pth"
+      ],
+      "has_last": true,
+      "has_best": false,
+      "mid_ckpts": [],
+      "last_meta": {
+        "path": "/mnt/work/repos/TextAlign-mindeye2/train_logs/s2_textalign_stage1_FINAL_BEST_32/last.pth",
+        "exists": true,
+        "load_ok": true,
+        "epoch": 119,
+        "stage": 1,
+        "train_losses": "len=112440",
+        "top_keys": [
+          "epoch",
+          "stage",
+          "model_state_dict",
+          "optimizer_state_dict",
+          "train_losses",
+          "test_losses",
+          "lrs",
+          "args",
+          "lr_scheduler"
+        ],
+        "mtime": 1775549041.9599655
+      },
+      "eval_dir_exists": true,
+      "eval_dir": "/mnt/work/repos/TextAlign-mindeye2/evals/s2_textalign_stage1_FINAL_BEST_32",
+      "eval_files": {
+        "s2_textalign_stage1_FINAL_BEST_32_all_enhancedrecons.pt": true,
+        "s2_textalign_stage1_FINAL_BEST_32_all_blurryrecons.pt": true,
+        "s2_textalign_stage1_FINAL_BEST_32_all_clipvoxels.pt": true,
+        "s2_textalign_stage1_FINAL_BEST_32_all_predcaptions.pt": true,
+        "s2_textalign_stage1_FINAL_BEST_32_all_ids.pt": true,
+        "s2_textalign_stage1_FINAL_BEST_32_all_prior_out.pt": true,
+        "s2_textalign_stage1_FINAL_BEST_32_all_backbones.pt": true
+      },
+      "table_main": true,
+      "table_caption": true,
+      "table_brain_aligned_json": true,
+      "table_brain_aligned_tsv": true,
+      "shared_eval_deps": {
+        "evals/all_images.pt": true,
+        "evals/all_captions.pt": true,
+        "evals/all_git_generated_captions.pt": true,
+        "gnet_multisubject.pt": true,
+        "brain_region_masks.hdf5": true,
+        "betas_all_subj02_fp32_renorm.hdf5": true,
+        "wds/subj02/new_test/0.tar": true
+      }
+    },
+    "5": {
+      "train_dir_exists": true,
+      "train_dir": "/mnt/work/repos/TextAlign-mindeye2/train_logs/s5_textalign_stage1_FINAL_BEST_32",
+      "ckpt_files": [
+        "/mnt/work/repos/TextAlign-mindeye2/train_logs/s5_textalign_stage1_FINAL_BEST_32/last.pth"
+      ],
+      "has_last": true,
+      "has_best": false,
+      "mid_ckpts": [],
+      "last_meta": {
+        "path": "/mnt/work/repos/TextAlign-mindeye2/train_logs/s5_textalign_stage1_FINAL_BEST_32/last.pth",
+        "exists": true,
+        "load_ok": true,
+        "epoch": 119,
+        "stage": 1,
+        "train_losses": "len=112440",
+        "top_keys": [
+          "epoch",
+          "stage",
+          "model_state_dict",
+          "optimizer_state_dict",
+          "train_losses",
+          "test_losses",
+          "lrs",
+          "args",
+          "lr_scheduler"
+        ],
+        "mtime": 1775364480.7626595
+      },
+      "eval_dir_exists": true,
+      "eval_dir": "/mnt/work/repos/TextAlign-mindeye2/evals/s5_textalign_stage1_FINAL_BEST_32",
+      "eval_files": {
+        "s5_textalign_stage1_FINAL_BEST_32_all_enhancedrecons.pt": true,
+        "s5_textalign_stage1_FINAL_BEST_32_all_blurryrecons.pt": true,
+        "s5_textalign_stage1_FINAL_BEST_32_all_clipvoxels.pt": true,
+        "s5_textalign_stage1_FINAL_BEST_32_all_predcaptions.pt": true,
+        "s5_textalign_stage1_FINAL_BEST_32_all_ids.pt": true,
+        "s5_textalign_stage1_FINAL_BEST_32_all_prior_out.pt": true,
+        "s5_textalign_stage1_FINAL_BEST_32_all_backbones.pt": true
+      },
+      "table_main": true,
+      "table_caption": true,
+      "table_brain_aligned_json": true,
+      "table_brain_aligned_tsv": true,
+      "shared_eval_deps": {
+        "evals/all_images.pt": true,
+        "evals/all_captions.pt": true,
+        "evals/all_git_generated_captions.pt": true,
+        "gnet_multisubject.pt": true,
+        "brain_region_masks.hdf5": true,
+        "betas_all_subj05_fp32_renorm.hdf5": true,
+        "wds/subj05/new_test/0.tar": true
+      }
+    },
+    "7": {
+      "train_dir_exists": true,
+      "train_dir": "/mnt/work/repos/TextAlign-mindeye2/train_logs/s7_textalign_stage1_FINAL_BEST_32",
+      "ckpt_files": [
+        "/mnt/work/repos/TextAlign-mindeye2/train_logs/s7_textalign_stage1_FINAL_BEST_32/last.pth"
+      ],
+      "has_last": true,
+      "has_best": false,
+      "mid_ckpts": [],
+      "last_meta": {
+        "path": "/mnt/work/repos/TextAlign-mindeye2/train_logs/s7_textalign_stage1_FINAL_BEST_32/last.pth",
+        "exists": true,
+        "load_ok": true,
+        "epoch": 119,
+        "stage": 1,
+        "train_losses": "len=88078",
+        "top_keys": [
+          "epoch",
+          "stage",
+          "model_state_dict",
+          "optimizer_state_dict",
+          "train_losses",
+          "test_losses",
+          "lrs",
+          "args",
+          "lr_scheduler"
+        ],
+        "mtime": 1775925247.5333035
+      },
+      "eval_dir_exists": true,
+      "eval_dir": "/mnt/work/repos/TextAlign-mindeye2/evals/s7_textalign_stage1_FINAL_BEST_32",
+      "eval_files": {
+        "s7_textalign_stage1_FINAL_BEST_32_all_enhancedrecons.pt": true,
+        "s7_textalign_stage1_FINAL_BEST_32_all_blurryrecons.pt": true,
+        "s7_textalign_stage1_FINAL_BEST_32_all_clipvoxels.pt": true,
+        "s7_textalign_stage1_FINAL_BEST_32_all_predcaptions.pt": true,
+        "s7_textalign_stage1_FINAL_BEST_32_all_ids.pt": true,
+        "s7_textalign_stage1_FINAL_BEST_32_all_prior_out.pt": true,
+        "s7_textalign_stage1_FINAL_BEST_32_all_backbones.pt": true
+      },
+      "table_main": true,
+      "table_caption": true,
+      "table_brain_aligned_json": true,
+      "table_brain_aligned_tsv": true,
+      "shared_eval_deps": {
+        "evals/all_images.pt": true,
+        "evals/all_captions.pt": true,
+        "evals/all_git_generated_captions.pt": true,
+        "gnet_multisubject.pt": true,
+        "brain_region_masks.hdf5": true,
+        "betas_all_subj07_fp32_renorm.hdf5": true,
+        "wds/subj07/new_test/0.tar": true
+      }
+    }
+  }
+}

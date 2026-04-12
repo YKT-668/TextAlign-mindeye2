@@ -32,6 +32,7 @@ import argparse
 import glob
 import json
 import os
+import pickle
 from collections import defaultdict
 
 import numpy as np
@@ -83,13 +84,48 @@ def collect_train_image_ids(data_path: str, subj: int) -> list[int]:
     return ids
 
 
-def load_coco_captions_hf() -> dict[int, str]:
+def load_stiminfo_cocoids(pkl_path: str) -> np.ndarray:
+    obj = pickle.load(open(pkl_path, "rb"), encoding="latin1")
+    if hasattr(obj, "columns") and "cocoId" in obj.columns:
+        coco = obj["cocoId"].to_numpy()
+    elif isinstance(obj, dict) and "cocoId" in obj:
+        coco = np.asarray(obj["cocoId"])
+    else:
+        coco = np.asarray(getattr(obj, "cocoId"))
+    return coco.astype(np.int64)
+
+
+def load_coco_captions_hf(local_ann_dir: str = None) -> dict[int, str]:
     """Return mapping: coco image_id -> one caption string (first seen).
 
     NOTE: This function is written to be robust on servers where network
     access is slow/spotty. It streams rows and prints progress periodically
     (instead of materializing the whole dataset into RAM).
     """
+    # Prefer local COCO annotations if available (faster, deterministic, no HF config drift).
+    ann_dir = local_ann_dir
+    if ann_dir is None:
+        root = _proj_root()
+        ann_dir = os.path.join(root, "data", "coco_annotations", "annotations")
+    train_json = os.path.join(ann_dir, "captions_train2017.json")
+    val_json = os.path.join(ann_dir, "captions_val2017.json")
+    if os.path.isfile(train_json) and os.path.isfile(val_json):
+        img2cap: dict[int, str] = {}
+        for p in (train_json, val_json):
+            with open(p, "r", encoding="utf-8") as f:
+                obj = json.load(f)
+            for ann in obj.get("annotations", []):
+                try:
+                    image_id = int(ann.get("image_id"))
+                    cap = str(ann.get("caption", "")).strip()
+                except Exception:
+                    continue
+                if cap and image_id not in img2cap:
+                    img2cap[image_id] = cap
+        if img2cap:
+            print(f"[COCO] loaded local annotations from {ann_dir}, mappings={len(img2cap)}")
+            return img2cap
+
     try:
         from datasets import load_dataset
     except Exception as e:
@@ -204,22 +240,35 @@ def main():
     ap.add_argument("--subj", type=int, default=1)
     ap.add_argument("--data_path", type=str, default=None, help="MindEye2 data_path (the folder that contains wds/...). Default: <proj>/src")
     ap.add_argument("--out_json", action="store_true", help="Also write data/nsd_text/train_coco_captions.json")
+    ap.add_argument("--stiminfo", type=str, default=None,
+                    help="Path to nsd_stim_info_merged.pkl. Default: <proj>/nsd_stim_info_merged.pkl")
+    ap.add_argument("--out_json_path", type=str, default=None,
+                    help="Explicit output path for caption json (e.g. data/nsd_text/s2_train_coco_captions.json)")
+    ap.add_argument("--out_pt_path", type=str, default=None,
+                    help="Explicit output path for teacher pt (e.g. data/nsd_text/s2_train_coco_text_clip.pt)")
     ap.add_argument("--batch_size", type=int, default=256, help="CLIP text encoding batch size")
     args = ap.parse_args()
 
     root = _proj_root()
     data_path = args.data_path or os.path.join(root, "src")
+    stiminfo_path = args.stiminfo or os.path.join(root, "nsd_stim_info_merged.pkl")
     out_dir = os.path.join(root, "data", "nsd_text")
     os.makedirs(out_dir, exist_ok=True)
 
     train_ids = collect_train_image_ids(data_path=data_path, subj=int(args.subj))
+    cocoids = load_stiminfo_cocoids(stiminfo_path)
+    print(f"[STIMINFO] cocoId shape={tuple(cocoids.shape)} min={int(cocoids.min())} max={int(cocoids.max())}")
     img2cap = load_coco_captions_hf()
 
     image_ids_out = []
     captions_out = []
     missed = []
     for iid in train_ids:
-        cap = img2cap.get(int(iid))
+        if iid < 0 or iid >= len(cocoids):
+            missed.append(int(iid))
+            continue
+        coco_id = int(cocoids[int(iid)])
+        cap = img2cap.get(coco_id)
         if cap is None:
             missed.append(int(iid))
             continue
@@ -230,8 +279,9 @@ def main():
     if missed:
         print("[MAP] first 20 missed:", missed[:20])
 
-    if args.out_json:
-        json_path = os.path.join(out_dir, "train_coco_captions.json")
+    json_path = args.out_json_path or os.path.join(out_dir, "train_coco_captions.json")
+    if args.out_json or args.out_json_path:
+        os.makedirs(os.path.dirname(os.path.abspath(json_path)), exist_ok=True)
         with open(json_path, "w", encoding="utf-8") as f:
             json.dump({"image_ids": image_ids_out, "captions": captions_out}, f, ensure_ascii=False, indent=2)
         print(f"[SAVE] {json_path}")
@@ -242,7 +292,8 @@ def main():
     text_feats = encode_clip_text(captions_out, device=device, batch_size=int(args.batch_size))
     print(f"[ENC] text_feats shape={tuple(text_feats.shape)}")
 
-    out_pt = os.path.join(out_dir, "train_coco_text_clip.pt")
+    out_pt = args.out_pt_path or os.path.join(out_dir, "train_coco_text_clip.pt")
+    os.makedirs(os.path.dirname(os.path.abspath(out_pt)), exist_ok=True)
     torch.save({"image_ids": torch.tensor(image_ids_out, dtype=torch.long), "text_feats": text_feats}, out_pt)
     print(f"[SAVE] {out_pt}")
 

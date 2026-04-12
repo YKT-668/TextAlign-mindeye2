@@ -1,0 +1,7 @@
+ inspect_data.py                                    | 37 ++++++++++---
+ src/evals                                          |  2 +-
+ src/wds                                            |  2 +-
+ tools/gen_hard_neg_captions_from_json_v2.py        | 22 +++++---
+ .../prepare_and_encode_train_coco_text_clip_hf.py  | 61 ++++++++++++++++++++--
+ wds                                                |  2 +-
+ 6 files changed, 103 insertions(+), 23 deletions(-)

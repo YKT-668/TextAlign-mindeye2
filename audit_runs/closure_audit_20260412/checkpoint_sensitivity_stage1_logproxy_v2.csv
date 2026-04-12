@@ -1,0 +1,4 @@
+subj,status,blurry_last,blurry_best,blurry_gap,blurry_n,bwd_last,bwd_best,bwd_gap,bwd_n,fwd_last,fwd_best,fwd_gap,fwd_n
+2,last_may_underestimate,0.369,0.441,0.07200000000000001,120,0.98,0.997,0.017000000000000015,96,1.0,1.0,0.0,1
+5,last_may_underestimate,0.289,0.4,0.11100000000000004,120,0.853,0.913,0.06000000000000005,108,0.92,0.92,0.0,1
+7,last_may_underestimate,0.33,0.346,0.01599999999999996,93,0.88,0.937,0.05700000000000005,85,0.857,0.857,0.0,1

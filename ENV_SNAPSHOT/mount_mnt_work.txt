@@ -1,0 +1,1 @@
+/dev/vdb on /mnt/work type ext4 (rw,relatime)

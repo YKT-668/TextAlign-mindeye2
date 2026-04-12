@@ -1,0 +1,4 @@
+subj,status,last_blurry,last_bwd,last_fwd,best_blurry,best_bwd,best_fwd,gap_blurry,gap_bwd,gap_fwd
+2,last_basically_trustworthy,0.346,0.993,1.0,0.346,0.993,1.0,0.0,0.0,0.0
+5,last_basically_trustworthy,0.295,0.897,0.92,0.295,0.897,0.92,0.0,0.0,0.0
+7,last_basically_trustworthy,0.303,0.937,0.857,0.303,0.937,0.857,0.0,0.0,0.0

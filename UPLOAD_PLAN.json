@@ -1,0 +1,1556 @@
+{
+  "generated_at": "2026-04-12T09:31:34.873313Z",
+  "root": "/mnt/work/repos/TextAlign-mindeye2",
+  "entries": [
+    {
+      "path": "ENV_SNAPSHOT/conda_env_export_no_builds.err",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 0,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "ENV_SNAPSHOT/conda_env_export_no_builds.yml",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 2487,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "ENV_SNAPSHOT/conda_list_explicit.err",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 0,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "ENV_SNAPSHOT/conda_list_explicit.txt",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 6230,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "ENV_SNAPSHOT/df_mnt_work.txt",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 97,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "ENV_SNAPSHOT/git_diff_stat.txt",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 450,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "ENV_SNAPSHOT/git_remote_v.txt",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 129,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "ENV_SNAPSHOT/git_rev_parse_head.txt",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 41,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "ENV_SNAPSHOT/git_status_full.txt",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 1868,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "ENV_SNAPSHOT/git_status_short.txt",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 1476,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "ENV_SNAPSHOT/key_dirs_sizes.txt",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 84,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "ENV_SNAPSHOT/key_dirs_tree_depth2.txt",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 8680,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "ENV_SNAPSHOT/mount_mnt_work.txt",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 46,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "ENV_SNAPSHOT/nvidia_smi.txt",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 1778,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "ENV_SNAPSHOT/pip_freeze.txt",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 2708,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "ENV_SNAPSHOT/python_version.txt",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 14,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "ENV_SNAPSHOT/python_which.txt",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 36,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "ENV_SNAPSHOT/uname.txt",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 128,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "EXPERIMENT_SNAPSHOT_2026-04-12.md",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 5053,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "HF_UPLOAD_MANIFEST.json",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 17151,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "RECOVERY_MANIFEST.json",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 20720,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "UPLOAD_PLAN.json",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 14432,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/closure_audit_20260412/baseline_closure_audit_report.md",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 1375,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/closure_audit_20260412/checkpoint_sensitivity_stage1_logproxy.csv",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 324,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/closure_audit_20260412/checkpoint_sensitivity_stage1_logproxy.json",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 1967,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/closure_audit_20260412/checkpoint_sensitivity_stage1_logproxy_v2.csv",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 452,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/closure_audit_20260412/checkpoint_sensitivity_stage1_logproxy_v2.json",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 2176,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/closure_audit_20260412/fair_comparison_matrix.csv",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 404,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/closure_audit_20260412/s1_corrected_brain_corr_attempt.log",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 2466,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/closure_audit_20260412/s1_s2_s5_s7_asset_chain_audit.json",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 7690,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "scripts/run_s5_stage1_cleanenv_retry.sh",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 2021,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "scripts/watch_s7_then_launch_s5_stage1.sh",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 3154,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "src/recompute_brain_corr_aligned.py",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 10186,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "tools/gen_hard_neg_captions_from_json_v2.py",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 35701,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "tools/prepare_and_encode_train_coco_text_clip_hf.py",
+      "category": "GitHub",
+      "reason": "Code/doc/manifest for reproducibility",
+      "size_bytes": 11630,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "ENV_SNAPSHOT/conda_env_export_no_builds.err",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 0,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "ENV_SNAPSHOT/conda_env_export_no_builds.yml",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 2487,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "ENV_SNAPSHOT/conda_list_explicit.err",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 0,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "ENV_SNAPSHOT/conda_list_explicit.txt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 6230,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "ENV_SNAPSHOT/df_mnt_work.txt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 97,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "ENV_SNAPSHOT/git_diff_stat.txt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 450,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "ENV_SNAPSHOT/git_remote_v.txt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 129,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "ENV_SNAPSHOT/git_rev_parse_head.txt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 41,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "ENV_SNAPSHOT/git_status_full.txt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 1868,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "ENV_SNAPSHOT/git_status_short.txt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 1476,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "ENV_SNAPSHOT/key_dirs_sizes.txt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 84,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "ENV_SNAPSHOT/key_dirs_tree_depth2.txt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 8680,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "ENV_SNAPSHOT/mount_mnt_work.txt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 46,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "ENV_SNAPSHOT/nvidia_smi.txt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 1778,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "ENV_SNAPSHOT/pip_freeze.txt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 2708,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "ENV_SNAPSHOT/python_version.txt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 14,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "ENV_SNAPSHOT/python_which.txt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 36,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "ENV_SNAPSHOT/uname.txt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 128,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "EXPERIMENT_SNAPSHOT_2026-04-12.md",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 5053,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "HF_UPLOAD_MANIFEST.json",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 17151,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "RECOVERY_MANIFEST.json",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 20720,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "UPLOAD_PLAN.json",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 14432,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "audit_runs/audit_s1_stage1_final_best32/IS_RSA/metrics.json",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 157,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/audit_s1_stage1_final_best32/L1/metrics.json",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 214,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/audit_s1_stage1_final_best32/L2_2AFC/metrics.json",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 108,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/audit_s1_stage1_final_best32/L2_CCD/hard_k1/metrics.json",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 180,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/audit_s1_stage1_final_best32/L2_CCD/hard_k2/metrics.json",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 181,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/audit_s1_stage1_final_best32/L2_CCD/random_k2/metrics.json",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 179,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/audit_s1_stage1_final_best32/L3_RSA/metrics.json",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 114,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/audit_s1_stage1_final_best32/audit_report.md",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 2864,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/audit_s1_stage1_final_best32/subj01_brain_clip_ids.json",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 0,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/closure_audit_20260412/baseline_closure_audit_report.md",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 1375,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/closure_audit_20260412/checkpoint_sensitivity_stage1_logproxy.csv",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 324,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/closure_audit_20260412/checkpoint_sensitivity_stage1_logproxy.json",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 1967,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/closure_audit_20260412/checkpoint_sensitivity_stage1_logproxy_v2.csv",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 452,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/closure_audit_20260412/checkpoint_sensitivity_stage1_logproxy_v2.json",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 2176,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/closure_audit_20260412/fair_comparison_matrix.csv",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 404,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/closure_audit_20260412/s1_corrected_brain_corr_attempt.log",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 2466,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/closure_audit_20260412/s1_s2_s5_s7_asset_chain_audit.json",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 7690,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/ours_s1_stage1_final_best32_lastpth_v1/audit_report.md",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 1294,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/audit_report_final.md",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 3404,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/audit_report_no_isrsa.md",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 1207,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/audit_report_with_ci_and_ccdN.md",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 2218,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/ccd_k1/metrics.json",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 191,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/ccd_k2/metrics.json",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 192,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/ccd_rand/metrics.json",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 190,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/shared982_ids_manifest.csv",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 21323,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/tables/ccd_bootstrap_ci_fixed.csv",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 240,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/tables/ccd_ids.json",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 6757,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/tables/ccd_results.csv",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 109,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/tables/ci_bootstrap.csv",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 444,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/tables/dropped_ids.json",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 2,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/tables/retrieval_300wayx30.csv",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 136,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/tables/retrieval_982way.csv",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 114,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/tables/rsa.csv",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 77,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/tables/twoafc_imagelevel.csv",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 105,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/tables/used_ids.json",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 47021,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/s5_stage1_wrong_resume_20260403_102022/command_evidence.txt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 872,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/s5_stage1_wrong_resume_20260403_102022/progress_markers.txt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 273,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/s5_stage1_wrong_resume_20260403_102022/s5_stage1_repair.full.log",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 5055,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/s5_stage1_wrong_resume_20260403_102022/s5_stage1_repair_last200.log",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 5055,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/s5_stage1_wrong_resume_20260403_102022/s5_textalign_stage1_FINAL_BEST_32/last.pth",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 1021050880,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "audit_runs/s5_stage1_wrong_resume_20260403_102022/stage1_output_files.tsv",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 52,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "data/nsd_text/s2_train_coco_captions.json",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 564533,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "data/nsd_text/s2_train_coco_captions_hard_negs.jsonl",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 3585334,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "data/nsd_text/s2_train_coco_captions_hard_negs_clip.pt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 27731110,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "data/nsd_text/s2_train_coco_captions_hard_negs_dedup.jsonl",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 3263161,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "data/nsd_text/s2_train_coco_text_clip.pt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 27721656,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "data/nsd_text/s5_train_coco_captions.json",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 564372,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "data/nsd_text/s5_train_coco_captions_hard_negs.jsonl",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 3599248,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "data/nsd_text/s5_train_coco_captions_hard_negs_clip.pt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 27731110,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "data/nsd_text/s5_train_coco_captions_hard_negs_dedup.jsonl",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 3259788,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "data/nsd_text/s5_train_coco_text_clip.pt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 27721656,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "data/nsd_text/s7_train_coco_captions.json",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 564858,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "data/nsd_text/s7_train_coco_captions_hard_negs.jsonl",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 3588571,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "data/nsd_text/s7_train_coco_captions_hard_negs_clip.pt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 27731110,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "data/nsd_text/s7_train_coco_captions_hard_negs_dedup.jsonl",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 3264475,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "data/nsd_text/s7_train_coco_text_clip.pt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 27721656,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "evals/s2_textalign_stage1_FINAL_BEST_32/s2_textalign_stage1_FINAL_BEST_32_all_backbones.pt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 851969508,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "evals/s2_textalign_stage1_FINAL_BEST_32/s2_textalign_stage1_FINAL_BEST_32_all_blurryrecons.pt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 301057523,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "evals/s2_textalign_stage1_FINAL_BEST_32/s2_textalign_stage1_FINAL_BEST_32_all_clipvoxels.pt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 851969513,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "evals/s2_textalign_stage1_FINAL_BEST_32/s2_textalign_stage1_FINAL_BEST_32_all_enhancedrecons.pt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 301057533,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "evals/s2_textalign_stage1_FINAL_BEST_32/s2_textalign_stage1_FINAL_BEST_32_all_ids.pt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 9414,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "evals/s2_textalign_stage1_FINAL_BEST_32/s2_textalign_stage1_FINAL_BEST_32_all_predcaptions.pt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 46860,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "evals/s2_textalign_stage1_FINAL_BEST_32/s2_textalign_stage1_FINAL_BEST_32_all_prior_out.pt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 851969508,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "evals/s5_textalign_stage1_FINAL_BEST_32/s5_textalign_stage1_FINAL_BEST_32_all_backbones.pt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 851969508,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "evals/s5_textalign_stage1_FINAL_BEST_32/s5_textalign_stage1_FINAL_BEST_32_all_blurryrecons.pt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 301057523,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "evals/s5_textalign_stage1_FINAL_BEST_32/s5_textalign_stage1_FINAL_BEST_32_all_clipvoxels.pt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 851969513,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "evals/s5_textalign_stage1_FINAL_BEST_32/s5_textalign_stage1_FINAL_BEST_32_all_enhancedrecons.pt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 301057533,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "evals/s5_textalign_stage1_FINAL_BEST_32/s5_textalign_stage1_FINAL_BEST_32_all_ids.pt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 9414,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "evals/s5_textalign_stage1_FINAL_BEST_32/s5_textalign_stage1_FINAL_BEST_32_all_predcaptions.pt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 44108,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "evals/s5_textalign_stage1_FINAL_BEST_32/s5_textalign_stage1_FINAL_BEST_32_all_prior_out.pt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 851969508,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "evals/s7_textalign_stage1_FINAL_BEST_32/s7_textalign_stage1_FINAL_BEST_32_all_backbones.pt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 851969508,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "evals/s7_textalign_stage1_FINAL_BEST_32/s7_textalign_stage1_FINAL_BEST_32_all_blurryrecons.pt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 301057523,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "evals/s7_textalign_stage1_FINAL_BEST_32/s7_textalign_stage1_FINAL_BEST_32_all_clipvoxels.pt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 851969513,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "evals/s7_textalign_stage1_FINAL_BEST_32/s7_textalign_stage1_FINAL_BEST_32_all_enhancedrecons.pt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 301057533,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "evals/s7_textalign_stage1_FINAL_BEST_32/s7_textalign_stage1_FINAL_BEST_32_all_ids.pt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 9414,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "evals/s7_textalign_stage1_FINAL_BEST_32/s7_textalign_stage1_FINAL_BEST_32_all_predcaptions.pt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 45132,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "evals/s7_textalign_stage1_FINAL_BEST_32/s7_textalign_stage1_FINAL_BEST_32_all_prior_out.pt",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 851969508,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "logs/download_eval_extras.log",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 992,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "logs/download_infer_minimal.log",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 588,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "logs/s2_stage0_repair.log",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 27299,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "logs/s2_stage1_envfix_retry_epoch0.log",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 116954,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "logs/s5_stage0_dryrun.log",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 9643,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "logs/s5_stage0_repair.log",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 27298,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "logs/s5_stage0_repair_bs4.log",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 3316,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "logs/s5_stage0_repair_bs8.log",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 5278,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "logs/s5_stage1_envfix_retry5.log",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 3120,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "logs/s5_stage1_envfix_retry6_directpy.log",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 10005,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "logs/s5_stage1_envfix_retry7_epoch0.log",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 116239,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "logs/s5_stage1_repair.log",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 5055,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "logs/s5_stage1_repair_readme_exact.log",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 7799,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "logs/s5_stage1_revert_retry.log",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 6484,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "logs/s5_stage1_revert_retry2.log",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 7373,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "logs/s5_stage1_revert_retry3.log",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 7373,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "logs/s5_stage1_revert_retry4.log",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 7378,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "logs/s7_brain_corr_aligned.log",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 5268,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "logs/s7_inference_stage1_final_20260412_104708.log",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 2017,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "logs/s7_inference_stage1_final_allowdl_20260412_105351.log",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 28888,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "logs/s7_inference_stage1_final_cachefix_20260412_104901.log",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 16591,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "logs/s7_recon_inference.log",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 457686,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "logs/s7_run_debug.log",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 30063,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "logs/s7_stage0_repair.log",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 27299,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "logs/s7_stage1_envfix_retry_epoch0.log",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 9521,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "logs/s7_stage1_envfix_retry_epoch0_v2.log",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 33116,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "logs/s7_stage1_resume_from_last_20260410_081443.log",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 93604,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "logs/watch_s7_then_launch_s5_stage1.log",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 12038,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "s2_textalign_stage1_FINAL_BEST_32_all_enhancedrec_20recons_grid.png",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 3887654,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "s5_textalign_stage1_FINAL_BEST_32_all_enhancedrec_20recons_grid.png",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 3844317,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "s7_textalign_stage1_FINAL_BEST_32_all_enhancedrec_20recons_grid.png",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 3876541,
+      "irreplaceable": false,
+      "recovery_relevance": "medium"
+    },
+    {
+      "path": "tables/s2_textalign_stage1_FINAL_BEST_32_all_enhancedrecons.csv",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 325,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "tables/s2_textalign_stage1_FINAL_BEST_32_all_enhancedrecons_caption_metrics.csv",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 65,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "tables/s2_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.json",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 1990,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "tables/s2_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.tsv",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 471,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "tables/s5_textalign_stage1_FINAL_BEST_32_all_enhancedrecons.csv",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 329,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "tables/s5_textalign_stage1_FINAL_BEST_32_all_enhancedrecons_caption_metrics.csv",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 63,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "tables/s5_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.json",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 1992,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "tables/s5_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.tsv",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 473,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "tables/s7_textalign_stage1_FINAL_BEST_32_all_enhancedrecons.csv",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 327,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "tables/s7_textalign_stage1_FINAL_BEST_32_all_enhancedrecons_caption_metrics.csv",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 65,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "tables/s7_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.json",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 1986,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "tables/s7_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.tsv",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 467,
+      "irreplaceable": false,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "train_logs/s2_textalign_stage0_repair_80G_resume_compat_epoch0/last.pth",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 7866541124,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "train_logs/s2_textalign_stage1_FINAL_BEST_32/last.pth",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 26718637941,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "train_logs/s5_textalign_stage0_repair_80G_resume_compat_epoch0/last.pth",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 7846241348,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "train_logs/s5_textalign_stage1_FINAL_BEST_32/last.pth",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 26657738613,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "train_logs/s7_textalign_stage0_repair_80G_resume_compat_epoch0/last.pth",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 7839885828,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "train_logs/s7_textalign_stage1_FINAL_BEST_32/last.pth",
+      "category": "HF",
+      "reason": "Checkpoint/eval/log/audit/recovery artifact",
+      "size_bytes": 26639755061,
+      "irreplaceable": true,
+      "recovery_relevance": "high"
+    },
+    {
+      "path": "wds",
+      "category": "Exclude",
+      "reason": "Raw/public huge or regenerable asset; record only",
+      "size_bytes": 4096,
+      "irreplaceable": false,
+      "recovery_relevance": "low"
+    },
+    {
+      "path": "coco_images_224_float16.hdf5",
+      "category": "Exclude",
+      "reason": "Raw/public huge or regenerable asset; record only",
+      "size_bytes": 21977090048,
+      "irreplaceable": false,
+      "recovery_relevance": "low"
+    },
+    {
+      "path": "data/coco_images_224_float16.hdf5",
+      "category": "Exclude",
+      "reason": "Raw/public huge or regenerable asset; record only",
+      "size_bytes": 0,
+      "irreplaceable": false,
+      "recovery_relevance": "low"
+    },
+    {
+      "path": "evals/all_images.pt",
+      "category": "Exclude",
+      "reason": "Raw/public huge or regenerable asset; record only",
+      "size_bytes": 602113195,
+      "irreplaceable": false,
+      "recovery_relevance": "low"
+    },
+    {
+      "path": "evals/all_captions.pt",
+      "category": "Exclude",
+      "reason": "Raw/public huge or regenerable asset; record only",
+      "size_bytes": 813044,
+      "irreplaceable": false,
+      "recovery_relevance": "low"
+    },
+    {
+      "path": "evals/all_git_generated_captions.pt",
+      "category": "Exclude",
+      "reason": "Raw/public huge or regenerable asset; record only",
+      "size_bytes": 55125,
+      "irreplaceable": false,
+      "recovery_relevance": "low"
+    },
+    {
+      "path": "betas_all_subj02_fp32_renorm.hdf5",
+      "category": "Exclude",
+      "reason": "Raw/public huge or regenerable asset; record only",
+      "size_bytes": 1713362048,
+      "irreplaceable": false,
+      "recovery_relevance": "low"
+    },
+    {
+      "path": "betas_all_subj05_fp32_renorm.hdf5",
+      "category": "Exclude",
+      "reason": "Raw/public huge or regenerable asset; record only",
+      "size_bytes": 1564682048,
+      "irreplaceable": false,
+      "recovery_relevance": "low"
+    },
+    {
+      "path": "betas_all_subj07_fp32_renorm.hdf5",
+      "category": "Exclude",
+      "reason": "Raw/public huge or regenerable asset; record only",
+      "size_bytes": 1521842048,
+      "irreplaceable": false,
+      "recovery_relevance": "low"
+    }
+  ],
+  "summary": {
+    "GitHub": {
+      "count": 35,
+      "size_bytes": 163154
+    },
+    "HF": {
+      "count": 148,
+      "size_bytes": 114265594670
+    },
+    "Exclude": {
+      "count": 9,
+      "size_bytes": 27379961652
+    }
+  }
+}

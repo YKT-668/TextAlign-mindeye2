@@ -1,0 +1,6 @@
+202G	train_logs
+9.4G	evals
+108K	tables
+975M	audit_runs
+1.2M	logs
+180M	data/nsd_text

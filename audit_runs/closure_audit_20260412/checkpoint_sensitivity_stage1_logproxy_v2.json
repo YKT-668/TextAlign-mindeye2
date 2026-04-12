@@ -1,0 +1,80 @@
+{
+  "generated_at": "2026-04-12T16:38:14.312407",
+  "subjects": {
+    "2": {
+      "log_path": "/mnt/work/repos/TextAlign-mindeye2/logs/s2_stage1_envfix_retry_epoch0.log",
+      "saved_last_ckpt_events": 121,
+      "has_finished_marker": true,
+      "has_explicit_best_text": false,
+      "blurry_pixcorr": {
+        "n": 120,
+        "last": 0.369,
+        "best": 0.441,
+        "gap_best_minus_last": 0.07200000000000001
+      },
+      "bwd_pct_correct": {
+        "n": 96,
+        "last": 0.98,
+        "best": 0.997,
+        "gap_best_minus_last": 0.017000000000000015
+      },
+      "fwd_pct_correct": {
+        "n": 1,
+        "last": 1.0,
+        "best": 1.0,
+        "gap_best_minus_last": 0.0
+      },
+      "judgement": "last_may_underestimate"
+    },
+    "5": {
+      "log_path": "/mnt/work/repos/TextAlign-mindeye2/logs/s5_stage1_envfix_retry7_epoch0.log",
+      "saved_last_ckpt_events": 121,
+      "has_finished_marker": true,
+      "has_explicit_best_text": false,
+      "blurry_pixcorr": {
+        "n": 120,
+        "last": 0.289,
+        "best": 0.4,
+        "gap_best_minus_last": 0.11100000000000004
+      },
+      "bwd_pct_correct": {
+        "n": 108,
+        "last": 0.853,
+        "best": 0.913,
+        "gap_best_minus_last": 0.06000000000000005
+      },
+      "fwd_pct_correct": {
+        "n": 1,
+        "last": 0.92,
+        "best": 0.92,
+        "gap_best_minus_last": 0.0
+      },
+      "judgement": "last_may_underestimate"
+    },
+    "7": {
+      "log_path": "/mnt/work/repos/TextAlign-mindeye2/logs/s7_stage1_resume_from_last_20260410_081443.log",
+      "saved_last_ckpt_events": 95,
+      "has_finished_marker": true,
+      "has_explicit_best_text": false,
+      "blurry_pixcorr": {
+        "n": 93,
+        "last": 0.33,
+        "best": 0.346,
+        "gap_best_minus_last": 0.01599999999999996
+      },
+      "bwd_pct_correct": {
+        "n": 85,
+        "last": 0.88,
+        "best": 0.937,
+        "gap_best_minus_last": 0.05700000000000005
+      },
+      "fwd_pct_correct": {
+        "n": 1,
+        "last": 0.857,
+        "best": 0.857,
+        "gap_best_minus_last": 0.0
+      },
+      "judgement": "last_may_underestimate"
+    }
+  }
+}

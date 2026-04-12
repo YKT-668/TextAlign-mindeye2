@@ -1,0 +1,2 @@
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/vdb        688G  516G  138G  79% /mnt/work

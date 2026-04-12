@@ -79,8 +79,16 @@ def deepseek_client():
     if not api_key:
         raise RuntimeError("Missing env DEEPSEEK_API_KEY")
 
-    # Direct IP + Host masquerade
-    target_ip_url = "https://116.205.40.114/v1"
+    # Default to official endpoint so provider-side usage/metrics are visible.
+    # Optional direct-IP mode can be enabled via env when needed for network issues.
+    base_url = os.environ.get("DEEPSEEK_BASE_URL", "https://api.deepseek.com/v1").strip()
+    use_direct_ip = os.environ.get("DEEPSEEK_USE_DIRECT_IP", "0").strip().lower() in ("1", "true", "yes")
+    host_headers = None
+    verify_ssl = True
+    if use_direct_ip:
+        base_url = os.environ.get("DEEPSEEK_DIRECT_IP_URL", "https://116.205.40.114/v1").strip()
+        host_headers = {"Host": "api.deepseek.com"}
+        verify_ssl = False
     model = os.environ.get("DEEPSEEK_MODEL", "deepseek-chat").strip()
 
     # thread-local cache
@@ -88,15 +96,15 @@ def deepseek_client():
         return _thread_local.client, _thread_local.model
 
     http_client = httpx.Client(
-        verify=False,          # 忽略 SSL 证书
+        verify=verify_ssl,
         trust_env=False,       # 忽略系统/Conda 代理
-        headers={"Host": "api.deepseek.com"},
+        headers=host_headers,
         timeout=120.0
     )
 
     client = OpenAI(
         api_key=api_key,
-        base_url=target_ip_url,
+        base_url=base_url,
         http_client=http_client
     )
 
@@ -671,8 +679,8 @@ def main():
 
         img_id = int(image_ids[idx].item())
         if img_id in done:
-            # if embedding already filled, skip
-            if torch.norm(neg_text_feats[idx]).item() > 0:
+            # Skip only truly valid existing rows; retry fallback rows (valid_mask=False).
+            if torch.norm(neg_text_feats[idx]).item() > 0 and bool(valid_mask[idx].item()):
                 continue
 
         pos_cap = cap_map.get(img_id, "")

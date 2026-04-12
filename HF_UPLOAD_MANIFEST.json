@@ -1,0 +1,601 @@
+{
+  "generated_at": "2026-04-12T09:31:34.873313Z",
+  "repo": "ykt668/textalign-mindeye2-model",
+  "target_prefix": "snapshots/2026-04-12/",
+  "file_count": 148,
+  "total_size_bytes": 114265631752,
+  "files": [
+    {
+      "path": "ENV_SNAPSHOT/conda_env_export_no_builds.err",
+      "size_bytes": 0
+    },
+    {
+      "path": "ENV_SNAPSHOT/conda_env_export_no_builds.yml",
+      "size_bytes": 2487
+    },
+    {
+      "path": "ENV_SNAPSHOT/conda_list_explicit.err",
+      "size_bytes": 0
+    },
+    {
+      "path": "ENV_SNAPSHOT/conda_list_explicit.txt",
+      "size_bytes": 6230
+    },
+    {
+      "path": "ENV_SNAPSHOT/df_mnt_work.txt",
+      "size_bytes": 97
+    },
+    {
+      "path": "ENV_SNAPSHOT/git_diff_stat.txt",
+      "size_bytes": 450
+    },
+    {
+      "path": "ENV_SNAPSHOT/git_remote_v.txt",
+      "size_bytes": 129
+    },
+    {
+      "path": "ENV_SNAPSHOT/git_rev_parse_head.txt",
+      "size_bytes": 41
+    },
+    {
+      "path": "ENV_SNAPSHOT/git_status_full.txt",
+      "size_bytes": 1868
+    },
+    {
+      "path": "ENV_SNAPSHOT/git_status_short.txt",
+      "size_bytes": 1476
+    },
+    {
+      "path": "ENV_SNAPSHOT/key_dirs_sizes.txt",
+      "size_bytes": 84
+    },
+    {
+      "path": "ENV_SNAPSHOT/key_dirs_tree_depth2.txt",
+      "size_bytes": 8680
+    },
+    {
+      "path": "ENV_SNAPSHOT/mount_mnt_work.txt",
+      "size_bytes": 46
+    },
+    {
+      "path": "ENV_SNAPSHOT/nvidia_smi.txt",
+      "size_bytes": 1778
+    },
+    {
+      "path": "ENV_SNAPSHOT/pip_freeze.txt",
+      "size_bytes": 2708
+    },
+    {
+      "path": "ENV_SNAPSHOT/python_version.txt",
+      "size_bytes": 14
+    },
+    {
+      "path": "ENV_SNAPSHOT/python_which.txt",
+      "size_bytes": 36
+    },
+    {
+      "path": "ENV_SNAPSHOT/uname.txt",
+      "size_bytes": 128
+    },
+    {
+      "path": "EXPERIMENT_SNAPSHOT_2026-04-12.md",
+      "size_bytes": 5053
+    },
+    {
+      "path": "HF_UPLOAD_MANIFEST.json",
+      "size_bytes": 17151
+    },
+    {
+      "path": "RECOVERY_MANIFEST.json",
+      "size_bytes": 21111
+    },
+    {
+      "path": "UPLOAD_PLAN.json",
+      "size_bytes": 51123
+    },
+    {
+      "path": "audit_runs/audit_s1_stage1_final_best32/IS_RSA/metrics.json",
+      "size_bytes": 157
+    },
+    {
+      "path": "audit_runs/audit_s1_stage1_final_best32/L1/metrics.json",
+      "size_bytes": 214
+    },
+    {
+      "path": "audit_runs/audit_s1_stage1_final_best32/L2_2AFC/metrics.json",
+      "size_bytes": 108
+    },
+    {
+      "path": "audit_runs/audit_s1_stage1_final_best32/L2_CCD/hard_k1/metrics.json",
+      "size_bytes": 180
+    },
+    {
+      "path": "audit_runs/audit_s1_stage1_final_best32/L2_CCD/hard_k2/metrics.json",
+      "size_bytes": 181
+    },
+    {
+      "path": "audit_runs/audit_s1_stage1_final_best32/L2_CCD/random_k2/metrics.json",
+      "size_bytes": 179
+    },
+    {
+      "path": "audit_runs/audit_s1_stage1_final_best32/L3_RSA/metrics.json",
+      "size_bytes": 114
+    },
+    {
+      "path": "audit_runs/audit_s1_stage1_final_best32/audit_report.md",
+      "size_bytes": 2864
+    },
+    {
+      "path": "audit_runs/audit_s1_stage1_final_best32/subj01_brain_clip_ids.json",
+      "size_bytes": 0
+    },
+    {
+      "path": "audit_runs/closure_audit_20260412/baseline_closure_audit_report.md",
+      "size_bytes": 1375
+    },
+    {
+      "path": "audit_runs/closure_audit_20260412/checkpoint_sensitivity_stage1_logproxy.csv",
+      "size_bytes": 324
+    },
+    {
+      "path": "audit_runs/closure_audit_20260412/checkpoint_sensitivity_stage1_logproxy.json",
+      "size_bytes": 1967
+    },
+    {
+      "path": "audit_runs/closure_audit_20260412/checkpoint_sensitivity_stage1_logproxy_v2.csv",
+      "size_bytes": 452
+    },
+    {
+      "path": "audit_runs/closure_audit_20260412/checkpoint_sensitivity_stage1_logproxy_v2.json",
+      "size_bytes": 2176
+    },
+    {
+      "path": "audit_runs/closure_audit_20260412/fair_comparison_matrix.csv",
+      "size_bytes": 404
+    },
+    {
+      "path": "audit_runs/closure_audit_20260412/s1_corrected_brain_corr_attempt.log",
+      "size_bytes": 2466
+    },
+    {
+      "path": "audit_runs/closure_audit_20260412/s1_s2_s5_s7_asset_chain_audit.json",
+      "size_bytes": 7690
+    },
+    {
+      "path": "audit_runs/ours_s1_stage1_final_best32_lastpth_v1/audit_report.md",
+      "size_bytes": 1294
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/audit_report_final.md",
+      "size_bytes": 3404
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/audit_report_no_isrsa.md",
+      "size_bytes": 1207
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/audit_report_with_ci_and_ccdN.md",
+      "size_bytes": 2218
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/ccd_k1/metrics.json",
+      "size_bytes": 191
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/ccd_k2/metrics.json",
+      "size_bytes": 192
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/ccd_rand/metrics.json",
+      "size_bytes": 190
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/shared982_ids_manifest.csv",
+      "size_bytes": 21323
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/tables/ccd_bootstrap_ci_fixed.csv",
+      "size_bytes": 240
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/tables/ccd_ids.json",
+      "size_bytes": 6757
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/tables/ccd_results.csv",
+      "size_bytes": 109
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/tables/ci_bootstrap.csv",
+      "size_bytes": 444
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/tables/dropped_ids.json",
+      "size_bytes": 2
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/tables/retrieval_300wayx30.csv",
+      "size_bytes": 136
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/tables/retrieval_982way.csv",
+      "size_bytes": 114
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/tables/rsa.csv",
+      "size_bytes": 77
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/tables/twoafc_imagelevel.csv",
+      "size_bytes": 105
+    },
+    {
+      "path": "audit_runs/s1_textalign_stage1_FINAL_BEST_32_20260115_004557/tables/used_ids.json",
+      "size_bytes": 47021
+    },
+    {
+      "path": "audit_runs/s5_stage1_wrong_resume_20260403_102022/command_evidence.txt",
+      "size_bytes": 872
+    },
+    {
+      "path": "audit_runs/s5_stage1_wrong_resume_20260403_102022/progress_markers.txt",
+      "size_bytes": 273
+    },
+    {
+      "path": "audit_runs/s5_stage1_wrong_resume_20260403_102022/s5_stage1_repair.full.log",
+      "size_bytes": 5055
+    },
+    {
+      "path": "audit_runs/s5_stage1_wrong_resume_20260403_102022/s5_stage1_repair_last200.log",
+      "size_bytes": 5055
+    },
+    {
+      "path": "audit_runs/s5_stage1_wrong_resume_20260403_102022/s5_textalign_stage1_FINAL_BEST_32/last.pth",
+      "size_bytes": 1021050880
+    },
+    {
+      "path": "audit_runs/s5_stage1_wrong_resume_20260403_102022/stage1_output_files.tsv",
+      "size_bytes": 52
+    },
+    {
+      "path": "data/nsd_text/s2_train_coco_captions.json",
+      "size_bytes": 564533
+    },
+    {
+      "path": "data/nsd_text/s2_train_coco_captions_hard_negs.jsonl",
+      "size_bytes": 3585334
+    },
+    {
+      "path": "data/nsd_text/s2_train_coco_captions_hard_negs_clip.pt",
+      "size_bytes": 27731110
+    },
+    {
+      "path": "data/nsd_text/s2_train_coco_captions_hard_negs_dedup.jsonl",
+      "size_bytes": 3263161
+    },
+    {
+      "path": "data/nsd_text/s2_train_coco_text_clip.pt",
+      "size_bytes": 27721656
+    },
+    {
+      "path": "data/nsd_text/s5_train_coco_captions.json",
+      "size_bytes": 564372
+    },
+    {
+      "path": "data/nsd_text/s5_train_coco_captions_hard_negs.jsonl",
+      "size_bytes": 3599248
+    },
+    {
+      "path": "data/nsd_text/s5_train_coco_captions_hard_negs_clip.pt",
+      "size_bytes": 27731110
+    },
+    {
+      "path": "data/nsd_text/s5_train_coco_captions_hard_negs_dedup.jsonl",
+      "size_bytes": 3259788
+    },
+    {
+      "path": "data/nsd_text/s5_train_coco_text_clip.pt",
+      "size_bytes": 27721656
+    },
+    {
+      "path": "data/nsd_text/s7_train_coco_captions.json",
+      "size_bytes": 564858
+    },
+    {
+      "path": "data/nsd_text/s7_train_coco_captions_hard_negs.jsonl",
+      "size_bytes": 3588571
+    },
+    {
+      "path": "data/nsd_text/s7_train_coco_captions_hard_negs_clip.pt",
+      "size_bytes": 27731110
+    },
+    {
+      "path": "data/nsd_text/s7_train_coco_captions_hard_negs_dedup.jsonl",
+      "size_bytes": 3264475
+    },
+    {
+      "path": "data/nsd_text/s7_train_coco_text_clip.pt",
+      "size_bytes": 27721656
+    },
+    {
+      "path": "evals/s2_textalign_stage1_FINAL_BEST_32/s2_textalign_stage1_FINAL_BEST_32_all_backbones.pt",
+      "size_bytes": 851969508
+    },
+    {
+      "path": "evals/s2_textalign_stage1_FINAL_BEST_32/s2_textalign_stage1_FINAL_BEST_32_all_blurryrecons.pt",
+      "size_bytes": 301057523
+    },
+    {
+      "path": "evals/s2_textalign_stage1_FINAL_BEST_32/s2_textalign_stage1_FINAL_BEST_32_all_clipvoxels.pt",
+      "size_bytes": 851969513
+    },
+    {
+      "path": "evals/s2_textalign_stage1_FINAL_BEST_32/s2_textalign_stage1_FINAL_BEST_32_all_enhancedrecons.pt",
+      "size_bytes": 301057533
+    },
+    {
+      "path": "evals/s2_textalign_stage1_FINAL_BEST_32/s2_textalign_stage1_FINAL_BEST_32_all_ids.pt",
+      "size_bytes": 9414
+    },
+    {
+      "path": "evals/s2_textalign_stage1_FINAL_BEST_32/s2_textalign_stage1_FINAL_BEST_32_all_predcaptions.pt",
+      "size_bytes": 46860
+    },
+    {
+      "path": "evals/s2_textalign_stage1_FINAL_BEST_32/s2_textalign_stage1_FINAL_BEST_32_all_prior_out.pt",
+      "size_bytes": 851969508
+    },
+    {
+      "path": "evals/s5_textalign_stage1_FINAL_BEST_32/s5_textalign_stage1_FINAL_BEST_32_all_backbones.pt",
+      "size_bytes": 851969508
+    },
+    {
+      "path": "evals/s5_textalign_stage1_FINAL_BEST_32/s5_textalign_stage1_FINAL_BEST_32_all_blurryrecons.pt",
+      "size_bytes": 301057523
+    },
+    {
+      "path": "evals/s5_textalign_stage1_FINAL_BEST_32/s5_textalign_stage1_FINAL_BEST_32_all_clipvoxels.pt",
+      "size_bytes": 851969513
+    },
+    {
+      "path": "evals/s5_textalign_stage1_FINAL_BEST_32/s5_textalign_stage1_FINAL_BEST_32_all_enhancedrecons.pt",
+      "size_bytes": 301057533
+    },
+    {
+      "path": "evals/s5_textalign_stage1_FINAL_BEST_32/s5_textalign_stage1_FINAL_BEST_32_all_ids.pt",
+      "size_bytes": 9414
+    },
+    {
+      "path": "evals/s5_textalign_stage1_FINAL_BEST_32/s5_textalign_stage1_FINAL_BEST_32_all_predcaptions.pt",
+      "size_bytes": 44108
+    },
+    {
+      "path": "evals/s5_textalign_stage1_FINAL_BEST_32/s5_textalign_stage1_FINAL_BEST_32_all_prior_out.pt",
+      "size_bytes": 851969508
+    },
+    {
+      "path": "evals/s7_textalign_stage1_FINAL_BEST_32/s7_textalign_stage1_FINAL_BEST_32_all_backbones.pt",
+      "size_bytes": 851969508
+    },
+    {
+      "path": "evals/s7_textalign_stage1_FINAL_BEST_32/s7_textalign_stage1_FINAL_BEST_32_all_blurryrecons.pt",
+      "size_bytes": 301057523
+    },
+    {
+      "path": "evals/s7_textalign_stage1_FINAL_BEST_32/s7_textalign_stage1_FINAL_BEST_32_all_clipvoxels.pt",
+      "size_bytes": 851969513
+    },
+    {
+      "path": "evals/s7_textalign_stage1_FINAL_BEST_32/s7_textalign_stage1_FINAL_BEST_32_all_enhancedrecons.pt",
+      "size_bytes": 301057533
+    },
+    {
+      "path": "evals/s7_textalign_stage1_FINAL_BEST_32/s7_textalign_stage1_FINAL_BEST_32_all_ids.pt",
+      "size_bytes": 9414
+    },
+    {
+      "path": "evals/s7_textalign_stage1_FINAL_BEST_32/s7_textalign_stage1_FINAL_BEST_32_all_predcaptions.pt",
+      "size_bytes": 45132
+    },
+    {
+      "path": "evals/s7_textalign_stage1_FINAL_BEST_32/s7_textalign_stage1_FINAL_BEST_32_all_prior_out.pt",
+      "size_bytes": 851969508
+    },
+    {
+      "path": "logs/download_eval_extras.log",
+      "size_bytes": 992
+    },
+    {
+      "path": "logs/download_infer_minimal.log",
+      "size_bytes": 588
+    },
+    {
+      "path": "logs/s2_stage0_repair.log",
+      "size_bytes": 27299
+    },
+    {
+      "path": "logs/s2_stage1_envfix_retry_epoch0.log",
+      "size_bytes": 116954
+    },
+    {
+      "path": "logs/s5_stage0_dryrun.log",
+      "size_bytes": 9643
+    },
+    {
+      "path": "logs/s5_stage0_repair.log",
+      "size_bytes": 27298
+    },
+    {
+      "path": "logs/s5_stage0_repair_bs4.log",
+      "size_bytes": 3316
+    },
+    {
+      "path": "logs/s5_stage0_repair_bs8.log",
+      "size_bytes": 5278
+    },
+    {
+      "path": "logs/s5_stage1_envfix_retry5.log",
+      "size_bytes": 3120
+    },
+    {
+      "path": "logs/s5_stage1_envfix_retry6_directpy.log",
+      "size_bytes": 10005
+    },
+    {
+      "path": "logs/s5_stage1_envfix_retry7_epoch0.log",
+      "size_bytes": 116239
+    },
+    {
+      "path": "logs/s5_stage1_repair.log",
+      "size_bytes": 5055
+    },
+    {
+      "path": "logs/s5_stage1_repair_readme_exact.log",
+      "size_bytes": 7799
+    },
+    {
+      "path": "logs/s5_stage1_revert_retry.log",
+      "size_bytes": 6484
+    },
+    {
+      "path": "logs/s5_stage1_revert_retry2.log",
+      "size_bytes": 7373
+    },
+    {
+      "path": "logs/s5_stage1_revert_retry3.log",
+      "size_bytes": 7373
+    },
+    {
+      "path": "logs/s5_stage1_revert_retry4.log",
+      "size_bytes": 7378
+    },
+    {
+      "path": "logs/s7_brain_corr_aligned.log",
+      "size_bytes": 5268
+    },
+    {
+      "path": "logs/s7_inference_stage1_final_20260412_104708.log",
+      "size_bytes": 2017
+    },
+    {
+      "path": "logs/s7_inference_stage1_final_allowdl_20260412_105351.log",
+      "size_bytes": 28888
+    },
+    {
+      "path": "logs/s7_inference_stage1_final_cachefix_20260412_104901.log",
+      "size_bytes": 16591
+    },
+    {
+      "path": "logs/s7_recon_inference.log",
+      "size_bytes": 457686
+    },
+    {
+      "path": "logs/s7_run_debug.log",
+      "size_bytes": 30063
+    },
+    {
+      "path": "logs/s7_stage0_repair.log",
+      "size_bytes": 27299
+    },
+    {
+      "path": "logs/s7_stage1_envfix_retry_epoch0.log",
+      "size_bytes": 9521
+    },
+    {
+      "path": "logs/s7_stage1_envfix_retry_epoch0_v2.log",
+      "size_bytes": 33116
+    },
+    {
+      "path": "logs/s7_stage1_resume_from_last_20260410_081443.log",
+      "size_bytes": 93604
+    },
+    {
+      "path": "logs/watch_s7_then_launch_s5_stage1.log",
+      "size_bytes": 12038
+    },
+    {
+      "path": "s2_textalign_stage1_FINAL_BEST_32_all_enhancedrec_20recons_grid.png",
+      "size_bytes": 3887654
+    },
+    {
+      "path": "s5_textalign_stage1_FINAL_BEST_32_all_enhancedrec_20recons_grid.png",
+      "size_bytes": 3844317
+    },
+    {
+      "path": "s7_textalign_stage1_FINAL_BEST_32_all_enhancedrec_20recons_grid.png",
+      "size_bytes": 3876541
+    },
+    {
+      "path": "tables/s2_textalign_stage1_FINAL_BEST_32_all_enhancedrecons.csv",
+      "size_bytes": 325
+    },
+    {
+      "path": "tables/s2_textalign_stage1_FINAL_BEST_32_all_enhancedrecons_caption_metrics.csv",
+      "size_bytes": 65
+    },
+    {
+      "path": "tables/s2_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.json",
+      "size_bytes": 1990
+    },
+    {
+      "path": "tables/s2_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.tsv",
+      "size_bytes": 471
+    },
+    {
+      "path": "tables/s5_textalign_stage1_FINAL_BEST_32_all_enhancedrecons.csv",
+      "size_bytes": 329
+    },
+    {
+      "path": "tables/s5_textalign_stage1_FINAL_BEST_32_all_enhancedrecons_caption_metrics.csv",
+      "size_bytes": 63
+    },
+    {
+      "path": "tables/s5_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.json",
+      "size_bytes": 1992
+    },
+    {
+      "path": "tables/s5_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.tsv",
+      "size_bytes": 473
+    },
+    {
+      "path": "tables/s7_textalign_stage1_FINAL_BEST_32_all_enhancedrecons.csv",
+      "size_bytes": 327
+    },
+    {
+      "path": "tables/s7_textalign_stage1_FINAL_BEST_32_all_enhancedrecons_caption_metrics.csv",
+      "size_bytes": 65
+    },
+    {
+      "path": "tables/s7_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.json",
+      "size_bytes": 1986
+    },
+    {
+      "path": "tables/s7_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.tsv",
+      "size_bytes": 467
+    },
+    {
+      "path": "train_logs/s2_textalign_stage0_repair_80G_resume_compat_epoch0/last.pth",
+      "size_bytes": 7866541124
+    },
+    {
+      "path": "train_logs/s2_textalign_stage1_FINAL_BEST_32/last.pth",
+      "size_bytes": 26718637941
+    },
+    {
+      "path": "train_logs/s5_textalign_stage0_repair_80G_resume_compat_epoch0/last.pth",
+      "size_bytes": 7846241348
+    },
+    {
+      "path": "train_logs/s5_textalign_stage1_FINAL_BEST_32/last.pth",
+      "size_bytes": 26657738613
+    },
+    {
+      "path": "train_logs/s7_textalign_stage0_repair_80G_resume_compat_epoch0/last.pth",
+      "size_bytes": 7839885828
+    },
+    {
+      "path": "train_logs/s7_textalign_stage1_FINAL_BEST_32/last.pth",
+      "size_bytes": 26639755061
+    }
+  ]
+}

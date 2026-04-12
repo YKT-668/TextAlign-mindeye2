@@ -1,0 +1,28 @@
+ M inspect_data.py
+ M src/evals
+ M src/wds
+ M tools/gen_hard_neg_captions_from_json_v2.py
+ M tools/prepare_and_encode_train_coco_text_clip_hf.py
+ M wds
+?? ENV_SNAPSHOT/
+?? UPLOAD_PLAN.json
+?? audit_runs/closure_audit_20260412/
+?? audit_runs/s5_stage1_wrong_resume_20260403_102022/
+?? s2_textalign_stage1_FINAL_BEST_32_all_enhancedrec_20recons_grid.png
+?? s5_textalign_stage1_FINAL_BEST_32_all_enhancedrec_20recons_grid.png
+?? s7_textalign_stage1_FINAL_BEST_32_all_enhancedrec_20recons_grid.png
+?? scripts/run_s5_stage1_cleanenv_retry.sh
+?? scripts/watch_s7_then_launch_s5_stage1.sh
+?? src/recompute_brain_corr_aligned.py
+?? tables/s2_textalign_stage1_FINAL_BEST_32_all_enhancedrecons.csv
+?? tables/s2_textalign_stage1_FINAL_BEST_32_all_enhancedrecons_caption_metrics.csv
+?? tables/s2_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.json
+?? tables/s2_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.tsv
+?? tables/s5_textalign_stage1_FINAL_BEST_32_all_enhancedrecons.csv
+?? tables/s5_textalign_stage1_FINAL_BEST_32_all_enhancedrecons_caption_metrics.csv
+?? tables/s5_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.json
+?? tables/s5_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.tsv
+?? tables/s7_textalign_stage1_FINAL_BEST_32_all_enhancedrecons.csv
+?? tables/s7_textalign_stage1_FINAL_BEST_32_all_enhancedrecons_caption_metrics.csv
+?? tables/s7_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.json
+?? tables/s7_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.tsv

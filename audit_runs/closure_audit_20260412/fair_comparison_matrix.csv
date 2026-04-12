@@ -1,0 +1,5 @@
+subj,has_stage1_last_ckpt,has_stage1_best_ckpt,has_eval_dir,has_official_ids,has_enhancedrecons,has_blurryrecons,has_clipvoxels,has_predcaptions,has_table_main,has_corrected_braincorr
+1,False,False,False,False,False,False,False,False,True,False
+2,True,False,True,True,True,True,True,True,True,True
+5,True,False,True,True,True,True,True,True,True,True
+7,True,False,True,True,True,True,True,True,True,True
