@@ -1,0 +1,91 @@
+{
+  "generated_at": "2026-04-13T09:00:34Z",
+  "repo": "ykt668/textalign-mindeye2-model",
+  "uploaded_count": 12,
+  "uploaded": [
+    {
+      "path": "HF_UPLOAD_RESULT.json",
+      "repo_path": "snapshots/2026-04-13/reports/HF_UPLOAD_RESULT.json",
+      "size_bytes": 15667,
+      "sha256": "ecffde6575b27d8dc6e0d1fa642a7e8271ae4163a496c42de32b71c66b31b8c3",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/fa6157fb59e46349cf3bb57673b95455f19ddab8"
+    },
+    {
+      "path": "HF_UPLOAD_MANIFEST.json",
+      "repo_path": "snapshots/2026-04-13/reports/HF_UPLOAD_MANIFEST.json",
+      "size_bytes": 9354,
+      "sha256": "11293f31ad7765b363b773611696c99875e483d0c81b4d433f81f8e349d7eb5a",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/019c0257b8c7e1c324d2cc6d8b1c83822d12a97a"
+    },
+    {
+      "path": "HF_UPLOAD_SIZE_SUMMARY.json",
+      "repo_path": "snapshots/2026-04-13/reports/HF_UPLOAD_SIZE_SUMMARY.json",
+      "size_bytes": 292,
+      "sha256": "010ad0f7ae5b0aabc20555429200cdaa0cc003b2666a53a6790a64f9dc3fb0ec",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/a35a3496eb1b0c0016b8832aa95a57d47dc7c557"
+    },
+    {
+      "path": "HF_UPLOAD_SHA256.txt",
+      "repo_path": "snapshots/2026-04-13/reports/HF_UPLOAD_SHA256.txt",
+      "size_bytes": 5026,
+      "sha256": "212e76f046d4f8e3d583bf5056155203a284f548f30091f8040a414ddf286239",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/dd5302b43a5a1458582e0cb2805d4080683ced24"
+    },
+    {
+      "path": "HF_DELTA_CHECKPOINT_FILES.txt",
+      "repo_path": "snapshots/2026-04-13/reports/HF_DELTA_CHECKPOINT_FILES.txt",
+      "size_bytes": 162,
+      "sha256": "066342356f2a980a0f79d054156f3c0aecf402d4e16ad6af1ab5846110a38838",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/90b0a888a43c9de89daabc3f5500b180fbd0f9f2"
+    },
+    {
+      "path": "HF_DELTA_CHECKPOINT_SIZE.txt",
+      "repo_path": "snapshots/2026-04-13/reports/HF_DELTA_CHECKPOINT_SIZE.txt",
+      "size_bytes": 198,
+      "sha256": "ac345a65c3631463b1cc8b1906d37f8e38b7fe2376cbd950f28b52f6732bfd20",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/73915bbb123a7dc66a9bdea94f2dc3329b809f98"
+    },
+    {
+      "path": "HF_DELTA_CHECKPOINT_SHA256.txt",
+      "repo_path": "snapshots/2026-04-13/reports/HF_DELTA_CHECKPOINT_SHA256.txt",
+      "size_bytes": 360,
+      "sha256": "91809ad81705ed8f2eebd7e4fd72458a4b82e1257afe40daa9b2df4fbd2b1240",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/3499efa56cf3287bb485dfc7f29a406a18f596e9"
+    },
+    {
+      "path": "RESTORE_VERIFY_REPORT.txt",
+      "repo_path": "snapshots/2026-04-13/reports/RESTORE_VERIFY_REPORT.txt",
+      "size_bytes": 133,
+      "sha256": "f6925a08b3adab5e130f9c233828ca5e8ea54429541d0d37c38c004e9fb4711b",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/cf405b72766072807a74955fbeb4fcbb56da5e51"
+    },
+    {
+      "path": "RECOVERY_MANIFEST.json",
+      "repo_path": "snapshots/2026-04-13/reports/RECOVERY_MANIFEST.json",
+      "size_bytes": 4253,
+      "sha256": "43ad1acfbdfb21a6da6689a4b8e7b01acf957de01b5e5bdfa0709c1882661463",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/2472a94076d567f2dbd90d4a3c497c3479395084"
+    },
+    {
+      "path": "RECOVERY_MANIFEST_SHA256.txt",
+      "repo_path": "snapshots/2026-04-13/reports/RECOVERY_MANIFEST_SHA256.txt",
+      "size_bytes": 1344,
+      "sha256": "f8f50cfceb356839ae43d88b761bde04952fa9029683f6437e5472aa5918d335",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/6b1782c1820b8a48ad214f0d6816dc176c71e048"
+    },
+    {
+      "path": "UPLOAD_PLAN.json",
+      "repo_path": "snapshots/2026-04-13/reports/UPLOAD_PLAN.json",
+      "size_bytes": 14663,
+      "sha256": "f2317fea291683cde726f113bbda74f65148fe330f87a5b5a7d1cdc1cdb216b1",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/30d6b5befb2386168aa0310db75518e16440fffa"
+    },
+    {
+      "path": "EXPERIMENT_SNAPSHOT_2026-04-13.md",
+      "repo_path": "snapshots/2026-04-13/reports/EXPERIMENT_SNAPSHOT_2026-04-13.md",
+      "size_bytes": 2900,
+      "sha256": "0fc4597b70f06694c78bbe5d96d1694af3a07bceaa836abcad32fee86c3b622b",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/131a31bcbf77267187d07ba08bfb6173a4dacf01"
+    }
+  ]
+}
