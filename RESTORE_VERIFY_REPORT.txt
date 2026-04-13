@@ -1,0 +1,5 @@
+GitHub clone: PASS
+GitHub key files: PASS
+HF remote key files exists: PASS
+HF sample downloads: PASS
+Recovery docs readability: PASS

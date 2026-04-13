@@ -1,0 +1,305 @@
+{
+  "generated_at": "2026-04-13T08:46:51Z",
+  "repo": "ykt668/textalign-mindeye2-model",
+  "target_prefix": "snapshots/2026-04-13/",
+  "uploaded_count": 43,
+  "skipped_existing_count": 0,
+  "uploaded_total_size_bytes": 1032727969,
+  "uploaded": [
+    {
+      "path": "audit_runs/s5_stage1_wrong_resume_20260403_102022/command_evidence.txt",
+      "size_bytes": 872,
+      "repo_path": "snapshots/2026-04-13/audit_runs/s5_stage1_wrong_resume_20260403_102022/command_evidence.txt",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/2827cc46a58c15afd801daf0875273d44262ce10"
+    },
+    {
+      "path": "audit_runs/s5_stage1_wrong_resume_20260403_102022/progress_markers.txt",
+      "size_bytes": 273,
+      "repo_path": "snapshots/2026-04-13/audit_runs/s5_stage1_wrong_resume_20260403_102022/progress_markers.txt",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/a02871852368c24f1a110c383eae2450b7fcbfff"
+    },
+    {
+      "path": "audit_runs/s5_stage1_wrong_resume_20260403_102022/s5_stage1_repair.full.log",
+      "size_bytes": 5055,
+      "repo_path": "snapshots/2026-04-13/audit_runs/s5_stage1_wrong_resume_20260403_102022/s5_stage1_repair.full.log",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/6ea4841bfa93dd301aafaa76290ce1aea039e3a4"
+    },
+    {
+      "path": "audit_runs/s5_stage1_wrong_resume_20260403_102022/s5_stage1_repair_last200.log",
+      "size_bytes": 5055,
+      "repo_path": "snapshots/2026-04-13/audit_runs/s5_stage1_wrong_resume_20260403_102022/s5_stage1_repair_last200.log",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/3fd29e36d65339d05bf0561db8ef0c57b26531b3"
+    },
+    {
+      "path": "audit_runs/s5_stage1_wrong_resume_20260403_102022/s5_textalign_stage1_FINAL_BEST_32/last.pth",
+      "size_bytes": 1021050880,
+      "repo_path": "snapshots/2026-04-13/audit_runs/s5_stage1_wrong_resume_20260403_102022/s5_textalign_stage1_FINAL_BEST_32/last.pth",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/cfa509a600f2dc60e8c4a5f83fac3a8a4f517572"
+    },
+    {
+      "path": "audit_runs/s5_stage1_wrong_resume_20260403_102022/stage1_output_files.tsv",
+      "size_bytes": 52,
+      "repo_path": "snapshots/2026-04-13/audit_runs/s5_stage1_wrong_resume_20260403_102022/stage1_output_files.tsv",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/68eaf55bf1bec3b7fff4fbf52dd300e42ed5d832"
+    },
+    {
+      "path": "tables/s2_textalign_stage1_FINAL_BEST_32_all_enhancedrecons.csv",
+      "size_bytes": 325,
+      "repo_path": "snapshots/2026-04-13/tables/s2_textalign_stage1_FINAL_BEST_32_all_enhancedrecons.csv",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/cfac326b539b86c1c181211a95056472543510ba"
+    },
+    {
+      "path": "tables/s2_textalign_stage1_FINAL_BEST_32_all_enhancedrecons_caption_metrics.csv",
+      "size_bytes": 65,
+      "repo_path": "snapshots/2026-04-13/tables/s2_textalign_stage1_FINAL_BEST_32_all_enhancedrecons_caption_metrics.csv",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/2db1099aeaece28da90da1cc4662d8699fc0c3d1"
+    },
+    {
+      "path": "tables/s2_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.json",
+      "size_bytes": 1990,
+      "repo_path": "snapshots/2026-04-13/tables/s2_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.json",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/6055974f55547b9ceab6a27b935caa8949c5ab37"
+    },
+    {
+      "path": "tables/s2_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.tsv",
+      "size_bytes": 471,
+      "repo_path": "snapshots/2026-04-13/tables/s2_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.tsv",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/878becabbc9d540359f2bc8c60c995b9b87d817c"
+    },
+    {
+      "path": "tables/s5_textalign_stage1_FINAL_BEST_32_all_enhancedrecons.csv",
+      "size_bytes": 329,
+      "repo_path": "snapshots/2026-04-13/tables/s5_textalign_stage1_FINAL_BEST_32_all_enhancedrecons.csv",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/9a14eaa1de12ce21693cd60965abd848381a1dfd"
+    },
+    {
+      "path": "tables/s5_textalign_stage1_FINAL_BEST_32_all_enhancedrecons_caption_metrics.csv",
+      "size_bytes": 63,
+      "repo_path": "snapshots/2026-04-13/tables/s5_textalign_stage1_FINAL_BEST_32_all_enhancedrecons_caption_metrics.csv",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/2338be7ce5ed8bf93ed05e10052d5464d6199346"
+    },
+    {
+      "path": "tables/s5_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.json",
+      "size_bytes": 1992,
+      "repo_path": "snapshots/2026-04-13/tables/s5_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.json",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/8b808fd5b4193a2e0334bf42e9eaf33e92bb8b7d"
+    },
+    {
+      "path": "tables/s5_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.tsv",
+      "size_bytes": 473,
+      "repo_path": "snapshots/2026-04-13/tables/s5_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.tsv",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/5ccaddef4b33a3ee7eef7cc8e5c6176438418e09"
+    },
+    {
+      "path": "tables/s7_textalign_stage1_FINAL_BEST_32_all_enhancedrecons.csv",
+      "size_bytes": 327,
+      "repo_path": "snapshots/2026-04-13/tables/s7_textalign_stage1_FINAL_BEST_32_all_enhancedrecons.csv",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/a646c153e419659c2294715cd535c17b6c9f6ab2"
+    },
+    {
+      "path": "tables/s7_textalign_stage1_FINAL_BEST_32_all_enhancedrecons_caption_metrics.csv",
+      "size_bytes": 65,
+      "repo_path": "snapshots/2026-04-13/tables/s7_textalign_stage1_FINAL_BEST_32_all_enhancedrecons_caption_metrics.csv",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/915dae1a3a1c5ee0b3a4c005bb2f8121c59555f0"
+    },
+    {
+      "path": "tables/s7_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.json",
+      "size_bytes": 1986,
+      "repo_path": "snapshots/2026-04-13/tables/s7_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.json",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/0aa4dba61997579413163d396f6be660d1881c6b"
+    },
+    {
+      "path": "tables/s7_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.tsv",
+      "size_bytes": 467,
+      "repo_path": "snapshots/2026-04-13/tables/s7_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.tsv",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/18739635017ab49eb6d43bad39b885c7d2080d29"
+    },
+    {
+      "path": "s2_textalign_stage1_FINAL_BEST_32_all_enhancedrec_20recons_grid.png",
+      "size_bytes": 3887654,
+      "repo_path": "snapshots/2026-04-13/s2_textalign_stage1_FINAL_BEST_32_all_enhancedrec_20recons_grid.png",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/1778081ed002f45747774560134630f136aff813"
+    },
+    {
+      "path": "s5_textalign_stage1_FINAL_BEST_32_all_enhancedrec_20recons_grid.png",
+      "size_bytes": 3844317,
+      "repo_path": "snapshots/2026-04-13/s5_textalign_stage1_FINAL_BEST_32_all_enhancedrec_20recons_grid.png",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/74fe4b1b9a8718696be16496e10eb6d9c2d51674"
+    },
+    {
+      "path": "s7_textalign_stage1_FINAL_BEST_32_all_enhancedrec_20recons_grid.png",
+      "size_bytes": 3876541,
+      "repo_path": "snapshots/2026-04-13/s7_textalign_stage1_FINAL_BEST_32_all_enhancedrec_20recons_grid.png",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/4288fdf0f35f745c467f2f21a1210f7f1466482c"
+    },
+    {
+      "path": "EXPERIMENT_SNAPSHOT_2026-04-13.md",
+      "size_bytes": 2900,
+      "repo_path": "snapshots/2026-04-13/EXPERIMENT_SNAPSHOT_2026-04-13.md",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/078459729b739d6ac4fcd4eb43b71dfb24fef85d"
+    },
+    {
+      "path": "RECOVERY_MANIFEST.json",
+      "size_bytes": 4253,
+      "repo_path": "snapshots/2026-04-13/RECOVERY_MANIFEST.json",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/bf22d62fc45d327f762545bdb4482e0f4333b277"
+    },
+    {
+      "path": "RECOVERY_MANIFEST_SHA256.txt",
+      "size_bytes": 860,
+      "repo_path": "snapshots/2026-04-13/RECOVERY_MANIFEST_SHA256.txt",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/4f99948ddcb9667a6215eebf707d1462b40b1468"
+    },
+    {
+      "path": "UPLOAD_PLAN.json",
+      "size_bytes": 14663,
+      "repo_path": "snapshots/2026-04-13/UPLOAD_PLAN.json",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/046ea792aab75e8846f5cb530cd4f82ca2b3ca64"
+    },
+    {
+      "path": "ENV_SNAPSHOT/conda_env_export_no_builds.err",
+      "size_bytes": 0,
+      "repo_path": "snapshots/2026-04-13/ENV_SNAPSHOT/conda_env_export_no_builds.err",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/b7a2aa6c5762e892852a7bfdd6533f699e9a6d36"
+    },
+    {
+      "path": "ENV_SNAPSHOT/conda_env_export_no_builds.yml",
+      "size_bytes": 2847,
+      "repo_path": "snapshots/2026-04-13/ENV_SNAPSHOT/conda_env_export_no_builds.yml",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/4131cfbcb6531f63de3a29a118353379afe0eec2"
+    },
+    {
+      "path": "ENV_SNAPSHOT/conda_list_explicit.err",
+      "size_bytes": 0,
+      "repo_path": "snapshots/2026-04-13/ENV_SNAPSHOT/conda_list_explicit.err",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/e67e430150043815c618e8c704986ad739e6a4ec"
+    },
+    {
+      "path": "ENV_SNAPSHOT/conda_list_explicit.txt",
+      "size_bytes": 6230,
+      "repo_path": "snapshots/2026-04-13/ENV_SNAPSHOT/conda_list_explicit.txt",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/ea6d00bbfea930be2f9397a4713d60a36b7ad60d"
+    },
+    {
+      "path": "ENV_SNAPSHOT/df_mnt_work.txt",
+      "size_bytes": 97,
+      "repo_path": "snapshots/2026-04-13/ENV_SNAPSHOT/df_mnt_work.txt",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/df983b973937525491a2a31e2fbc769c8e178ab3"
+    },
+    {
+      "path": "ENV_SNAPSHOT/git_diff_stat.txt",
+      "size_bytes": 733,
+      "repo_path": "snapshots/2026-04-13/ENV_SNAPSHOT/git_diff_stat.txt",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/ca0d1b4b734887fa8613ddcce9101520ddfd5768"
+    },
+    {
+      "path": "ENV_SNAPSHOT/git_remote_v.txt",
+      "size_bytes": 129,
+      "repo_path": "snapshots/2026-04-13/ENV_SNAPSHOT/git_remote_v.txt",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/94682cf4d1b118a26c9e6e84e05de0b5b0406062"
+    },
+    {
+      "path": "ENV_SNAPSHOT/git_rev_parse_head.txt",
+      "size_bytes": 41,
+      "repo_path": "snapshots/2026-04-13/ENV_SNAPSHOT/git_rev_parse_head.txt",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/b05ce3695053121dd9a3503ac199c5dc3af80407"
+    },
+    {
+      "path": "ENV_SNAPSHOT/git_status_full.txt",
+      "size_bytes": 1961,
+      "repo_path": "snapshots/2026-04-13/ENV_SNAPSHOT/git_status_full.txt",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/53bdc9bc6be8f3eed83bac8192ede2b8ebfeb9e1"
+    },
+    {
+      "path": "ENV_SNAPSHOT/git_status_short.txt",
+      "size_bytes": 1598,
+      "repo_path": "snapshots/2026-04-13/ENV_SNAPSHOT/git_status_short.txt",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/4c4749e35216f30a1607732f69b2fe0faded838d"
+    },
+    {
+      "path": "ENV_SNAPSHOT/key_dirs_sizes.txt",
+      "size_bytes": 211,
+      "repo_path": "snapshots/2026-04-13/ENV_SNAPSHOT/key_dirs_sizes.txt",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/75c232fc67e12e3d2abd32086561cc1197c9aac3"
+    },
+    {
+      "path": "ENV_SNAPSHOT/key_dirs_tree_depth2.txt",
+      "size_bytes": 8877,
+      "repo_path": "snapshots/2026-04-13/ENV_SNAPSHOT/key_dirs_tree_depth2.txt",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/f51b6fbf487572a9b9ca72df84b14d013b044402"
+    },
+    {
+      "path": "ENV_SNAPSHOT/mount_mnt_work.txt",
+      "size_bytes": 46,
+      "repo_path": "snapshots/2026-04-13/ENV_SNAPSHOT/mount_mnt_work.txt",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/7e4c36822142c6032e2e90fe53ce0d2e6a028330"
+    },
+    {
+      "path": "ENV_SNAPSHOT/nvidia_smi.txt",
+      "size_bytes": 145,
+      "repo_path": "snapshots/2026-04-13/ENV_SNAPSHOT/nvidia_smi.txt",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/9d9062ffaf164a609c1e1a7f6a1f2011ae50de26"
+    },
+    {
+      "path": "ENV_SNAPSHOT/pip_freeze.txt",
+      "size_bytes": 2948,
+      "repo_path": "snapshots/2026-04-13/ENV_SNAPSHOT/pip_freeze.txt",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/5c87a6c1ca7640518378a03eec96f576a063422d"
+    },
+    {
+      "path": "ENV_SNAPSHOT/python_version.txt",
+      "size_bytes": 14,
+      "repo_path": "snapshots/2026-04-13/ENV_SNAPSHOT/python_version.txt",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/00873f1e3b6a58c73c48e8346571ed397b117758"
+    },
+    {
+      "path": "ENV_SNAPSHOT/python_which.txt",
+      "size_bytes": 36,
+      "repo_path": "snapshots/2026-04-13/ENV_SNAPSHOT/python_which.txt",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/9a0443c4b272e4740d70545896b0db1cb633483f"
+    },
+    {
+      "path": "ENV_SNAPSHOT/uname.txt",
+      "size_bytes": 128,
+      "repo_path": "snapshots/2026-04-13/ENV_SNAPSHOT/uname.txt",
+      "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/726896c191052ef435d4f2ea6f5a1ad652236bb3"
+    }
+  ],
+  "skipped_existing": [],
+  "verification": {
+    "EXPERIMENT_SNAPSHOT_2026-04-13.md": true,
+    "RECOVERY_MANIFEST.json": true,
+    "RECOVERY_MANIFEST_SHA256.txt": true,
+    "tables/s2_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.json": true,
+    "tables/s5_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.json": true,
+    "tables/s7_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.json": true
+  },
+  "checkpoint_patch_upload": {
+    "generated_at": "2026-04-13T08:58:43Z",
+    "missing_before_upload": [
+      "train_logs/s2_textalign_stage1_FINAL_BEST_32/last.pth",
+      "train_logs/s5_textalign_stage1_FINAL_BEST_32/last.pth",
+      "train_logs/s7_textalign_stage1_FINAL_BEST_32/last.pth"
+    ],
+    "uploaded": [
+      {
+        "path": "train_logs/s2_textalign_stage1_FINAL_BEST_32/last.pth",
+        "size_bytes": 26718637941,
+        "sha256": "385166f4bddb7f9d240950c72139fd7d2dec9c747903806ef2a063dabc448b09",
+        "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/019f0bf9b586fccdeed6d02d3ed6be38260cdd4b"
+      },
+      {
+        "path": "train_logs/s5_textalign_stage1_FINAL_BEST_32/last.pth",
+        "size_bytes": 26657738613,
+        "sha256": "7d42e176a0655b8f203113176f9129bd97703765f0c2575357dfa10f03fef54a",
+        "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/5c4d70b83be90b57c6b43596d6ecab53f10cb4d0"
+      },
+      {
+        "path": "train_logs/s7_textalign_stage1_FINAL_BEST_32/last.pth",
+        "size_bytes": 26639755061,
+        "sha256": "a86a1f0c0d16188626a2c9f926b97f28976634244879a0c40a2810de24416939",
+        "url": "https://huggingface.co/ykt668/textalign-mindeye2-model/commit/84722cb3f7a8e32cc69ab26337f70dbdad28dac4"
+      }
+    ]
+  }
+}
