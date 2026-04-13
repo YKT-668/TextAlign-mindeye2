@@ -1,0 +1,5 @@
+train_logs/s2_textalign_stage1_FINAL_BEST_32/last.pth
+train_logs/s5_textalign_stage0_repair_80G_resume_compat_epoch0/last.pth
+train_logs/s5_textalign_stage1_FINAL_BEST_32/last.pth
+train_logs/s7_textalign_stage0_repair_80G_resume_compat_epoch0/last.pth
+train_logs/s7_textalign_stage1_FINAL_BEST_32/last.pth

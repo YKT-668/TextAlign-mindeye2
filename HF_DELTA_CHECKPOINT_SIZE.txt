@@ -1,0 +1,5 @@
+26718637941 /mnt/work/repos/TextAlign-mindeye2/train_logs/s2_textalign_stage1_FINAL_BEST_32/last.pth
+7846241348 /mnt/work/repos/TextAlign-mindeye2/train_logs/s5_textalign_stage0_repair_80G_resume_compat_epoch0/last.pth
+26657738613 /mnt/work/repos/TextAlign-mindeye2/train_logs/s5_textalign_stage1_FINAL_BEST_32/last.pth
+7839885828 /mnt/work/repos/TextAlign-mindeye2/train_logs/s7_textalign_stage0_repair_80G_resume_compat_epoch0/last.pth
+26639755061 /mnt/work/repos/TextAlign-mindeye2/train_logs/s7_textalign_stage1_FINAL_BEST_32/last.pth

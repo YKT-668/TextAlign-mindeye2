@@ -2,10 +2,11 @@ import json
 import torch
 import os
 from pathlib import Path
+import argparse
 
-def check_positives():
+def check_positives(path: Path):
     print("--- 1. Checking Positive Captions ---")
-    p = Path("data/nsd_text/train_coco_captions.json")
+    p = path
     if not p.exists():
         print(f"File not found: {p}")
         return
@@ -23,15 +24,14 @@ def check_positives():
     except Exception as e:
         print(f"Error checking positives: {e}")
 
-def check_hard_negatives():
+def check_hard_negatives(path: Path, jsonl_path: Path = None):
     print("\n--- 2. Checking Hard Negatives (Explicit File) ---")
-    # This file was found in the search and referenced in training script
-    p = Path("data/nsd_text/train_coco_captions_hard_negs_clip.pt")
+    p = path
     
     if not p.exists():
         print(f"File not found: {p}")
         # Try JSONL version if PT doesn't exist
-        p_json = Path("data/nsd_text/train_coco_captions_hard_negs.jsonl")
+        p_json = jsonl_path or Path("data/nsd_text/train_coco_captions_hard_negs.jsonl")
         if p_json.exists():
             print(f"Found JSONL instead: {p_json}")
             # Just count lines
@@ -90,6 +90,27 @@ def check_hard_negatives():
     except Exception as e:
         print(f"Error loading {p}: {e}")
 
+
+def resolve_paths(args):
+    if args.subj is not None:
+        s = int(args.subj)
+        pos = Path(f"data/nsd_text/s{s}_train_coco_captions.json")
+        hard_pt = Path(f"data/nsd_text/s{s}_train_coco_captions_hard_negs_clip.pt")
+        hard_jsonl = Path(f"data/nsd_text/s{s}_train_coco_captions_hard_negs.jsonl")
+        return pos, hard_pt, hard_jsonl
+    pos = Path(args.pos_json) if args.pos_json else Path("data/nsd_text/train_coco_captions.json")
+    hard_pt = Path(args.hardneg_pt) if args.hardneg_pt else Path("data/nsd_text/train_coco_captions_hard_negs_clip.pt")
+    hard_jsonl = Path(args.hardneg_jsonl) if args.hardneg_jsonl else Path("data/nsd_text/train_coco_captions_hard_negs.jsonl")
+    return pos, hard_pt, hard_jsonl
+
 if __name__ == "__main__":
-    check_positives()
-    check_hard_negatives()
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--subj", type=int, default=None)
+    ap.add_argument("--pos_json", type=str, default=None)
+    ap.add_argument("--hardneg_pt", type=str, default=None)
+    ap.add_argument("--hardneg_jsonl", type=str, default=None)
+    args = ap.parse_args()
+
+    pos_json, hardneg_pt, hardneg_jsonl = resolve_paths(args)
+    check_positives(pos_json)
+    check_hard_negatives(hardneg_pt, hardneg_jsonl)

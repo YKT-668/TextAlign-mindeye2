@@ -1,4 +1,4 @@
-202G	train_logs
+]633;E;du -sh train_logs evals tables audit_runs logs data/nsd_text 2> /dev/null;c9febf8c-33e2-490e-8779-f3a016729503]633;C202G	train_logs
 9.4G	evals
 108K	tables
 975M	audit_runs

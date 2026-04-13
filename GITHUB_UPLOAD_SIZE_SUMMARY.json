@@ -1,0 +1,110 @@
+{
+  "file_count": 26,
+  "total_size_bytes": 65234,
+  "files": [
+    {
+      "path": "EXPERIMENT_SNAPSHOT_2026-04-13.md",
+      "size_bytes": 2900
+    },
+    {
+      "path": "UPLOAD_PLAN.json",
+      "size_bytes": 14663
+    },
+    {
+      "path": "RECOVERY_MANIFEST.json",
+      "size_bytes": 4253
+    },
+    {
+      "path": "RECOVERY_MANIFEST_SHA256.txt",
+      "size_bytes": 1344
+    },
+    {
+      "path": "HF_UPLOAD_MANIFEST.json",
+      "size_bytes": 9354
+    },
+    {
+      "path": "GITHUB_UPLOAD_SHA256.txt",
+      "size_bytes": 457
+    },
+    {
+      "path": "ENV_SNAPSHOT/python_version.txt",
+      "size_bytes": 14
+    },
+    {
+      "path": "ENV_SNAPSHOT/python_which.txt",
+      "size_bytes": 36
+    },
+    {
+      "path": "ENV_SNAPSHOT/pip_freeze.txt",
+      "size_bytes": 2948
+    },
+    {
+      "path": "ENV_SNAPSHOT/conda_env_export_no_builds.yml",
+      "size_bytes": 2847
+    },
+    {
+      "path": "ENV_SNAPSHOT/conda_list_explicit.txt",
+      "size_bytes": 6230
+    },
+    {
+      "path": "ENV_SNAPSHOT/nvidia_smi.txt",
+      "size_bytes": 145
+    },
+    {
+      "path": "ENV_SNAPSHOT/uname.txt",
+      "size_bytes": 128
+    },
+    {
+      "path": "ENV_SNAPSHOT/git_rev_parse_head.txt",
+      "size_bytes": 41
+    },
+    {
+      "path": "ENV_SNAPSHOT/git_status_full.txt",
+      "size_bytes": 1961
+    },
+    {
+      "path": "ENV_SNAPSHOT/git_status_short.txt",
+      "size_bytes": 1598
+    },
+    {
+      "path": "ENV_SNAPSHOT/git_diff_stat.txt",
+      "size_bytes": 733
+    },
+    {
+      "path": "ENV_SNAPSHOT/git_remote_v.txt",
+      "size_bytes": 129
+    },
+    {
+      "path": "ENV_SNAPSHOT/df_mnt_work.txt",
+      "size_bytes": 97
+    },
+    {
+      "path": "ENV_SNAPSHOT/mount_mnt_work.txt",
+      "size_bytes": 46
+    },
+    {
+      "path": "ENV_SNAPSHOT/key_dirs_sizes.txt",
+      "size_bytes": 211
+    },
+    {
+      "path": "ENV_SNAPSHOT/key_dirs_tree_depth2.txt",
+      "size_bytes": 8877
+    },
+    {
+      "path": "inspect_data.py",
+      "size_bytes": 4566
+    },
+    {
+      "path": "HF_DELTA_CHECKPOINT_FILES.txt",
+      "size_bytes": 306
+    },
+    {
+      "path": "HF_DELTA_CHECKPOINT_SHA256.txt",
+      "size_bytes": 811
+    },
+    {
+      "path": "HF_DELTA_CHECKPOINT_SIZE.txt",
+      "size_bytes": 539
+    }
+  ]
+}

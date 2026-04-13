@@ -1,7 +1,12 @@
- inspect_data.py                                    | 37 ++++++++++---
- src/evals                                          |  2 +-
- src/wds                                            |  2 +-
- tools/gen_hard_neg_captions_from_json_v2.py        | 22 +++++---
- .../prepare_and_encode_train_coco_text_clip_hf.py  | 61 ++++++++++++++++++++--
- wds                                                |  2 +-
- 6 files changed, 103 insertions(+), 23 deletions(-)
+ ENV_SNAPSHOT/conda_env_export_no_builds.yml | 15 ++++++++++++
+ ENV_SNAPSHOT/git_diff_stat.txt              |  7 ------
+ ENV_SNAPSHOT/git_rev_parse_head.txt         |  2 +-
+ ENV_SNAPSHOT/git_status_full.txt            | 24 ++++++++++---------
+ ENV_SNAPSHOT/git_status_short.txt           | 21 +++++++++-------
+ ENV_SNAPSHOT/nvidia_smi.txt                 | 22 ++---------------
+ ENV_SNAPSHOT/pip_freeze.txt                 | 15 ++++++++++++
+ inspect_data.py                             | 37 ++++++++++++++++++++++-------
+ src/evals                                   |  2 +-
+ src/wds                                     |  2 +-
+ wds                                         |  2 +-
+ 11 files changed, 91 insertions(+), 58 deletions(-)

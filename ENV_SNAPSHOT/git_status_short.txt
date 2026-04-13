@@ -1,19 +1,24 @@
+ M ENV_SNAPSHOT/conda_env_export_no_builds.yml
+ M ENV_SNAPSHOT/git_rev_parse_head.txt
+ M ENV_SNAPSHOT/git_status_full.txt
+ M ENV_SNAPSHOT/git_status_short.txt
+ M ENV_SNAPSHOT/nvidia_smi.txt
+ M ENV_SNAPSHOT/pip_freeze.txt
  M inspect_data.py
  M src/evals
  M src/wds
- M tools/gen_hard_neg_captions_from_json_v2.py
- M tools/prepare_and_encode_train_coco_text_clip_hf.py
  M wds
-?? ENV_SNAPSHOT/
-?? UPLOAD_PLAN.json
-?? audit_runs/closure_audit_20260412/
+?? HF_DELTA_CHECKPOINT_FILES.txt
+?? HF_DELTA_CHECKPOINT_SHA256.txt
+?? HF_DELTA_CHECKPOINT_SIZE.txt
+?? HF_UPLOAD_FILELIST.txt
+?? HF_UPLOAD_RESULT.json
+?? HF_UPLOAD_SHA256.txt
+?? HF_UPLOAD_SIZE_SUMMARY.json
 ?? audit_runs/s5_stage1_wrong_resume_20260403_102022/
 ?? s2_textalign_stage1_FINAL_BEST_32_all_enhancedrec_20recons_grid.png
 ?? s5_textalign_stage1_FINAL_BEST_32_all_enhancedrec_20recons_grid.png
 ?? s7_textalign_stage1_FINAL_BEST_32_all_enhancedrec_20recons_grid.png
-?? scripts/run_s5_stage1_cleanenv_retry.sh
-?? scripts/watch_s7_then_launch_s5_stage1.sh
-?? src/recompute_brain_corr_aligned.py
 ?? tables/s2_textalign_stage1_FINAL_BEST_32_all_enhancedrecons.csv
 ?? tables/s2_textalign_stage1_FINAL_BEST_32_all_enhancedrecons_caption_metrics.csv
 ?? tables/s2_textalign_stage1_FINAL_BEST_32_brain_corr_aligned.json
