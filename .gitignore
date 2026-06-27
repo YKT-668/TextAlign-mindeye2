@@ -108,3 +108,11 @@ photos_for_download.zip
 .vscode/
 .idea/
 *.slurm
+
+# AAAI revision additions
+outputs/
+features/
+*.zip
+*.tar
+*.gz
+.env
