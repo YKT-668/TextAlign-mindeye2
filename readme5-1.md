@@ -85,6 +85,38 @@ Verification performed via `archive/restore/restore_from_cloud.sh --dry-run`, ch
 
 | Artifact | Value |
 |---|---|
+| GitHub commit | `d4aad858c935c6f70ba10d3b24f4c977dec1dade` |
+| GitHub branch | `archive/final14` |
+| HF Model main revision | `ceb32860e6a9e1c775e30da8f8e884e0f1926795` |
+| HF Model master revision | `a127f9295fd5656ac63ae436f07e61b80bf4efce` |
+| HF Dataset revision | `2c612c5c2ca3c5344854edbd7028769cb254ab5a` |
+| Archive manifest SHA256 | See `archive/manifests/CHECKSUMS.sha256` |
+| Conda-pack SHA256 | See `conceptalign_env_linux64.tar.zst.sha256` |
+| Archive date | 2026-07-26 |
+
+### Checkpoint Paths (HF Model, branch `main`)
+
+| Model | Path | Size | SHA256 OID |
+|-------|------|------|-----------|
+| C1 positive-only | `checkpoints/final14_ablation/positive_only/last.pth` | 24.95 GiB | `95c3250676ce1c9ccaec` |
+| C2 random-negative | `checkpoints/final14_ablation/random_negative/last.pth` | 24.95 GiB | `e8b1996e55accf4f855f` |
+| C3 CLIP-nearest | `checkpoints/final14_ablation/clip_nearest/last.pth` | 24.95 GiB | `13fb861766996ee0778b` |
+| Shared Stage0 | `checkpoints/final14_ablation/shared_stage0/last.pth` | 22.04 GiB | `2f3a101771739e34edbe` |
+
+### Ours S1/S2/S5/S7 (existing, not re-uploaded)
+
+| Model | Repo | Branch | Path | Revision |
+|-------|------|--------|------|----------|
+| Ours S1 | HF Model | `master` | `checkpoints/s1_textalign_stage1_FINAL_BEST_32/last.pth` | `a127f9295fd5656a` |
+| Ours S2 | HF Model | `main` (snapshot) | `snapshots/2026-04-13/train_logs/s2_textalign_stage1_FINAL_BEST_32/last.pth` | `5b31f3aa` |
+| Ours S5 | HF Model | `main` (snapshot) | `snapshots/2026-04-13/train_logs/s5_textalign_stage1_FINAL_BEST_32/last.pth` | `5b31f3aa` |
+| Ours S7 | HF Model | `main` (snapshot) | `snapshots/2026-04-13/train_logs/s7_textalign_stage1_FINAL_BEST_32/last.pth` | `5b31f3aa` |
+
+### ours_ss2
+
+ours_ss2 (`train_logs/ss2_textalign_stage1_FINAL_BEST_32/`, 16.08 GiB) is classified as **P2_DIAGNOSTIC_OR_RECOVERY_ONLY**. It is a diagnostic/recovery checkpoint not used by any paper table, figure, evaluation, or inference result. It is NOT included in the minimal required archive. If needed for exact training reproduction, it is available locally at the path above.
+---
+|---|
 | GitHub commit | To be recorded after final push |
 | GitHub tag | `archive/final14` |
 | HF Model revision | To be recorded after upload |
