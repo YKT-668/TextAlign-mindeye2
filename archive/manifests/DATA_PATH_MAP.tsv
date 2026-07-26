@@ -1,0 +1,8 @@
+logical_path	physical_path	storage	notes
+NSD data	/mnt/aaai_ablation_disk/nsd/	ablation_disk	Raw NSD, not redistributed
+COCO images	/mnt/data/hf_cache/coco/	data_disk	COCO 2017, not redistributed
+HF cache	/mnt/data/hf_cache/	data_disk	HF model cache
+Checkpoints	/mnt/data/TextAlign-AAAI/TextAlign-mindeye2/mindeyev2_ckpts/	data_disk	Model checkpoints
+Training logs	/mnt/data/TextAlign-AAAI/TextAlign-mindeye2/train_logs/	data_disk	Training logs (some symlinks to ablation_disk)
+Ablation train logs	/mnt/aaai_ablation_disk/train_logs/	ablation_disk	Ablation training logs  
+Conda env	/mnt/data/conda_envs/mindeye21/	data_disk	Conda environment (7.8G)

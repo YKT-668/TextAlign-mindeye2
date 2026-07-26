@@ -1,0 +1,41 @@
+=== rev-parse HEAD ===
+ead8b5de4e946b0f0f81ab5f70c17a6ddf72e51d
+=== branch ===
+master
+=== remote ===
+origin	https://github.com/YKT-668/TextAlign-mindeye2.git (fetch)
+origin	https://github.com/YKT-668/TextAlign-mindeye2.git (push)
+=== diff --stat ===
+ src/__pycache__/Train_textalign.cpython-312.pyc | Bin 869 -> 0 bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+=== status --short ===
+ D src/__pycache__/Train_textalign.cpython-312.pyc
+?? .gitignore
+?? 31_step7f_statistics/
+?? LICENSE
+?? NOTICE
+?? README.md
+?? REPRO.md
+?? aaai_tools/
+?? add_resume.py
+?? assets/
+?? audit_runs/
+?? auto_full_pipeline.sh
+?? auto_post_infer.sh
+?? best_11_grid.png
+?? best_12_grid.png
+?? candidates_view/
+?? clip_fp32_patch.diff
+?? cloud_runtime/
+?? configs/
+?? copy_resized_figures.py
+?? debug_nohard_training_report.json
+?? debug_nohard_training_report.md
+?? docs/
+?? environment-mindeye.yml
+?? environment_mindeye21.yml
+?? eval/
+?? extract_originals.py
+?? figures/
+?? find_coco73k_map.sh
+?? find_stim_info.sh

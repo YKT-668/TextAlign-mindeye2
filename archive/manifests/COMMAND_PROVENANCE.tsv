@@ -1,0 +1,2 @@
+phase	experiment	command	cwd	exit_code
+training	s1_stage1	./run_training.sh configs/s1_stage1.yaml	/mnt/data/TextAlign-AAAI/TextAlign-mindeye2	0
