@@ -47,8 +47,11 @@ class PublicReleaseTests(unittest.TestCase):
         catalog = json.loads(
             (ROOT / "results/catalog/results.json").read_text(encoding="utf-8")
         )
+        mapping = json.loads((ROOT / "configs/artifacts.json").read_text(encoding="utf-8"))
         names = {row["experiment"] for row in catalog}
         self.assertTrue({"ours_s1", "c1_positive_only", "c2_random_negative", "c3_clip_nearest"} <= names)
+        for row in catalog:
+            self.assertIn(row["artifact"], mapping["artifacts"])
 
     def test_artifact_mapping(self):
         mapping = json.loads((ROOT / "configs/artifacts.json").read_text(encoding="utf-8"))

@@ -17,9 +17,9 @@
 | C3 | model main / pinned main revision | `checkpoints/final14_ablation/clip_nearest/last.pth` |
 | Shared Stage0 | model main / pinned main revision | `checkpoints/final14_ablation/shared_stage0/last.pth` |
 | Ours S1 | model master / pinned master revision | `checkpoints/s1_textalign_stage1_FINAL_BEST_32/last.pth` |
-| Ours S2 | model main snapshot | `snapshots/2026-04-13/train_logs/s2_textalign_stage1_FINAL_BEST_32/last.pth` |
-| Ours S5 | model main snapshot | `snapshots/2026-04-13/train_logs/s5_textalign_stage1_FINAL_BEST_32/last.pth` |
-| Ours S7 | model main snapshot | `snapshots/2026-04-13/train_logs/s7_textalign_stage1_FINAL_BEST_32/last.pth` |
+| Ours S2 | model main / `ceb32860e6a9e1c775e30da8f8e884e0f1926795` | `snapshots/2026-04-13/train_logs/s2_textalign_stage1_FINAL_BEST_32/last.pth` |
+| Ours S5 | model main / `ceb32860e6a9e1c775e30da8f8e884e0f1926795` | `snapshots/2026-04-13/train_logs/s5_textalign_stage1_FINAL_BEST_32/last.pth` |
+| Ours S7 | model main / `ceb32860e6a9e1c775e30da8f8e884e0f1926795` | `snapshots/2026-04-13/train_logs/s7_textalign_stage1_FINAL_BEST_32/last.pth` |
 
 ## Results
 

@@ -14,19 +14,19 @@
   {
     "experiment": "ours_s2",
     "kind": "checkpoint",
-    "artifact": "hf_model_main_snapshot",
+    "artifact": "ours_s2",
     "paper_role": "main ConceptAlign subject 2"
   },
   {
     "experiment": "ours_s5",
     "kind": "checkpoint",
-    "artifact": "hf_model_main_snapshot",
+    "artifact": "ours_s5",
     "paper_role": "main ConceptAlign subject 5"
   },
   {
     "experiment": "ours_s7",
     "kind": "checkpoint",
-    "artifact": "hf_model_main_snapshot",
+    "artifact": "ours_s7",
     "paper_role": "main ConceptAlign subject 7"
   },
   {
