@@ -1,0 +1,47 @@
+name: conceptalign_ours
+source: src/readme3.md stage1 command at archive/final14
+env:
+  MINDEYE_DTYPE: bf16
+  MINDEYE_TEXTALIGN: "1"
+  MINDEYE_TEXTALIGN_STAGE: "1"
+  MINDEYE_TEXTALIGN_HARDNEG: "1"
+  MINDEYE_TEXTALIGN_HARD_SCALE: "0.3"
+  MINDEYE_TEXTALIGN_MARGIN: "0.1"
+  MINDEYE_LR_BACKBONE: "1e-5"
+  MINDEYE_LR_PRIOR: "1e-5"
+  MINDEYE_LR_RIDGE: "1e-4"
+  MINDEYE_LR_TEXT: "1e-4"
+command:
+  - accelerate
+  - launch
+  - --mixed_precision
+  - bf16
+  - --num_processes
+  - "1"
+  - --main_process_port
+  - "29500"
+  - src/train_textalign_bplan_fixed.py
+  - --model_name
+  - s1_textalign_stage1_FINAL_BEST_32
+  - --subj
+  - "1"
+  - --num_sessions
+  - "40"
+  - --batch_size
+  - "32"
+  - --num_epochs
+  - "120"
+  - --use_prior
+  - --lr_scheduler_type
+  - linear
+  - --max_lr
+  - "1e-4"
+  - --ckpt_interval
+  - "1"
+  - --no-wandb_log
+  - --hidden_dim
+  - "4096"
+  - --textalign_hardneg_path
+  - data/nsd_text/train_coco_captions_hard_negs_clip.pt
+  - --multisubject_ckpt
+  - checkpoints/shared_stage0

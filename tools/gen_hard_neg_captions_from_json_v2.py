@@ -14,11 +14,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import torch
 import torch.nn.functional as F
 import httpx
-import urllib3
 from tqdm import tqdm
-
-# 禁用自签名证书警告（针对 IP 直连模式）
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # ==========================================
 # 0. Filters / Heuristics (keep prompt unchanged; filters are local)
@@ -67,7 +63,7 @@ _thread_local = threading.local()
 
 def deepseek_client():
     """
-    Uses openai python client with direct IP connection to bypass DNS/Proxy issues.
+    Uses an OpenAI-compatible endpoint configured through the environment.
     Thread-local reuse: each worker thread constructs one OpenAI+httpx client once.
     """
     try:
@@ -79,24 +75,18 @@ def deepseek_client():
     if not api_key:
         raise RuntimeError("Missing env DEEPSEEK_API_KEY")
 
-    # Direct IP + Host masquerade
-    target_ip_url = "https://116.205.40.114/v1"
+    base_url = os.environ.get("DEEPSEEK_BASE_URL", "https://api.deepseek.com").strip()
     model = os.environ.get("DEEPSEEK_MODEL", "deepseek-chat").strip()
 
     # thread-local cache
     if getattr(_thread_local, "client", None) is not None and getattr(_thread_local, "model", None) is not None:
         return _thread_local.client, _thread_local.model
 
-    http_client = httpx.Client(
-        verify=False,          # 忽略 SSL 证书
-        trust_env=False,       # 忽略系统/Conda 代理
-        headers={"Host": "api.deepseek.com"},
-        timeout=120.0
-    )
+    http_client = httpx.Client(verify=True, trust_env=True, timeout=120.0)
 
     client = OpenAI(
         api_key=api_key,
-        base_url=target_ip_url,
+        base_url=base_url,
         http_client=http_client
     )
 

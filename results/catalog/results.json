@@ -1,0 +1,56 @@
+[
+  {
+    "experiment": "shared_stage0",
+    "kind": "checkpoint",
+    "artifact": "shared_stage0",
+    "paper_role": "shared initialization"
+  },
+  {
+    "experiment": "ours_s1",
+    "kind": "checkpoint",
+    "artifact": "ours_s1",
+    "paper_role": "main ConceptAlign subject 1"
+  },
+  {
+    "experiment": "ours_s2",
+    "kind": "checkpoint",
+    "artifact": "hf_model_main_snapshot",
+    "paper_role": "main ConceptAlign subject 2"
+  },
+  {
+    "experiment": "ours_s5",
+    "kind": "checkpoint",
+    "artifact": "hf_model_main_snapshot",
+    "paper_role": "main ConceptAlign subject 5"
+  },
+  {
+    "experiment": "ours_s7",
+    "kind": "checkpoint",
+    "artifact": "hf_model_main_snapshot",
+    "paper_role": "main ConceptAlign subject 7"
+  },
+  {
+    "experiment": "c1_positive_only",
+    "kind": "checkpoint",
+    "artifact": "c1",
+    "paper_role": "matched ablation"
+  },
+  {
+    "experiment": "c2_random_negative",
+    "kind": "checkpoint",
+    "artifact": "c2",
+    "paper_role": "matched ablation"
+  },
+  {
+    "experiment": "c3_clip_nearest",
+    "kind": "checkpoint",
+    "artifact": "c3",
+    "paper_role": "matched ablation"
+  },
+  {
+    "experiment": "final14_results",
+    "kind": "dataset_tree",
+    "artifact": "final14_results",
+    "paper_role": "inference, supplemental, human aggregate, and figure assets"
+  }
+]

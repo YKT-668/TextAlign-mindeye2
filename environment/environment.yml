@@ -1,0 +1,30 @@
+name: conceptalign
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip
+  - pytorch
+  - torchvision
+  - pytorch-cuda=12.1
+  - numpy
+  - scipy
+  - pandas
+  - pillow
+  - matplotlib
+  - h5py
+  - pyyaml
+  - pip:
+      - accelerate
+      - diffusers
+      - einops
+      - evaluate
+      - huggingface-hub
+      - omegaconf
+      - open-clip-torch
+      - safetensors
+      - sentence-transformers
+      - transformers
+      - webdataset

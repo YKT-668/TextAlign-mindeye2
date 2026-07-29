@@ -7,15 +7,18 @@ from matplotlib.colors import LinearSegmentedColormap
 # =========================
 # Config
 # =========================
-OUT_DIR = "/mnt/work/repos/TextAlign-mindeye2/figures"
+ROOT = os.environ.get(
+    "CONCEPTALIGN_ROOT", os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+)
+OUT_DIR = os.environ.get("FIGURE_OUTPUT_DIR", os.path.join(ROOT, "results", "figures"))
 os.makedirs(OUT_DIR, exist_ok=True)
 
 OUT_PNG = os.path.join(OUT_DIR, "Fig_isrsa_heatmap_textalign_llm_v2.png")
 OUT_PDF = os.path.join(OUT_DIR, "Fig_isrsa_heatmap_textalign_llm_v2.pdf")
 
 SEARCH_ROOTS = [
-    "/mnt/work/repos/TextAlign-mindeye2/cache",
-    "/mnt/work/repos/TextAlign-mindeye2",
+    os.environ.get("RESULTS_ROOT", os.path.join(ROOT, "results")),
+    ROOT,
 ]
 
 # Your palette

@@ -1,0 +1,24 @@
+name: final14_matched_inference
+source: src/readme3.md inference command at archive/final14
+env: {}
+command:
+  - python
+  - src/recon_inference_run.py
+  - --data_path
+  - data/nsd
+  - --cache_dir
+  - cache
+  - --output_dir
+  - results/inference/s1
+  - --model_name
+  - s1_textalign_stage1_FINAL_BEST_32
+  - --ckpt_path
+  - checkpoints/s1_textalign_stage1_FINAL_BEST_32/last.pth
+  - --subj
+  - "1"
+  - --new_test
+  - --seed
+  - "42"
+  - --export_official_pts
+  - --max_save
+  - "1000"

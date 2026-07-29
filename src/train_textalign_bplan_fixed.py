@@ -30,8 +30,10 @@ device = accelerator.device
 
 # SDXL unCLIP requires code from https://github.com/Stability-AI/generative-models/tree/main
 _THIS_DIR = os.path.dirname(os.path.abspath(__file__))
-_PROJ_ROOT = os.path.abspath(os.path.join(_THIS_DIR, os.pardir))
-_GEN_MODELS_DIR = os.path.join(_PROJ_ROOT, 'generative-models')
+_PROJ_ROOT = os.environ.get(
+    "CONCEPTALIGN_ROOT", os.path.abspath(os.path.join(_THIS_DIR, os.pardir))
+)
+_GEN_MODELS_DIR = os.path.join(_THIS_DIR, "generative_models")
 if _GEN_MODELS_DIR not in sys.path:
     sys.path.append(_GEN_MODELS_DIR)
 
@@ -137,9 +139,9 @@ acc_print("distributed =", distributed,
 parser = argparse.ArgumentParser(description="Model Training Configuration")
 parser.add_argument("--model_name", type=str, default="testing",
                     help="name of model, used for ckpt saving and wandb logging (if enabled)")
-parser.add_argument("--data_path", type=str, default=os.getcwd(),
+parser.add_argument("--data_path", type=str, default=os.environ.get("NSD_ROOT", os.getcwd()),
                     help="Path to where NSD data is stored / where to download it to")
-parser.add_argument("--cache_dir", type=str, default=os.getcwd(),
+parser.add_argument("--cache_dir", type=str, default=os.environ.get("HF_HOME", os.getcwd()),
                     help="Path to where misc. files downloaded from huggingface are stored.")
 parser.add_argument("--subj", type=int, default=1, choices=[1,2,3,4,5,6,7,8],
                     help="Validate on which subject?")

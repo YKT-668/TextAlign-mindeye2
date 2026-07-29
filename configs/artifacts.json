@@ -1,0 +1,44 @@
+{
+  "github_archive_source": {
+    "branch": "archive/final14",
+    "commit": "231850a314ab85fc99e0238b1eee7ccd56c01155"
+  },
+  "artifacts": {
+    "c1": {
+      "repo_id": "ykt668/textalign-mindeye2-model",
+      "repo_type": "model",
+      "revision": "ceb32860e6a9e1c775e30da8f8e884e0f1926795",
+      "path": "checkpoints/final14_ablation/positive_only/last.pth"
+    },
+    "c2": {
+      "repo_id": "ykt668/textalign-mindeye2-model",
+      "repo_type": "model",
+      "revision": "ceb32860e6a9e1c775e30da8f8e884e0f1926795",
+      "path": "checkpoints/final14_ablation/random_negative/last.pth"
+    },
+    "c3": {
+      "repo_id": "ykt668/textalign-mindeye2-model",
+      "repo_type": "model",
+      "revision": "ceb32860e6a9e1c775e30da8f8e884e0f1926795",
+      "path": "checkpoints/final14_ablation/clip_nearest/last.pth"
+    },
+    "shared_stage0": {
+      "repo_id": "ykt668/textalign-mindeye2-model",
+      "repo_type": "model",
+      "revision": "ceb32860e6a9e1c775e30da8f8e884e0f1926795",
+      "path": "checkpoints/final14_ablation/shared_stage0/last.pth"
+    },
+    "ours_s1": {
+      "repo_id": "ykt668/textalign-mindeye2-model",
+      "repo_type": "model",
+      "revision": "a127f9295fd5656ac63ae436f07e61b80bf4efce",
+      "path": "checkpoints/s1_textalign_stage1_FINAL_BEST_32/last.pth"
+    },
+    "final14_results": {
+      "repo_id": "ykt668/textalign-mindeye2-data",
+      "repo_type": "dataset",
+      "revision": "2c612c5c2ca3c5344854edbd7028769cb254ab5a",
+      "path": "final14_archive/"
+    }
+  }
+}

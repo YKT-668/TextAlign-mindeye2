@@ -1,3 +1,4 @@
+import os
 import re
 from pathlib import Path
 
@@ -8,8 +9,9 @@ import matplotlib.pyplot as plt
 # =========================
 # 0) Path
 # =========================
-CSV_PATH = "/mnt/work/repos/TextAlign-mindeye2/cache/model_eval_results/shared982_rsa/rsa_summary.csv"
-OUT_DIR = Path("/mnt/work/repos/TextAlign-mindeye2/figures")
+ROOT = Path(os.environ.get("CONCEPTALIGN_ROOT", Path(__file__).resolve().parents[1]))
+CSV_PATH = os.environ.get("RSA_SUMMARY_CSV", ROOT / "results/tables/rsa_summary.csv")
+OUT_DIR = Path(os.environ.get("FIGURE_OUTPUT_DIR", ROOT / "results/figures"))
 
 # =========================
 # 1) Style (IJCAI-like + your palette)

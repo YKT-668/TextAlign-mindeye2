@@ -115,8 +115,10 @@ if utils.is_interactive():
     print("model_name:", model_name)
 
     # other variables can be specified in the following string:
-    jupyter_args = f"--data_path=/weka/proj-medarc/shared/mindeyev2_dataset \
-                    --cache_dir=/weka/proj-medarc/shared/mindeyev2_dataset \
+    _interactive_data = os.environ.get("NSD_ROOT", os.getcwd())
+    _interactive_cache = os.environ.get("HF_HOME", os.getcwd())
+    jupyter_args = f"--data_path={_interactive_data} \
+                    --cache_dir={_interactive_cache} \
                     --model_name={model_name} --subj=1 \
                     --hidden_dim=4096 --n_blocks=4 --new_test"
     print(jupyter_args)
@@ -133,11 +135,11 @@ parser.add_argument(
     help="will load ckpt for model found in ../train_logs/model_name",
 )
 parser.add_argument(
-    "--data_path", type=str, default=os.getcwd(),
+    "--data_path", type=str, default=os.environ.get("NSD_ROOT", os.getcwd()),
     help="Path to where NSD data is stored / where to download it to",
 )
 parser.add_argument(
-    "--cache_dir", type=str, default=os.getcwd(),
+    "--cache_dir", type=str, default=os.environ.get("HF_HOME", os.getcwd()),
     help="Path to where misc. files downloaded from huggingface are stored. Defaults to current src directory.",
 )
 parser.add_argument(
@@ -214,11 +216,9 @@ os.makedirs(output_dir, exist_ok=True)
 
 # ======================= MODIFICATION: Align ckpt path + read ckpt args early =======================
 # Align with training outdir convention when possible
-repo_root = os.path.dirname(script_dir)
-candidate_outdir_1 = os.path.join(repo_root, "train_logs", model_name)
-candidate_outdir_2 = os.path.join("/home/vipuser/train_logs", model_name)  # legacy fallback
-
-outdir = candidate_outdir_1 if os.path.isdir(candidate_outdir_1) else candidate_outdir_2
+repo_root = os.environ.get("CONCEPTALIGN_ROOT", os.path.dirname(script_dir))
+checkpoint_root = os.environ.get("CHECKPOINT_ROOT", os.path.join(repo_root, "checkpoints"))
+outdir = os.path.join(checkpoint_root, model_name)
 tag = 'last'
 if ckpt_path:
     pth_path = ckpt_path

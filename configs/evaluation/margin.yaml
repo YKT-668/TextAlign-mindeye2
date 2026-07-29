@@ -1,0 +1,14 @@
+name: margin_ablation
+source: Final14 CCD margin protocol
+env:
+  BRAIN_PATH: results/inference/s1/brain_clip.pt
+  IDS_PATH: results/inference/s1/ids.json
+  HARD_NEG_JSONL: artifacts/evaluation/shared982_hardneg.jsonl
+  RESULT_DIR: results/evaluation/margin
+command:
+  - python
+  - tools/run_ccd_ablation.py
+  - --base_pool_jsonl
+  - artifacts/evaluation/shared982_hardneg.jsonl
+  - --valid_mask
+  - artifacts/evaluation/hardneg_valid_mask.npy

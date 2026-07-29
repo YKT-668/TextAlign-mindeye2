@@ -1,0 +1,6 @@
+{
+  "image_id": 42,
+  "positive": "A dog runs through a grassy field.",
+  "negative": "A wolf runs through a grassy field.",
+  "negative_type": "object"
+}

@@ -1,71 +1,63 @@
+#!/usr/bin/env python3
+"""Audit overlap between subject training sets and a shared evaluation split."""
 
-import pickle
-import numpy as np
-import os
-import torch
+import argparse
 import glob
+import os
+import pickle
+
+import numpy as np
+import torch
 import webdataset as wds
 
-def get_train_ids(subj):
-    wds_root = f"/mnt/work/repos/TextAlign-mindeye2/wds/subj0{subj}/train"
-    shards = sorted(glob.glob(os.path.join(wds_root, "*.tar")))
-    ids = set()
-    print(f"Subj{subj}: scanning {len(shards)} shards...")
+
+def get_train_ids(wds_root: str, subject: int) -> set[int]:
+    shards = sorted(glob.glob(os.path.join(wds_root, f"subj0{subject}", "train", "*.tar")))
+    ids: set[int] = set()
+    print(f"subj{subject}: scanning {len(shards)} shards")
     for shard in shards:
-        try:
-            ds = wds.WebDataset(shard).decode("torch").rename(behav="behav.npy").to_tuple("behav")
-            dl = torch.utils.data.DataLoader(ds, batch_size=2048)
-            for (behav,) in dl:
-                # behav: [B, 1, 17], 73k-based ID is at [:, 0, 0]
-                image_ids = behav[:, 0, 0].int().numpy()
-                ids.update(image_ids.tolist())
-        except Exception as e:
-            print(f"Error reading shard {shard}: {e}")
-            pass
+        dataset = (
+            wds.WebDataset(shard, shardshuffle=False)
+            .decode("torch")
+            .rename(behav="behav.npy")
+            .to_tuple("behav")
+        )
+        for (behav,) in torch.utils.data.DataLoader(dataset, batch_size=2048):
+            ids.update(behav[:, 0, 0].int().numpy().tolist())
     return ids
 
-def main():
-    # 1. Load Global StimInfo
-    pkl_path = "/mnt/work/repos/TextAlign-mindeye2/nsd_stim_info_merged.pkl"
-    print(f"Loading {pkl_path}...")
-    obj = pickle.load(open(pkl_path, "rb"), encoding='latin1')
-    
-    # 2. Get Train IDs for S1, S2, S5, S7
-    subs = [1, 2, 5, 7]
-    train_sets = {}
-    
-    for s in subs:
-        train_sets[s] = get_train_ids(s)
-        print(f"Subj{s}: Found {len(train_sets[s])} unique training images.")
 
-    # 3. Check Overlaps
-    s1_ids = train_sets[1]
-    
-    for s in [2, 5, 7]:
-        overlap = s1_ids.intersection(train_sets[s])
-        print(f"Overlap S1 vs S{s}: {len(overlap)} images.")
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--wds-root", default=os.environ.get("NSD_ROOT"))
+    parser.add_argument("--stim-info", required=True)
+    parser.add_argument("--shared-mask", required=True)
+    parser.add_argument("--teacher", default=None)
+    parser.add_argument("--subjects", nargs="+", type=int, default=[1, 2, 5, 7])
+    args = parser.parse_args()
+    if not args.wds_root:
+        parser.error("--wds-root or NSD_ROOT is required")
 
-    # 4. Check Shared1000 Overlap
-    shared_path = "/mnt/work/mindeye_data_real/shared1000.npy"
-    if os.path.exists(shared_path):
-        shared_mask = np.load(shared_path)
-        shared_ids = set(np.where(shared_mask)[0].tolist())
-        print(f"Shared IDs Total: {len(shared_ids)}")
-        
-        for s in subs:
-            overlap = train_sets[s].intersection(shared_ids)
-            print(f"Subj{s} Train vs Shared1000 Overlap: {len(overlap)}")
-    else:
-        print("Shared1000 file not found.")
+    with open(args.stim_info, "rb") as handle:
+        pickle.load(handle, encoding="latin1")
 
-    # 5. Check actual S1 teacher file
-    teacher_path = "data/nsd_text/train_coco_text_clip.pt"
-    if os.path.exists(teacher_path):
-        t = torch.load(teacher_path, map_location="cpu")
-        t_ids = set(t["image_ids"].tolist())
-        print(f"S1 Actual Teacher IDs: {len(t_ids)}")
-        print(f"S1 Teacher vs S1 Train: {len(t_ids.intersection(s1_ids))} (Should be 9000)")
-        print(f"S1 Teacher vs S2 Train: {len(t_ids.intersection(train_sets[2]))}")
-    
+    train_sets = {subject: get_train_ids(args.wds_root, subject) for subject in args.subjects}
+    reference = train_sets[args.subjects[0]]
+    for subject, ids in train_sets.items():
+        print(f"subj{subject}: {len(ids)} unique; reference overlap={len(reference & ids)}")
+
+    shared_mask = np.load(args.shared_mask)
+    shared_ids = set(np.flatnonzero(shared_mask).tolist())
+    for subject, ids in train_sets.items():
+        print(f"subj{subject} vs shared split: {len(ids & shared_ids)}")
+
+    if args.teacher:
+        teacher = torch.load(args.teacher, map_location="cpu", weights_only=False)
+        teacher_ids = set(teacher["image_ids"].tolist())
+        print(f"teacher ids: {len(teacher_ids)}")
+        for subject, ids in train_sets.items():
+            print(f"teacher vs subj{subject}: {len(teacher_ids & ids)}")
+
+
 if __name__ == "__main__":
     main()

@@ -27,7 +27,7 @@
     - We provide a streamlit demo `scripts/demo/video_sampling.py` and a standalone python script `scripts/sampling/simple_video_sample.py` for inference of both models.
     - Alongside the model, we release a [technical report](https://stability.ai/research/stable-video-diffusion-scaling-latent-video-diffusion-models-to-large-datasets).
 
-  ![tile](assets/tile.gif)
+  _Upstream demo animation omitted from this source-only release._
 
 **July 26, 2023**
 

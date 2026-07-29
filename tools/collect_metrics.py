@@ -3,7 +3,10 @@ import os, json, glob, csv, argparse
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--logs", default="/home/vipuser/train_logs")
+    ap.add_argument(
+        "--logs",
+        default=os.environ.get("RESULTS_ROOT", os.path.join(os.getcwd(), "results")),
+    )
     ap.add_argument("--models", nargs="*", default=[
         "s1_ps1p5_h512_e5_cycle",
         "s1_ps1p5_h512_e5_cycle_mix",

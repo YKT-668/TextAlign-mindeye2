@@ -1,0 +1,15 @@
+name: semantic_aggregate
+source: Final14 Cross-LLM, Human-written, and Human Audit aggregate protocol
+env: {}
+command:
+  - python
+  - tools/aggregate_semantic_evaluations.py
+  - artifacts/evaluation/cross_llm.csv
+  - artifacts/evaluation/human_written.csv
+  - artifacts/evaluation/human_audit.csv
+  - --metric
+  - score
+  - --group
+  - condition
+  - --output
+  - results/evaluation/semantic_aggregate.json

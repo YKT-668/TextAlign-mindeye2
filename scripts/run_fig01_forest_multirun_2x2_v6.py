@@ -7,8 +7,13 @@ import matplotlib.pyplot as plt
 # =========================
 # 0) Paths
 # =========================
-CSV_PATH = "/mnt/work/repos/TextAlign-mindeye2/cache/model_eval_results/shared982_ccd/ccd_summary.csv"
-OUT_DIR = "/mnt/work/repos/TextAlign-mindeye2/figures"
+ROOT = os.environ.get(
+    "CONCEPTALIGN_ROOT", os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+)
+CSV_PATH = os.environ.get(
+    "CCD_SUMMARY_CSV", os.path.join(ROOT, "results", "tables", "ccd_summary.csv")
+)
+OUT_DIR = os.environ.get("FIGURE_OUTPUT_DIR", os.path.join(ROOT, "results", "figures"))
 os.makedirs(OUT_DIR, exist_ok=True)
 OUT_PATH = os.path.join(OUT_DIR, "fig01_ccd_acc1_per_subj_dot_ci_2x2_v2.png")  # new name, no overwrite
 OUT_PATH_PDF = os.path.join(OUT_DIR, "fig01_ccd_acc1_per_subj_dot_ci_2x2_v2.pdf")

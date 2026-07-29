@@ -1,0 +1,9 @@
+name: low_data_evaluation
+source: Final14 low-data protocol
+env:
+  RESULTS_ROOT: results/low_data
+command:
+  - python
+  - tools/collect_metrics.py
+  - --logs
+  - results/low_data

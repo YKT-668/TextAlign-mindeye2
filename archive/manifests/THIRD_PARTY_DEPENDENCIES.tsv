@@ -1,7 +1,0 @@
-package	source	version	revision	cache_path	license_note
-mindeyev2	pscotti/mindeyev2	main	26421f1...	/mnt/data/hf_cache/hub/datasets--pscotti--mindeyev2/	HF dataset, do not redistribute
-CLIP-ViT-bigG	laion/CLIP-ViT-bigG-14-laion2B-39B-b160k	main	743c27b...	/mnt/data/hf_cache/hub/models--laion--CLIP-ViT-bigG-14-laion2B-39B-b160k/	OpenCLIP MIT
-CLIP-ViT-H	laion/CLIP-ViT-H-14-laion2B-s32B-b79K	main	1c2b849...	/mnt/data/hf_cache/hub/models--laion--CLIP-ViT-H-14-laion2B-s32B-b79K/	OpenCLIP MIT  
-GIT-large-coco	microsoft/git-large-coco	main	b644b0b...	/mnt/data/hf_cache/hub/models--microsoft--git-large-coco/	MIT
-NSD	Natural Scenes Dataset	N/A	N/A	Local, not redistributed	NSD license - do not redistribute
-COCO	COCO 2017	N/A	N/A	Local, not redistributed	COCO license - do not redistribute

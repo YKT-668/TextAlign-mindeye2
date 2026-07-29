@@ -1,0 +1,14 @@
+name: main_evaluation
+source: Final14 evaluation protocol
+env:
+  BRAIN_PATH: results/inference/s1/brain_clip.pt
+  IDS_PATH: results/inference/s1/ids.json
+  GT_PATH: artifacts/evaluation/all_images.pt
+  CAPTIONS_PATH: artifacts/evaluation/all_captions.pt
+  RESULT_DIR: results/evaluation/main
+  HARD_NEG_JSONL: artifacts/evaluation/shared982_hardneg.jsonl
+  HARD_NEG_K: "2"
+  K_NEG: "2"
+command:
+  - python
+  - tools/eval_ccd_embed.py

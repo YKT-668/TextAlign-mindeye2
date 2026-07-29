@@ -6,11 +6,13 @@ import matplotlib.pyplot as plt
 # =========================
 # Paths
 # =========================
-# csv_path = "/mnt/work/repos/TextAlign-mindeye2/cache/model_eval_results/shared982_ccd/ccd_summary.csv"
-# Auto-detect path from previous context since cache file doesn't exist at that location in this env
-csv_path = "/mnt/work/repos/TextAlign-mindeye2/results/tables/ccd_ablation_difficulty.csv"
-
-out_dir = "/mnt/work/repos/TextAlign-mindeye2/figures"
+root = os.environ.get(
+    "CONCEPTALIGN_ROOT", os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+)
+csv_path = os.environ.get(
+    "CCD_ABLATION_CSV", os.path.join(root, "results", "tables", "ccd_ablation_difficulty.csv")
+)
+out_dir = os.environ.get("FIGURE_OUTPUT_DIR", os.path.join(root, "results", "figures"))
 os.makedirs(out_dir, exist_ok=True)
 out_png = os.path.join(out_dir, "Fig09_ccd_ablation_difficulty_v3_diverging.png")
 out_pdf = os.path.join(out_dir, "Fig09_ccd_ablation_difficulty_v3_diverging.pdf")

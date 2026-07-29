@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+title: ConceptAlign
+message: "If you use ConceptAlign, cite this software and the forthcoming paper."
+type: software
+authors:
+  - name: "ConceptAlign authors"
+repository-code: "https://github.com/YKT-668/TextAlign-mindeye2"
+license: MIT
+version: "public-review"
+date-released: 2026-07-29
+abstract: "Counterfactual semantic alignment for MindEye2-based fMRI reconstruction."
+references:
+  - type: software
+    title: MindEye2
+    url: "https://github.com/MedARC-AI/MindEyeV2"

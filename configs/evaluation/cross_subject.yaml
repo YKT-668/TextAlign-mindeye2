@@ -1,0 +1,16 @@
+name: cross_subject_audit
+source: Final14 S1/S2/S5/S7 protocol
+env:
+  NSD_ROOT: data/nsd
+command:
+  - python
+  - tools/audit_cross_subject.py
+  - --stim-info
+  - data/nsd/nsd_stim_info_merged.pkl
+  - --shared-mask
+  - artifacts/evaluation/shared1000.npy
+  - --subjects
+  - "1"
+  - "2"
+  - "5"
+  - "7"

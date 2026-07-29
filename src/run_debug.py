@@ -3,7 +3,7 @@
 
 # --- [修复1] 添加国内镜像加速，防止下载模型时卡死 ---
 import os
-os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
+os.environ.setdefault("HF_ENDPOINT", "https://huggingface.co")
 
 import sys
 import json
@@ -62,11 +62,11 @@ parser.add_argument(
     help="Path to where all_recons.pt is stored",
 )
 parser.add_argument(
-    "--data_path", type=str, default=os.getcwd(),
+    "--data_path", type=str, default=os.environ.get("NSD_ROOT", os.getcwd()),
     help="Path to where NSD data is stored / where to download it to",
 )
 parser.add_argument(
-    "--cache_dir", type=str, default=os.getcwd(),
+    "--cache_dir", type=str, default=os.environ.get("HF_HOME", os.getcwd()),
     help="Path to where misc. files downloaded from huggingface are stored. Defaults to current src directory.",
 )
 parser.add_argument(
@@ -83,8 +83,8 @@ if utils.is_interactive():
     model_name = "s1_textalign_stage1_FINAL_BEST_32"
     all_recons_path = f"evals/{model_name}/{model_name}_all_enhancedrecons.pt"
     subj = 1
-    data_path = "/weka/proj-medarc/shared/mindeyev2_dataset"
-    cache_dir = "/weka/proj-medarc/shared/mindeyev2_dataset"
+    data_path = os.environ.get("NSD_ROOT", os.getcwd())
+    cache_dir = os.environ.get("HF_HOME", os.getcwd())
     
     jupyter_args = f"--model_name={model_name} --subj={subj} --data_path={data_path} --cache_dir={cache_dir} --all_recons_path={all_recons_path}"
     args = parser.parse_args(jupyter_args.split())

@@ -1,0 +1,26 @@
+name: low_data
+source: Final14 low-data protocol
+env:
+  MINDEYE_TEXTALIGN: "1"
+  MINDEYE_TEXTALIGN_STAGE: "1"
+  MINDEYE_TEXTALIGN_HARDNEG: "1"
+command:
+  - python
+  - src/train_textalign_bplan_fixed.py
+  - --model_name
+  - low_data_s1
+  - --subj
+  - "1"
+  - --num_sessions
+  - "5"
+  - --batch_size
+  - "32"
+  - --num_epochs
+  - "120"
+  - --use_prior
+  - --hidden_dim
+  - "4096"
+  - --textalign_hardneg_path
+  - data/nsd_text/train_coco_captions_hard_negs_clip.pt
+  - --multisubject_ckpt
+  - checkpoints/shared_stage0
