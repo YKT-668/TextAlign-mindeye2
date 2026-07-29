@@ -1,5 +1,7 @@
 name: shared_stage0
 source: Final14 trainer stage semantics
+status: author_confirmation_required
+note: Derived from trainer stage semantics because readme3 labels a repair command Stage0 while setting stage 1.
 env:
   MINDEYE_TEXTALIGN: "1"
   MINDEYE_TEXTALIGN_STAGE: "0"

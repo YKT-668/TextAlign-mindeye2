@@ -77,6 +77,21 @@ class PublicReleaseTests(unittest.TestCase):
         self.assertIn("a127f9295fd5656ac63ae436f07e61b80bf4efce", output)
         self.assertIn("hf download", output)
 
+    def test_unverified_config_refuses_execution(self):
+        process = subprocess.run(
+            [
+                sys.executable,
+                "tools/config_command.py",
+                "configs/training/c2_random_negative.yaml",
+                "--execute",
+            ],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+        )
+        self.assertNotEqual(process.returncode, 0)
+        self.assertIn("refusing to execute", process.stderr)
+
     def test_checksum_tool(self):
         with tempfile.NamedTemporaryFile() as handle:
             handle.write(b"conceptalign")

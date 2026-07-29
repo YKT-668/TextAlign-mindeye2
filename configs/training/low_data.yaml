@@ -1,5 +1,7 @@
 name: low_data
 source: Final14 low-data protocol
+status: author_confirmation_required
+note: Template derived from the retained trainer; readme3 does not record the final low-data command.
 env:
   MINDEYE_TEXTALIGN: "1"
   MINDEYE_TEXTALIGN_STAGE: "1"

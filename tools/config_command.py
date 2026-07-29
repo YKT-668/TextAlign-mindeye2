@@ -34,9 +34,19 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("config")
     parser.add_argument("--execute", action="store_true")
+    parser.add_argument(
+        "--allow-unverified",
+        action="store_true",
+        help="Allow execution of a configuration not marked status: verified.",
+    )
     args = parser.parse_args()
     config = load_config(args.config)
     print(render(config))
+    if args.execute and config.get("status") != "verified" and not args.allow_unverified:
+        raise SystemExit(
+            "refusing to execute an unverified configuration; review it and pass "
+            "--allow-unverified only after author confirmation"
+        )
     if args.execute:
         environment = os.environ.copy()
         environment.update({key: str(value) for key, value in config.get("env", {}).items()})

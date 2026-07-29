@@ -1,5 +1,6 @@
 name: final14_matched_inference
 source: src/readme3.md inference command at archive/final14
+status: verified
 env: {}
 command:
   - python

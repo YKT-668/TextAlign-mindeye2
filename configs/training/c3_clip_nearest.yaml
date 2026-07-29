@@ -1,5 +1,7 @@
 name: c3_clip_nearest
 source: Final14 ablation mapping
+status: author_confirmation_required
+note: The hard-negative embedding asset is verified, but readme3 does not record the matched C3 training command.
 env:
   MINDEYE_TEXTALIGN: "1"
   MINDEYE_TEXTALIGN_STAGE: "1"

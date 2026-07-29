@@ -1,5 +1,6 @@
 name: margin_ablation
 source: Final14 CCD margin protocol
+status: author_confirmation_required
 env:
   BRAIN_PATH: results/inference/s1/brain_clip.pt
   IDS_PATH: results/inference/s1/ids.json

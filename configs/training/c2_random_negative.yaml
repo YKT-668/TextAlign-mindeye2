@@ -1,5 +1,7 @@
 name: c2_random_negative
 source: Final14 ablation mapping
+status: author_confirmation_required
+note: Checkpoint identity is verified, but the exact random-negative training asset and command are absent from readme3 and the pinned HF file listing.
 env:
   MINDEYE_TEXTALIGN: "1"
   MINDEYE_TEXTALIGN_STAGE: "1"
@@ -23,6 +25,6 @@ command:
   - --hidden_dim
   - "4096"
   - --textalign_hardneg_path
-  - data/nsd_text/train_coco_captions_random_negs_clip.pt
+  - data/nsd_text/REPLACE_WITH_FINAL14_RANDOM_NEGATIVE_EMBEDDINGS.pt
   - --multisubject_ckpt
   - checkpoints/shared_stage0

@@ -1,5 +1,6 @@
 name: cross_subject_audit
 source: Final14 S1/S2/S5/S7 protocol
+status: author_confirmation_required
 env:
   NSD_ROOT: data/nsd
 command:

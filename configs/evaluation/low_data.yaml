@@ -1,5 +1,6 @@
 name: low_data_evaluation
 source: Final14 low-data protocol
+status: author_confirmation_required
 env:
   RESULTS_ROOT: results/low_data
 command:

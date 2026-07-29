@@ -1,5 +1,6 @@
 name: conceptalign_ours
 source: src/readme3.md stage1 command at archive/final14
+status: verified
 env:
   MINDEYE_DTYPE: bf16
   MINDEYE_TEXTALIGN: "1"

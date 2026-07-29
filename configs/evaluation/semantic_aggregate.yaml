@@ -1,5 +1,6 @@
 name: semantic_aggregate
 source: Final14 Cross-LLM, Human-written, and Human Audit aggregate protocol
+status: author_confirmation_required
 env: {}
 command:
   - python

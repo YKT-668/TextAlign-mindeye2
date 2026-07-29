@@ -26,3 +26,6 @@ author review and does not silently change the training implementation.
 For the paper ablations, use the C1/C2/C3 configs. For low-data and
 cross-subject runs, use their corresponding configs and preserve the same
 checkpoint, seed, representation, and evaluation subset across comparisons.
+These files are marked `author_confirmation_required` because their exact
+commands are not recorded in `readme3`; `tools/config_command.py` refuses to
+execute them unless an author explicitly passes `--allow-unverified`.

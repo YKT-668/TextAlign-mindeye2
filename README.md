@@ -102,18 +102,21 @@ python tools/config_command.py configs/inference/final14.yaml
 python tools/config_command.py configs/evaluation/main.yaml
 ```
 
-Append `--execute` only after setting the documented paths and downloading the
-required artifacts.
+Append `--execute` only for configs marked `status: verified`. Templates marked
+`author_confirmation_required` are intentionally blocked until the authors
+confirm their Final14 command and explicitly pass `--allow-unverified`.
 
 ## Training
 
 The canonical Stage1 values and command come from `src/readme3.md` at the
 Final14 archive and are encoded in `configs/training/ours.yaml`. The public
 configs cover shared Stage0, Ours, C1 positive-only, C2 random-negative, C3
-CLIP-nearest, low-data, and cross-subject training.
+CLIP-nearest, low-data, and cross-subject training. Only Ours is
+command-verified by `readme3`; the other files are reviewable templates and
+cannot be executed accidentally.
 
 ```bash
-python tools/config_command.py configs/training/shared_stage0.yaml --execute
+python tools/config_command.py configs/training/shared_stage0.yaml
 python tools/config_command.py configs/training/ours.yaml --execute
 ```
 
@@ -144,8 +147,9 @@ python tools/config_command.py configs/training/c2_random_negative.yaml
 python tools/config_command.py configs/training/c3_clip_nearest.yaml
 ```
 
-All three use the shared Stage0 checkpoint and otherwise preserve the Final14
-training settings.
+All three map to verified Final14 checkpoint identities. Their exact matched
+training commands are not present in `readme3`, so they are author-review
+templates rather than claims of exact command provenance.
 
 ## Existing results and catalog
 

@@ -1,5 +1,7 @@
 name: main_evaluation
 source: Final14 evaluation protocol
+status: author_confirmation_required
+note: readme3 names src/run_debug.py as the final evaluation command; this CCD template exposes the retained semantic evaluator separately.
 env:
   BRAIN_PATH: results/inference/s1/brain_clip.pt
   IDS_PATH: results/inference/s1/ids.json
