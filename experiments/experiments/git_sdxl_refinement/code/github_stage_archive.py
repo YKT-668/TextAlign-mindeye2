@@ -13,6 +13,10 @@ STAGE = f"{REPO}/experiments/git_sdxl_refinement"
 INV = json.load(open(f"{ROOT}/reports/_archive_inventory_working.json"))
 
 os.makedirs(f"{STAGE}/docs", exist_ok=True)
+# 每次全量重建，避免历史残留导致重名改名
+if os.path.isdir(STAGE):
+    shutil.rmtree(STAGE)
+os.makedirs(f"{STAGE}/docs", exist_ok=True)
 os.makedirs(f"{STAGE}/code", exist_ok=True)
 os.makedirs(f"{STAGE}/results_summary", exist_ok=True)
 
@@ -91,10 +95,10 @@ NSD 原始数据受协议约束不在归档内，需经官方渠道获取。
 with open(f"{STAGE}/README.md", "w", encoding="utf-8") as fh:
     fh.write(readme)
 
-# SHA256SUMS
+# SHA256SUMS（路径以 STAGE 为基准；dst 为绝对路径，避免 CWD 影响）
 with open(f"{STAGE}/SHA256SUMS", "w") as fh:
     for c in sorted(copied, key=lambda x: x["repo_path"]):
-        fh.write(f"{c['sha256']}  {os.path.relpath(c['repo_path'], STAGE)}\n")
-    # README 与 SHA256SUMS 自身不计入（README 内容含本文件无哈希需求）
+        rel_in_stage = os.path.relpath(os.path.join(REPO, c["repo_path"]), STAGE)
+        fh.write(f"{c['sha256']}  {rel_in_stage}\n")
 print(f"staged {len(copied)} files")
 print("STAGE_DONE")
