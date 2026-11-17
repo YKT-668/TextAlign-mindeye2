@@ -1,0 +1,43 @@
+{
+  "scope": {
+    "primary": 1000,
+    "secondary": "shared982 = first 982 of the 1000 (ascending ids)",
+    "note": "982-way 用 982 张候选重建矩阵，不是从 1000-way 结果里截取"
+  },
+  "python": "3.12.7",
+  "torch": "2.5.0+cu124",
+  "device": "cpu",
+  "env": {
+    "CUDA_VISIBLE_DEVICES": "",
+    "OMP_NUM_THREADS": 3,
+    "MKL_NUM_THREADS": 3,
+    "PYTHONPATH_EXTRA": "/mnt/data/cpu_pkgs (scikit-image 0.26 target install)"
+  },
+  "skimage": "0.26.0",
+  "preprocess": {
+    "PixCorr": "Resize(425, bilinear) on [0,1] tensor; Pearson on flattened RGB; mean over images",
+    "SSIM": "Resize(425); skimage.color.rgb2gray; ssim(gaussian_weights=True, sigma=1.5, use_sample_covariance=False, data_range=1.0)",
+    "AlexNet(2)/(5)": "Resize(256,bilinear)+ImageNet norm; features.4 / features.11",
+    "InceptionV3": "Resize(342,bilinear)+ImageNet norm; avgpool",
+    "EfficientNet-B1": "Resize(255,bilinear)+ImageNet norm; avgpool; scipy correlation distance",
+    "identification": "official two_way_identification: r=Pearson(GT,recon); acc=mean_j(#{i: r[i,j]<r[j,j]})/(N-1)"
+  },
+  "status": {
+    "PixCorr": "OFFICIAL_REPRODUCED",
+    "SSIM": "OFFICIAL_REPRODUCED",
+    "AlexNet(2)": "OFFICIAL_REPRODUCED",
+    "AlexNet(5)": "OFFICIAL_REPRODUCED",
+    "InceptionV3": "OFFICIAL_REPRODUCED",
+    "EfficientNet-B1": "OFFICIAL_REPRODUCED",
+    "CLIP-ViT-L14": "BLOCKED_SLOW_ON_CPU",
+    "SwAV-ResNet50": "BLOCKED_MISSING_WEIGHT",
+    "blend075": "DIAGNOSTIC_NOT_OFFICIAL"
+  },
+  "stats": {
+    "bootstrap": 10000,
+    "seed": 2027,
+    "ci": "95% percentile",
+    "test": "wilcoxon signed-rank",
+    "multiplicity": "Holm across all P1 delta p-values (1000 scope)"
+  }
+}

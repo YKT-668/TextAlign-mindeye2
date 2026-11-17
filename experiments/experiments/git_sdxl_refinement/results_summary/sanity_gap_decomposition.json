@@ -1,0 +1,13 @@
+{
+  "preflight_48img_value": 0.354698,
+  "preflight_protocol": "F.interpolate 直达 224 (antialias=False, 无 cell8 段)",
+  "full_official_protocol": {
+    "n": 1000,
+    "mean": 0.35055,
+    "sd": 0.097973,
+    "first48_mean": 0.349783
+  },
+  "H1_subset_effect": -0.000767,
+  "H2_note": "H2（预处理差异）无法从本分解中单独分离（预检特征未保留）；全量结果才是官方协议值，预检值仅作加载合理性检查",
+  "H3_note": "MindEye2 论文 SwAV≈0.32 是其自身重建的均值；本项目 A/B 是不同生成图，无必须等于 0.32 的约束"
+}

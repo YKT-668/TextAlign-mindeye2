@@ -1,0 +1,42 @@
+{
+  "protocol": "MindEye2 final_evaluations.ipynb（TextAlign-mindeye2-231850a）",
+  "preprocess": {
+    "stage1_cell8": "transforms.Resize((256,256)) — 默认 BILINEAR, antialias=True",
+    "clip_l_stage2_cell27": "Resize(224, BILINEAR) + Normalize(CLIP mean/std)，无 CenterCrop",
+    "swav_stage2_cell31": "Resize(224, BILINEAR) + Normalize(ImageNet mean/std)",
+    "erratum": "cell 8 为 bilinear（此前文档误记 bicubic），已在 P3 修正"
+  },
+  "features": {
+    "dtype": "float32",
+    "clip_l_dim": 768,
+    "swav_dim": 2048,
+    "batch": 1,
+    "threads": 2,
+    "inference_mode": true
+  },
+  "alignment": {
+    "manifest_rows": 1000,
+    "ids_rows": 1000,
+    "manifest_equals_tensor_order": true,
+    "manifest_sorted_ascending": true
+  },
+  "scopes": [
+    1000,
+    982
+  ],
+  "scope_note": "982 = 同一固定候选池前 982 列；逐对 Pearson 不受行删除影响，等价于独立 982 矩阵",
+  "metrics_official": [
+    "CLIP-L Pairwise 2-way Identification",
+    "SwAV correlation distance"
+  ],
+  "metrics_supplementary": [
+    "Strict N-way Top-1",
+    "Mean Rank",
+    "CLIP-L GT↔重建 Pearson 相似度",
+    "SwAV 2-way/Top-1（新增，非官方）"
+  ],
+  "runtime": {
+    "swav_total_s": 344,
+    "clip_l": "见 clip_l/extract_clipl_full.log"
+  }
+}

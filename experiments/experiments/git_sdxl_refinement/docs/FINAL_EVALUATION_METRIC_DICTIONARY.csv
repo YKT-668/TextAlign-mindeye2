@@ -1,0 +1,25 @@
+metric_en,metric_zh,method,direction,mindEye2_official,project_custom,result_file,paper_recommended_name
+PixCorr,像素相关系数,Resize(425,bilinear)->RGB flatten->逐图 Pearson r->均值,higher,YES,no,evaluation/cpu_mindeye2_p1/metrics_summary.csv,PixCorr
+SSIM,结构相似性,Resize(425)->rgb2gray->ssim(gaussian sigma=1.5,data_range=1.0)->均值,higher,YES,no,evaluation/cpu_mindeye2_p1/metrics_summary.csv,SSIM
+AlexNet(2) 2-way Identification,AlexNet 第2层两两识别率,"features.4 特征; N×N Pearson; mean_j(c_j/(N-1)); c_j=#{i:R[i,j]<R[j,j]}",higher,YES,no,evaluation/p1_protocol_final_audit/protocol_comparison.csv,AlexNet(2) 2-way Identification
+AlexNet(5) 2-way Identification,AlexNet 第5层两两识别率,同上但特征层 features.11,higher,YES,no,evaluation/p1_protocol_final_audit/protocol_comparison.csv,AlexNet(5) 2-way Identification
+InceptionV3 2-way Identification,InceptionV3 两两识别率,avgpool 特征; 同官方公式,higher,YES,no,evaluation/p1_protocol_final_audit/protocol_comparison.csv,InceptionV3 2-way Identification
+CLIP ViT-L/14 2-way Identification,CLIP-L 两两识别率,encode_image 768维特征; 同官方公式; 权重 openai/clip-vit-large-patch14(经等价性门禁),higher,YES,no,evaluation/cpu_mindeye2_p3_clip_swav/statistics/p3_metrics_summary.json,CLIP 2-way Identification
+EfficientNet-B1 correlation distance,EffNet-B1 相关距离,avgpool 特征; scipy correlation(1-Pearson r) 均值,lower,YES,no,evaluation/cpu_mindeye2_p1/metrics_summary.csv,EffNet-B Distance
+SwAV correlation distance,SwAV 相关距离,ResNet50 avgpool(2048); scipy correlation 均值; 权重 swav_800ep_pretrain,lower,YES,no,evaluation/cpu_mindeye2_p3_clip_swav/statistics/p3_metrics_summary.json,SwAV Distance
+Strict N-way Top-1,严格 N-way Top-1 正确率,mean_j(c_j==N-1) 即正确目标严格大于全部候选; 各编码器分别计算,higher,NO(补充),YES,evaluation/cpu_mindeye2_p3_clip_swav/statistics/p3_metrics_summary.json,Strict N-way Top-1 Accuracy (supplementary)
+Mean Rank,平均排名,"rank_j = N - c_j (1-based); 各编码器分别计算",lower,NO(官方未使用),YES,evaluation/cpu_mindeye2_p3_clip_swav/statistics/p3_metrics_summary.json,Mean Rank (supplementary)
+Image-Image CLIP similarity (bigG tokens),bigG 图像-图像相似度,FrozenOpenCLIPImageEmbedder(laion2b_s39b_b160k) token 余弦逐图均值,higher,NO(自定义),YES,reports/FINAL_GIT_REFINEMENT_EVALUATION.md,bigG Image Similarity (custom)
+1000-way Image Retrieval (gen->GT),1000-way 图像检索,bigG token 余弦库内检索 Top-1/Top-5/MRR,higher,NO(自定义),YES,reports/FINAL_GIT_REFINEMENT_EVALUATION.md,1000-way Retrieval (custom)
+982-way FWD/BWD Retrieval,982-way 双向检索,brain clipvoxels vs bigG 图像特征; shared982 协议,higher,NO(项目协议),YES,audit_runs/s1_textalign_stage1_FINAL_BEST_32_*/audit_report_final.md,982-way Retrieval
+300-way x30 Fwd/Bwd Retrieval,300抽样×30轮双向检索,官方 cell 14 协议; clipvoxels vs bigG,higher,YES,no,reports/CONCEPTALIGN_EVALUATION_ASSET_AUDIT.md,300-way Retrieval (30 loops)
+2AFC (B2I/I2B),二选一强制选择,"共享982负样本池; B2I/I2B 两方向",higher,NO(项目协议),YES,audit_runs/s1_textalign_stage1_FINAL_BEST_32_*/audit_report_final.md,2AFC
+RSA (Pearson/Spearman),表征相似度分析,brain RDM vs image RDM 相关,higher,NO(项目协议),YES,audit_runs/s1_textalign_stage1_FINAL_BEST_32_*/audit_report_final.md,RSA
+CCD (Hard K=1/K=2),条件余弦距离检索,"margin 检索正确率; 固定负样本池",higher,NO(项目协议),YES,audit_runs/s1_textalign_stage1_FINAL_BEST_32_*/audit_report_final.md,CCD
+METEOR (brain_ref),METEOR 文本指标,nltk meteor(word_tokenize) 预测caption vs GT caption 均值,higher,YES(等价实现),no,evaluation/cpu_mindeye2_p2_caption/caption_summary.json,METEOR
+ROUGE-1/L (brain_ref),ROUGE 文本指标,google rouge_score(use_stemmer) mean F,higher,YES(等价实现),no,evaluation/cpu_mindeye2_p2_caption/caption_summary.json,ROUGE
+Sentence Similarity (MiniLM),句子语义相似度,all-MiniLM-L6-v2 mean-pool L2 对角余弦,higher,YES(等价实现),no,evaluation/cpu_mindeye2_p2_caption/caption_summary.json,Sentence Similarity
+CLIP-B/CLIP-L text similarity,CLIP 文本相似度,CLIPTextModelWithProjection 文本塔对角余弦(text-text 无图像),higher,YES,no,evaluation/cpu_mindeye2_p2_caption/caption_summary.json,CLIP Text Similarity
+Caption brain_img / img_ref / relative,三项式补全项,预测caption↔GIT看图caption; GIT看图↔GT; 相对归一化,higher,YES,no,evaluation/cpu_mindeye2_p2_caption_extension/caption_extension_summary.json,Caption Triplet Metrics
+Brain Correlation (GNet 6 regions),脑相关系数,GNet 预测 beta vs 真实 beta 逐体素 Pearson; 需 gnet_multisubject.pt+brain_region_masks.hdf5,higher,YES,BLOCKED,未完成(缺官方权重与掩码),Brain Correlation (pending assets)
+20x300 Pool Sensitivity,20×300 随机子池敏感性,20个随机300子池(高度重叠)上 A/B 方向一致性,higher,NO(敏感性分析),YES,evaluation/cpu_mindeye2_p1_stat_audit/pool_level_audit.json,Pool-level Sensitivity Analysis (not independent tests)

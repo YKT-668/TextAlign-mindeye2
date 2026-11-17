@@ -1,0 +1,10 @@
+{
+  "InceptionV3|A_raw|acc_N1000": 0.962539,
+  "InceptionV3|A_raw|hit1": 0.0,
+  "InceptionV3|A_raw|median_rank": 8.0,
+  "InceptionV3|A_raw|acc_N982": 0.962359,
+  "InceptionV3|B_refined|acc_N1000": 0.948914,
+  "InceptionV3|B_refined|hit1": 0.0,
+  "InceptionV3|B_refined|median_rank": 10.0,
+  "InceptionV3|B_refined|acc_N982": 0.948658
+}

@@ -1,0 +1,53 @@
+{
+  "pt_sha256_expected": "b8cca3fd41ae0c99ba7e8951adf17d267cdb84cd88be6f7c2e0eca1737a03836",
+  "preprocess_evidence": {
+    "cell8": "transforms.Resize((256,256)) — 默认 BILINEAR, antialias=True（tensor 输入）",
+    "cell27": "transforms.Compose([Resize(224, BILINEAR), Normalize(CLIP mean/std)]) — 覆盖 clip 包默认 bicubic+CenterCrop，无 CenterCrop",
+    "feature": "clip_model.encode_image → visual.proj 投影后 768 维（官方 cell 27 传 encode_image，feature_layer=None）"
+  },
+  "pt_sha256_actual": "b8cca3fd41ae0c99ba7e8951adf17d267cdb84cd88be6f7c2e0eca1737a03836",
+  "pt_sha256_ok": true,
+  "openai": {
+    "n": 16,
+    "dim": 768,
+    "time_s": 52.5,
+    "sd_dtype_note": "clip.load 在 CPU 自动 model.float()（fp16 存储 → fp32 计算）"
+  },
+  "weight_mapping": {
+    "n_compared": 392,
+    "n_ok": 392,
+    "n_problem": 0,
+    "problems": [],
+    "max_abs_diff_overall": 0.0,
+    "hf_vision_keys_total": 392,
+    "hf_keys_uncovered_by_openai": [],
+    "note": "fp16→fp32 精确上 cast 后逐张量对比；HF 视觉塔全部键应被 openai visual.* 覆盖"
+  },
+  "output_comparison": {
+    "n": 16,
+    "cosine_min": 0.99999976,
+    "cosine_mean": 1.0,
+    "max_abs_error": 0.0,
+    "per_sample_cosine": [
+      1.00000012,
+      1.0,
+      0.99999988,
+      1.0,
+      0.99999976,
+      0.99999994,
+      0.99999982,
+      1.0,
+      1.00000012,
+      1.00000012,
+      1.0,
+      1.00000012,
+      1.00000012,
+      1.00000024,
+      1.0,
+      0.99999988
+    ]
+  },
+  "gate": true,
+  "verdict": "PASS_OFFICIAL_EQUIVALENCE",
+  "gate_rule": "权重映射完整无问题键且 HF 键全覆盖 + cosine_min>=0.99999 + max_abs_error<=1e-4"
+}

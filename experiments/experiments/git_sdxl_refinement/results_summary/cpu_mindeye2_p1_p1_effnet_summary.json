@@ -1,0 +1,6 @@
+{
+  "EfficientNet-B1|A_raw|dist_1000": 0.625586,
+  "EfficientNet-B1|A_raw|dist_982": 0.625823,
+  "EfficientNet-B1|B_refined|dist_1000": 0.64799,
+  "EfficientNet-B1|B_refined|dist_982": 0.64803
+}
