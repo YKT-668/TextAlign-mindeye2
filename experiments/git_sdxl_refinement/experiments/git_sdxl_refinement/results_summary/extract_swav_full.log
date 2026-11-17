@@ -1,0 +1,42 @@
+[2026-11-16 11:01:09] SwAV checkpoint SHA256 verified: 029d0b8c2e70bcee3f8beb70cc104ef51585c090224d33fb9c6f51d146cfd1eb
+[2026-11-16 11:01:10] model built: torchvision resnet50 + SwAV backbone (strict accounting, fc excluded)
+[2026-11-16 11:01:10] alignment OK: {'manifest_rows': 1000, 'ids_rows': 1000, 'manifest_equals_tensor_order': True, 'manifest_sorted_ascending': True}
+[11:01:10] start: MemAvailable=1321MB SwapTotal=6045MB SwapFree=4610MB loadavg=0.23 0.14 0.15 1/536 25002
+[2026-11-16 11:01:11] === A_raw start_idx=0 shape=[1000, 3, 224, 224] ===
+[2026-11-16 11:01:22] A_raw: 100/1000 (8.86 img/s, RSS=1403MB)
+[2026-11-16 11:01:33] A_raw: 200/1000 (8.91 img/s, RSS=1403MB)
+[2026-11-16 11:01:45] A_raw: 300/1000 (8.92 img/s, RSS=1403MB)
+[2026-11-16 11:01:56] A_raw: 400/1000 (8.91 img/s, RSS=1403MB)
+[2026-11-16 11:02:07] A_raw: 500/1000 (8.92 img/s, RSS=1403MB)
+[2026-11-16 11:02:18] A_raw: 600/1000 (8.93 img/s, RSS=1403MB)
+[2026-11-16 11:02:30] A_raw: 700/1000 (8.90 img/s, RSS=1403MB)
+[2026-11-16 11:02:41] A_raw: 800/1000 (8.90 img/s, RSS=1403MB)
+[2026-11-16 11:02:52] A_raw: 900/1000 (8.90 img/s, RSS=1403MB)
+[2026-11-16 11:03:04] A_raw: 1000/1000 (8.88 img/s, RSS=1403MB)
+[2026-11-16 11:03:04] A_raw: DONE 1000/1000
+[2026-11-16 11:03:04] === B_refined start_idx=0 shape=[1000, 3, 256, 256] ===
+[2026-11-16 11:03:15] B_refined: 100/1000 (8.70 img/s, RSS=1403MB)
+[2026-11-16 11:03:27] B_refined: 200/1000 (8.73 img/s, RSS=1403MB)
+[2026-11-16 11:03:38] B_refined: 300/1000 (8.78 img/s, RSS=1403MB)
+[2026-11-16 11:03:49] B_refined: 400/1000 (8.78 img/s, RSS=1403MB)
+[2026-11-16 11:04:01] B_refined: 500/1000 (8.79 img/s, RSS=1403MB)
+[2026-11-16 11:04:12] B_refined: 600/1000 (8.79 img/s, RSS=1403MB)
+[2026-11-16 11:04:24] B_refined: 700/1000 (8.77 img/s, RSS=1403MB)
+[2026-11-16 11:04:35] B_refined: 800/1000 (8.76 img/s, RSS=1403MB)
+[2026-11-16 11:04:47] B_refined: 900/1000 (8.75 img/s, RSS=1403MB)
+[2026-11-16 11:04:58] B_refined: 1000/1000 (8.76 img/s, RSS=1403MB)
+[2026-11-16 11:04:58] B_refined: DONE 1000/1000
+[2026-11-16 11:04:58] === GT start_idx=0 shape=[1000, 3, 224, 224] ===
+[2026-11-16 11:05:10] GT: 100/1000 (8.70 img/s, RSS=1403MB)
+[2026-11-16 11:05:21] GT: 200/1000 (8.77 img/s, RSS=1403MB)
+[2026-11-16 11:05:32] GT: 300/1000 (8.77 img/s, RSS=1403MB)
+[2026-11-16 11:05:44] GT: 400/1000 (8.73 img/s, RSS=1403MB)
+[2026-11-16 11:05:56] GT: 500/1000 (8.73 img/s, RSS=1403MB)
+[2026-11-16 11:06:07] GT: 600/1000 (8.71 img/s, RSS=1403MB)
+[2026-11-16 11:06:19] GT: 700/1000 (8.72 img/s, RSS=1403MB)
+[2026-11-16 11:06:30] GT: 800/1000 (8.70 img/s, RSS=1403MB)
+[2026-11-16 11:06:42] GT: 900/1000 (8.71 img/s, RSS=1403MB)
+[2026-11-16 11:06:53] GT: 1000/1000 (8.70 img/s, RSS=1403MB)
+[2026-11-16 11:06:53] GT: DONE 1000/1000
+[11:06:54] end: MemAvailable=1331MB SwapTotal=6045MB SwapFree=4540MB loadavg=2.01 1.52 0.78 1/536 25067
+[2026-11-16 11:06:54] SWAV_FULL_EXTRACT_DONE total=344s
