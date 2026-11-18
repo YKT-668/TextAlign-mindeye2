@@ -66,6 +66,26 @@ def hf_remote_path(rel):
 
 def hf_status(rel, f):
     rp = hf_remote_path(rel)
+    # 权威证据 1：大文件回下载验证（>2MB 全部）
+    big_ok = set()
+    try:
+        b = json.load(open(f"{ROOT}/logs/hf_big_download_verify.json"))
+        for d in b["detail"]:
+            if d["status"] == "ok":
+                big_ok.add(f"{PFX}/" + d["file"].split(PFX + "/", 1)[1])
+    except Exception:
+        pass
+    if rp in big_ok:
+        return "download_ok_sha256"
+    # 权威证据 2：小文件回下载验证（≤2MB 全部）
+    try:
+        s = json.load(open(f"{ROOT}/logs/hf_final_small_verify.json"))
+        if len(s.get("fails", [1])) == 0 and s.get("n_ok", 0) >= 1:
+            if f["file_size_bytes"] <= 2 * 1024 * 1024:
+                return "download_ok_sha256"
+    except Exception:
+        pass
+    # 附加证据：LFS 元数据
     if rp in lfs_remote:
         sha, size = lfs_remote[rp]
         if sha == f["sha256"] and size == f["file_size_bytes"]:
