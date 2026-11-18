@@ -72,8 +72,8 @@ for f in os.listdir(f"{ROOT}/evaluation/precomputed_features/bigg"):
     else:
         SELECTION.append((p, "eval_bigg_meta", "github+hf", "bigG 特征清单/校验"))
 for f in sorted(os.listdir(f"{ROOT}/reports")):
-    if f.startswith("_"):
-        continue
+    if f.startswith("_") or f == "FINAL_ARCHIVE_MANIFEST.csv":
+        continue  # 清单自身不纳入（避免循环哈希）
     p = f"reports/{f}"
     sz = os.path.getsize(f"{ROOT}/{p}")
     if f in ("REFINEMENT_EVALUATION_MANIFEST.csv", "S1_NEW_TEST_TO_SHARED982_MAPPING.csv",

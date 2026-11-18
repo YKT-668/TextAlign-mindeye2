@@ -40,7 +40,9 @@ def remote_path(rel):
         return f"{PFX}/evaluation/{sub}"
     if rel.startswith("evaluation/"):
         sub = rel.split("evaluation/")[1]
-        if "per_sample" in os.path.basename(rel) or rel.endswith("lowlevel_per_sample.csv"):
+        # 仅顶层 evaluation 文件（无嵌套目录）才收进 per_sample/，避免与 P1 同名文件冲突
+        if ("per_sample" in os.path.basename(rel) or rel.endswith("lowlevel_per_sample.csv")) \
+                and rel.count("/") == 1:
             sub = f"per_sample/{os.path.basename(rel)}"
         return f"{PFX}/evaluation/{sub}"
     if rel.startswith("reports/"):
