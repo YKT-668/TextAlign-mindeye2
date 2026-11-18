@@ -13,7 +13,7 @@ import urllib.request
 
 REPO = "YKT-668/TextAlign-mindeye2"
 BRANCH = "archive/git-sdxl-refinement-final-2026-11-17"
-TIP = "0551fa2d2ea25470b322cb3d03d3c1e87ee7c218"
+TIP = "ab8bfc98eed0dbae40191949a03f0e972eb5282d"
 STAGE = "/root/archive_work/TextAlign-mindeye2/experiments/git_sdxl_refinement"
 TOKEN = None
 for line in open("/root/.git-credentials"):

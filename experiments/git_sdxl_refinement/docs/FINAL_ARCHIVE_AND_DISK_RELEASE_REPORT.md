@@ -11,11 +11,11 @@
 |---|---|
 | 仓库 | https://github.com/YKT-668/TextAlign-mindeye2 |
 | 归档分支 | `archive/git-sdxl-refinement-final-2026-11-17` |
-| 分支顶端 commit | **0551fa2d2ea25470b322cb3d03d3c1e87ee7c218** |
+| 分支顶端 commit | 归档完成后请以 `git ls-remote` 查询（定稿时的提交链见下行；文档定稿提交 = **ab8bfc9**） |
 | Annotated tag | `git-sdxl-refinement-final-2026-11-17` = 056f7f6 → 剥离 **d08791d**（创建时点，未移动） |
 | 基线核对 | origin/archive/final14 = `231850a...` ✓；origin/master = `80bb079...` ✓（均未改） |
 | 默认 main | 未修改 ✓ |
-| 提交链 | 579ab6e(main) → d08791d(tag) → eb091f8 → fa601e4 → b53eb96 → ca39ac7 → 5f7dce6 → **0551fa2** |
+| 提交链 | 579ab6e(main) → d08791d(tag) → eb091f8 → fa601e4 → b53eb96 → ca39ac7 → 5f7dce6 → 0551fa2 → **ab8bfc9（含本报告正文）** |
 | 内容目录 | `experiments/git_sdxl_refinement/{docs,code,results_summary}/` + README + SHA256SUMS |
 | 文件数 | **158**（155 归档文件 + README + SHA256SUMS + FINAL_ARCHIVE_MANIFEST.csv），约 3.4MB |
 | 远端验证 | **PASS 158/158**（git/trees API 递归树逐文件 blob-sha1+size 比对；文档/清单抽样字节级一致） |
